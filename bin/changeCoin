@@ -1,0 +1,6 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
+cd $DIR/..
+node ./bin/helpers/changeCoin/index.js $1
+rsync -v -a -t -c --exclude=".*" ./bin/helpers/changeCoin/coin_config/$1/files/* ./

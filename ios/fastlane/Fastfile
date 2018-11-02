@@ -1,0 +1,29 @@
+default_platform(:ios)
+
+platform :ios do
+
+  lane :bump_build_number do
+    increment_build_number(xcodeproj: "COINiDWallet.xcodeproj")
+  end
+
+  lane :coin_beta do |options|
+    if !options[:coin] || !options[:ticker] || !options[:time]
+      puts("Missing options...")
+      next
+    end
+
+    rootDir = "..";
+    shRootDir = "../.."; #sh cwd is android/fastlane
+
+    sh("#{shRootDir}/bin/changeCoin #{options[:ticker]}")
+
+    build_app(scheme: "COINiDWallet")
+    upload_to_testflight(skip_waiting_for_build_processing: true)
+
+    slack(
+      message: "Ny #{options[:coin]} Wallet på väg till Testflight!",
+      default_payloads: [],
+      slack_url: "https://hooks.slack.com/services/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"
+    )
+  end
+end

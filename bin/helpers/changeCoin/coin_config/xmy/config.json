@@ -1,0 +1,9 @@
+{
+	"coinTicker": "xmy",
+	"coinName": "myriad",
+	"appReturnScheme": "coinid-xmy",
+	"iosIdentifier": "org.coinid.wallet.xmy",
+	"androidPackageName": "org.coinid.wallet.xmy",
+	"displayName": "XMY COINiD",
+	"availableCurrencies": "['BTC', 'USD', 'EUR']"
+}

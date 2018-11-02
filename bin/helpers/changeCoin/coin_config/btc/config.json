@@ -1,0 +1,9 @@
+{
+	"coinTicker": "btc",
+	"coinName": "bitcoin",
+	"appReturnScheme": "coinid-btc",
+	"iosIdentifier": "org.coinid.wallet.btc",
+	"androidPackageName": "org.coinid.wallet.btc",
+	"displayName": "BTC COINiD",
+	"availableCurrencies": "['USD', 'EUR']"
+}

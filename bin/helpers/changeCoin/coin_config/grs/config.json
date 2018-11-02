@@ -1,0 +1,9 @@
+{
+	"coinTicker": "grs",
+	"coinName": "groestlcoin",
+	"appReturnScheme": "coinid-grs",
+	"iosIdentifier": "org.coinid.wallet.grs",
+	"androidPackageName": "org.coinid.wallet.grs",
+	"displayName": "GRS COINiD",
+	"availableCurrencies": "['BTC', 'USD', 'EUR']"
+}

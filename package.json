@@ -1,0 +1,97 @@
+{
+  "name": "COINiDWallet",
+  "version": "0.1.3",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest",
+    "postversion": "react-native-version",
+    "postinstall": "babel node_modules/lottie-react-native/src/js --out-dir node_modules/lottie-react-native/lib; node node_modules/rn-nodeify/cmd.js --install stream,buffer,events,assert,crypto,vm --hack"
+  },
+  "rnpm": {
+    "assets": [
+      "./src/assets/fonts/"
+    ]
+  },
+  "dependencies": {
+    "add": "^2.0.6",
+    "assert": "^1.4.1",
+    "big.js": "^5.0.3",
+    "bip32-utils": "^0.11.1",
+    "bitcoinjs-lib": "https://github.com/wlc-/bitcoinjs-lib",
+    "bitcoinjs-message": "^2.0.0",
+    "buffer": "^4.9.1",
+    "buffer-reverse": "^1.0.1",
+    "coinid-address-functions": "https://github.com/wlc-/coinid-address-functions.git",
+    "coinid-address-types": "https://github.com/wlc-/coinid-address-types.git",
+    "events": "^1.1.1",
+    "lottie-react-native": "^2.5.9",
+    "md5": "^2.2.1",
+    "moment": "^2.21.0",
+    "numbro": "^2.1.0",
+    "prop-types": "^15.6.1",
+    "react": "16.3.1",
+    "react-native": "0.55.4",
+    "react-native-blur": "^3.2.2",
+    "react-native-camera": "^1.1.4",
+    "react-native-crypto": "^2.1.1",
+    "react-native-elements": "^0.18.4",
+    "react-native-exit-app": "^1.0.0",
+    "react-native-fetch-polyfill": "^1.1.3",
+    "react-native-iphone-x-helper": "^1.2.0",
+    "react-native-p2p-transfer-ble-central": "https://github.com/COINiD/react-native-p2p-transfer-ble-central.git",
+    "react-native-qr-data-transfer-receiver": "https://github.com/COINiD/react-native-qr-data-transfer-receiver",
+    "react-native-qr-data-transfer-sender": "https://github.com/COINiD/react-native-qr-data-transfer-sender",
+    "react-native-qrcode-scanner": "^1.0.1",
+    "react-native-qrcode-svg": "^5.0.6",
+    "react-native-randombytes": "^3.0.0",
+    "react-native-snap-carousel": "https://github.com/wlc-/react-native-snap-carousel.git",
+    "react-native-splash-screen": "^3.1.1",
+    "react-native-svg": "^6.2.2",
+    "react-native-svg-charts": "git+https://github.com/mundiallover/react-native-svg-charts.git",
+    "react-native-vector-icons": "^4.4.2",
+    "react-navigation": "^2.12.1",
+    "readable-stream": "^1.0.33",
+    "rn-nodeify": "^8.2.0",
+    "socket.io-client": "^2.1.1",
+    "stream-browserify": "^1.0.0",
+    "vm-browserify": "0.0.4",
+    "yarn": "^1.9.4"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.3",
+    "babel-plugin-module-resolver": "^3.1.1",
+    "eslint": "^5.3.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.11.0",
+    "jest": "21.2.1",
+    "react-native-version": "^2.4.1",
+    "react-test-renderer": "16.0.0"
+  },
+  "jest": {
+    "preset": "react-native"
+  },
+  "react-native": {
+    "crypto": "react-native-crypto",
+    "_stream_transform": "readable-stream/transform",
+    "_stream_readable": "readable-stream/readable",
+    "_stream_writable": "readable-stream/writable",
+    "_stream_duplex": "readable-stream/duplex",
+    "_stream_passthrough": "readable-stream/passthrough",
+    "stream": "stream-browserify",
+    "vm": "vm-browserify"
+  },
+  "browser": {
+    "crypto": "react-native-crypto",
+    "_stream_transform": "readable-stream/transform",
+    "_stream_readable": "readable-stream/readable",
+    "_stream_writable": "readable-stream/writable",
+    "_stream_duplex": "readable-stream/duplex",
+    "_stream_passthrough": "readable-stream/passthrough",
+    "stream": "stream-browserify",
+    "vm": "vm-browserify"
+  }
+}

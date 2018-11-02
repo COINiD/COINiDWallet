@@ -1,0 +1,9 @@
+{
+	"coinTicker": "tbtc",
+	"coinName": "testnet",
+	"appReturnScheme": "coinid-tbtc",
+	"iosIdentifier": "org.coinid.wallet.tbtc",
+	"androidPackageName": "org.coinid.wallet.tbtc",
+	"displayName": "TBTC COINiD",
+	"availableCurrencies": "['USD', 'EUR']"
+}

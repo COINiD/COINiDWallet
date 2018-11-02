@@ -1,0 +1,61 @@
+#!/usr/bin/env node
+const { execSync } = require('child_process');
+
+const coins = [
+  {
+    ticker: 'btc',
+    coin: 'Bitcoin',
+    packageName: 'org.coinid.wallet.btc',
+  }, {
+    ticker: 'xmy',
+    coin: 'Myriad',
+    packageName: 'org.coinid.wallet.xmy',
+  }, {
+    ticker: 'grs',
+    coin: 'Groestlcoin',
+    packageName: 'org.coinid.wallet.grs',
+  }, {
+    ticker: 'tbtc',
+    coin: 'Testnet',
+    packageName: 'org.coinid.wallet.tbtc',
+  },
+];
+
+const rootDir = `${__dirname}/..`;
+const prefix = process.argv[2];
+
+let time = new Date().toISOString().replace(/\D/g, '').substr(0, 12);
+if (prefix !== undefined) {
+  time = `${prefix}-${time}`;
+}
+
+const doBuilds = (platform) => {
+  execSync(`cd ${rootDir}/${platform}; fastlane bump_build_number`, { stdio: 'inherit' });
+  for (let i = 0; i < coins.length; i += 1) {
+    const { ticker, coin, packageName } = coins[i];
+    execSync(`cd ${rootDir}/${platform}; fastlane coin_beta ticker:${ticker} coin:${coin} time:${time} package_name:${packageName}`, { stdio: 'inherit' });
+  }
+};
+
+const createSHA256SUMS = (dir) => {
+  execSync(`
+    cd ${rootDir}/builds/wallet/${dir};
+    shasum -a256 *.apk > SHA256SUMS;
+    gpg  --yes --digest-algo sha256 --clearsign SHA256SUMS;
+    rm SHA256SUMS;
+  `, { stdio: 'inherit' });
+};
+
+const pause = (text) => {
+  execSync(`
+    read -p "${text}" nothing;
+  `, { stdio: 'inherit' });
+};
+
+doBuilds('ios');
+doBuilds('android');
+
+pause('Prepare to sign builds... Press enter to continue.');
+
+createSHA256SUMS(time);
+createSHA256SUMS('latest');
