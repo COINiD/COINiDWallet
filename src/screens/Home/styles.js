@@ -1,5 +1,5 @@
 import { StyleSheet, Platform, StatusBar } from 'react-native';
-import { colors } from '../../config/styling';
+import { colors, fontWeight, fontSize } from '../../config/styling';
 
 export default StyleSheet.create({
   container: {
@@ -70,5 +70,12 @@ export default StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
+  },
+  testnetText: {
+    color: colors.white,
+    fontSize: 11,
+    ...fontWeight.book,
+    marginLeft: 4,
+    alignSelf: 'flex-end',
   },
 });

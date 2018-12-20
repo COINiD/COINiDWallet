@@ -29,7 +29,7 @@ export default styleMerge(
       color: colors.green,
     },
     header: {
-      marginTop: -16,
+      marginTop: 0,
       paddingTop: 8,
       backgroundColor: 'rgba(255,255,255,0.95)',
       zIndex: 10,

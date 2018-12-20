@@ -236,7 +236,7 @@ class Screen extends PureComponent {
         contentContainerStyle={{ flex: 1 }}
       >
         <View style={{ flex: 1 }}>
-          <ScrollView>
+          <ScrollView style={themeStyle.scrollContainer}>
             {buildList(primarySettings)}
             <Text style={themeStyle.listHint}>{getViewLockExplanation()}</Text>
             {buildList(coldTransportSettings)}

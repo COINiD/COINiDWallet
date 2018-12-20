@@ -1,15 +1,15 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
-import { Text } from '../../components';
-import { LineChart, YAxis } from 'react-native-svg-charts';
-import { LinearGradient, Stop } from 'react-native-svg';
+import { LineChart } from 'react-native-svg-charts';
 import * as shape from 'd3-shape';
+
+import { Text, FontScale } from '../../components';
 import Settings from '../../config/settings';
 import ExchangeHelper from '../../utils/exchangeHelper';
 import { numFormat } from '../../utils/numFormat';
 import themeableStyles from './styles';
-import { colors } from '../../config/styling';
+import { fontSize, colors } from '../../config/styling';
 
 export default class Graph extends PureComponent {
   constructor(props) {
@@ -50,7 +50,7 @@ export default class Graph extends PureComponent {
 
     this.setState({
       isLoading: false,
-      dataPoints, 
+      dataPoints,
       currentPrice
     });
   }
@@ -133,26 +133,35 @@ export default class Graph extends PureComponent {
     return (
       <View style={styles.container} onLayout={this.props.onLayout}>
         <View style={styles.graphHeader}>
-          <View style={[styles.textContainer]}>
-            <View style={styles.textContainer}>
-              <Text style={[styles.coinText, styles.coinTitle]}>
-                {coinTitle}
-              </Text>
-              <TouchableOpacity onPress={() => this.props.toggleCurrency()}>
-                <Text style={[styles.coinText, styles.coinTicker]}>
-                  {ticker}/{this.state.currency}
-                </Text>
-              </TouchableOpacity>
-            </View>
+          <FontScale
+            fontSizeMax={fontSize.h2}
+            fontSizeMin={fontSize.h4}
+            text={`${coinTitle} ${ticker}/${this.state.currency}     ${this._diffValue()}`}
+            widthScale={0.96}
+          >
+            {({ fontSize }) => (
+              <View style={[styles.textContainer]}>
+                <View style={styles.textContainer}>
+                  <Text style={[styles.coinText, styles.coinTitle, {fontSize}]}>
+                    {coinTitle}
+                  </Text>
+                  <TouchableOpacity onPress={() => this.props.toggleCurrency()}>
+                    <Text style={[styles.coinText, styles.coinTicker, {fontSize}]}>
+                      {ticker}/{this.state.currency}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
 
-            <View style={styles.coinDiffContainer}>
-              <Text
-                style={[styles.coinText, styles.coinDiff, diffColor()]}
-              >
-                {this._diffValue()}
-              </Text>
-            </View>
-          </View>
+                <View style={styles.coinDiffContainer}>
+                  <Text
+                    style={[styles.coinText, styles.coinDiff, diffColor(), {fontSize}]}
+                  >
+                    {this._diffValue()}
+                  </Text>
+                </View>
+              </View>
+            )}
+          </FontScale>
           <View style={[styles.textContainer]}>
             <TouchableOpacity onPress={() => toggleRange()}>
               <Text style={styles.currencyText}>
@@ -171,6 +180,7 @@ export default class Graph extends PureComponent {
             </Text>
           </View>
         </View>
+
 
         <View
           style={{ height: this.state.graphHeight, marginBottom: 8 }}

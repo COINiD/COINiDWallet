@@ -1,5 +1,6 @@
 import { StyleSheet, Platform } from 'react-native';
 import { colors, fontSize, fontWeight } from '../../config/styling';
+import settings from '../../config/settings';
 import { ifIphoneX } from 'react-native-iphone-x-helper';
 
 export default StyleSheet.create({
@@ -34,7 +35,7 @@ export default StyleSheet.create({
     width: 212,
     height: 212,
     marginLeft: 1,
-    marginBottom: 32 - 4 - 1, // -4 because xcode storyboard not aligning exactly on center..
+    marginBottom: settings.isTestnet ? 0 : 32,
   },
   unlockButtonWrapper: {
     position: 'absolute',
@@ -68,5 +69,13 @@ export default StyleSheet.create({
     color: colors.white,
     fontSize: fontSize.smaller,
     ...fontWeight.medium,
+  },
+  testnetText: {
+    color: colors.white,
+    fontSize: fontSize.small,
+    ...fontWeight.medium,
+    alignSelf: 'center',
+    marginTop: 16,
+    lineHeight: 16,
   },
 });

@@ -312,7 +312,7 @@ class Setup extends PureComponent {
           <Text h1 center margin>Welcome</Text>
           <Text h2 center margin>Setup your Hot Wallet</Text>
           <Text p center margin>
-            Similar to a transaction account, funds stored on your hot wallet is available for easy and immediate access.
+            Similar to a transaction account, funds stored on your hot wallet are available for easy and immediate access.
           </Text>
 
           <TouchableOpacity onPress={this._openAbout} style={styles.linkWrapper}>

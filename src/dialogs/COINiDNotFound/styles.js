@@ -4,6 +4,7 @@ import { colors, fontWeight } from '../../config/styling';
 export default StyleSheet.create({
   container: {
     padding: 16,
+    paddingTop: 0,
     justifyContent: 'center',
     alignItems: 'center',
   },

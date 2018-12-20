@@ -144,7 +144,7 @@ class SettingColdTransport extends PureComponent {
     );
 
     return (
-      <ScrollView>
+      <ScrollView style={themeStyle.scrollContainer}>
         <Text style={themeStyle.listHeader}>Select how to transfer data to the offline device.</Text>
         {buildList(screenSettings)}
       </ScrollView>

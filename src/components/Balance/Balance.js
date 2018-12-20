@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { View, TouchableOpacity, Text as DefaultText } from 'react-native';
-import { Text } from '..';
+import { Text, FontScale } from '..';
 import Settings from '../../config/settings';
 import ExchangeHelper from '../../utils/exchangeHelper';
 import { numFormat } from '../../utils/numFormat';
@@ -33,14 +33,17 @@ export default class Balance extends PureComponent {
     this.exchangeHelper.on('syncedexchange', this._onSyncedExchange);
   }
 
-  componentWillUnmount() {
-    this.settingHelper.removeListener('updated', this._onSettingsUpdated);
+  componentWillReceiveProps(nextProps) {
+    const { balance } = nextProps;
+    const { balance: oldBalance } = this.props;
+
+    if (balance !== oldBalance) {
+      this._refreshFiatBalance(balance);
+    }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.balance !== this.props.balance) {
-      this._refreshFiatBalance(nextProps.balance);
-    }
+  componentWillUnmount() {
+    this.settingHelper.removeListener('updated', this._onSettingsUpdated);
   }
 
   _refreshFiatBalance = (balance) => {
@@ -68,43 +71,56 @@ export default class Balance extends PureComponent {
     return themeableStyles(theme);
   }
 
-  _onLayout = (e) => {
-    this.setState({ layoutWidth: e.nativeEvent.layout.width });
-  }
-
   render() {
     const styles = this._getStyle();
     const {
-      fiatBalance, currency, ticker, layoutWidth,
+      fiatBalance, currency, ticker,
     } = this.state;
-    const { balance, style } = this.props;
+    const { balance, style, toggleCurrency } = this.props;
 
-    const textLength = (`${numFormat(balance, ticker)} ${ticker}`).length;
+    if (currency === undefined) {
+      return null;
+    }
 
-    let fontSize = 67 * (layoutWidth / 40) / textLength;
-    fontSize = fontSize > 40 ? 40 : fontSize;
-    fontSize = fontSize < 12 ? 12 : fontSize;
-
-    const lineHeight = 50 * fontSize / 40;
-    const currencyFontSize = 28 * fontSize / 40;
-    const currencyLineHeight = 33 * fontSize / 40;
-
+    const balanceText = `${numFormat(balance, ticker)} ${ticker}`;
+    const currencyText = `${numFormat(fiatBalance, currency)} ${currency}`;
 
     return (
       <View style={[styles.container, style]}>
-        <Text style={styles.coinText} numberOfLines={1} onLayout={this._onLayout}>
-          <DefaultText style={{ fontSize, lineHeight }}>
-            {numFormat(balance, ticker)}
-          </DefaultText>
-          <DefaultText style={[styles.ticker, { fontSize }]}>
-            {` ${ticker}`}
-          </DefaultText>
-        </Text>
-        <TouchableOpacity style={{ alignSelf: 'flex-start' }} onPress={() => this.props.toggleCurrency()}>
-          <Text style={[styles.currencyText, {fontSize: currencyFontSize, lineHeight: currencyLineHeight}]}>
-            {`${numFormat(fiatBalance, currency)} ${currency}`}
-          </Text>
-        </TouchableOpacity>
+        <FontScale
+          fontSizeMax={50}
+          fontSizeMin={12}
+          lineHeightMax={62.5}
+          text={balanceText}
+          widthScale={0.90}
+        >
+          {({ fontSize, lineHeight }) => (
+            <Text style={styles.coinText} numberOfLines={1}>
+              <DefaultText style={{ fontSize, lineHeight }}>
+                {numFormat(balance, ticker)}
+              </DefaultText>
+              <DefaultText style={[styles.ticker, { fontSize }]}>
+                {` ${ticker}`}
+              </DefaultText>
+            </Text>
+          )}
+        </FontScale>
+
+        <FontScale
+          fontSizeMax={28}
+          fontSizeMin={10}
+          lineHeightMax={33}
+          text={currencyText}
+          widthScale={0.6}
+        >
+          {({ fontSize, lineHeight }) => (
+            <TouchableOpacity style={{ alignSelf: 'flex-start' }} onPress={() => toggleCurrency()}>
+              <Text style={[styles.currencyText, { fontSize, lineHeight }]}>
+                {currencyText}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </FontScale>
       </View>
     );
   }

@@ -10,12 +10,12 @@ const replace = require('replace-in-file');
 
 const {
   availableCurrencies,
-  coinTicker,
   coinName,
   appReturnScheme,
   iosIdentifier,
   androidPackageName,
   displayName,
+  isTestnet,
 } = require(`./coin_config/${ticker}/config.json`);
 
 const doReplace = ({
@@ -54,10 +54,11 @@ doReplace({
 doReplace({
   file: 'src/config/settings.js',
   equalSign: ':',
-  quoteSign: "",
+  quoteSign: '',
   breakSign: '\n',
   replacements: {
-    availableCurrencies: availableCurrencies+',',
+    availableCurrencies: `${availableCurrencies},`,
+    isTestnet: `${isTestnet},`,
   },
 });
 

@@ -1,5 +1,3 @@
-
-
 import numbro from 'numbro';
 
 const initLocale = () => {
@@ -21,9 +19,10 @@ const validCryptoCurrencies = {
   LTC: true,
   XMY: true,
   GRS: true,
+  TGRS: true,
 };
 
-const isCryptoCurrency = currency => (!!(currency && validCryptoCurrencies[currency]));
+export const isCryptoCurrency = currency => (!!(currency && validCryptoCurrencies[currency.toUpperCase()]));
 
 export const numFormat = (value, currency, decimals, variableDecimals) => {
   value = Number(value);

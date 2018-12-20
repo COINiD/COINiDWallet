@@ -124,7 +124,7 @@ class Screen extends PureComponent {
     );
 
     return (
-      <ScrollView>
+      <ScrollView style={themeStyle.scrollContainer}>
         {buildList(resetSettings)}
         <Text style={themeStyle.listHint}>
           The public key and history will be removed. The app will exit after reset.

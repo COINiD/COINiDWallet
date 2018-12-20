@@ -267,20 +267,59 @@ class Home extends PureComponent {
     }).start();
   };
 
+  _renderHeaderLeft = () => {
+    const renderTestnet = () => {
+      if (settings.isTestnet) {
+        return (<Text style={styles.testnetText}>Testnet</Text>);
+      }
+
+      return null;
+    };
+
+    return (
+      <View
+        style={{
+          marginTop: 8,
+          marginLeft: 6,
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          flexDirection: 'row',
+        }}
+      >
+        <LottieView
+          style={{ width: 24, height: 24 }}
+          source={lottieFiles.walletLogo}
+        />
+        {renderTestnet()}
+      </View>
+    );
+  }
+
+  _renderHeaderRight = () => (
+    <Icon
+      name="settings"
+      containerStyle={styles.settingsBtnContainer}
+      iconStyle={styles.settingsBtn}
+      underlayColor="transparent"
+      onPress={this._openSettings}
+    />
+  );
+
   render() {
-    const { navigate } = this.props.navigation;
+    const { animValue } = this.state;
 
     const animationStyle = {
       flex: 1,
       transform: [
         {
-          scale: this.state.animValue.interpolate({
+          scale: animValue.interpolate({
             inputRange: [0, 1],
             outputRange: [0.91, 1],
           }),
         },
         {
-          translateY: this.state.animValue.interpolate({
+          translateY: animValue.interpolate({
             inputRange: [0, 1],
             outputRange: [-28, 0],
           }),
@@ -291,36 +330,13 @@ class Home extends PureComponent {
     return (
       <Animated.View style={animationStyle}>
         <View style={styles.container}>
-          <Animated.View style={{ height: 40, opacity: this.state.animValue }}>
+          <Animated.View style={{ height: 40, opacity: animValue }}>
             <Header
               outerContainerStyles={styles.headerOuter}
               innerContainerStyles={styles.headerInner}
-              leftComponent={(
-                <View
-                  style={{
-                    marginTop: 8,
-                    marginLeft: 6,
-                    position: 'absolute',
-                    left: 0,
-                    top: 0,
-                  }}
-                >
-                  <LottieView
-                    style={{ width: 24, height: 24 }}
-                    source={lottieFiles.walletLogo}
-                  />
-                </View>
-)}
+              leftComponent={this._renderHeaderLeft()}
               centerComponent={this._pagination}
-              rightComponent={(
-                <Icon
-                  name="settings"
-                  containerStyle={styles.settingsBtnContainer}
-                  iconStyle={styles.settingsBtn}
-                  underlayColor="transparent"
-                  onPress={this._openSettings}
-                />
-)}
+              rightComponent={this._renderHeaderRight()}
             />
           </Animated.View>
           { this._carousel }

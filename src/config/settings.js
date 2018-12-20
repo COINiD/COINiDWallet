@@ -31,4 +31,5 @@ export default {
     ios: 'https://coinid.org/guides/preparing-ios-cold-wallet',
     android: 'https://coinid.org/guides/preparing-android-cold-wallet',
   },
+  isTestnet : true,
 };

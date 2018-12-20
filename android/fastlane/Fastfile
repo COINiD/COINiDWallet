@@ -3,41 +3,47 @@ require 'fileutils'
 default_platform(:android)
 
 platform :android do
-
   lane :coin_beta do |options|
     if !options[:coin] || !options[:ticker] || !options[:time] || !options[:package_name]
-      puts("Missing options...")
+      puts('Missing options...')
       next
     end
 
-    rootDir = "..";
-    shRootDir = "../.."; #sh cwd is android/fastlane
-    buildDir = "builds/wallet";
+    rootDir = '..'
+    shRootDir = '../..'; # sh cwd is android/fastlane
+    buildDir = 'builds/wallet'
 
     FileUtils.mkdir_p("#{shRootDir}/#{buildDir}/latest") unless File.directory?("#{shRootDir}/#{buildDir}/latest")
     FileUtils.mkdir_p("#{shRootDir}/#{buildDir}/#{options[:time]}") unless File.directory?("#{shRootDir}/#{buildDir}/#{options[:time]}")
 
     sh("#{shRootDir}/bin/changeCoin #{options[:ticker]}")
-    gradle(task: "clean assembleRelease")
+    gradle(task: 'clean assembleRelease')
 
     FileUtils.mv("#{shRootDir}/android/app/build/outputs/apk/release/app-release.apk", "#{shRootDir}/#{buildDir}/latest/latest-coinid-wallet-#{options[:coin].downcase}.apk")
     FileUtils.cp("#{shRootDir}/#{buildDir}/latest/latest-coinid-wallet-#{options[:coin].downcase}.apk", "#{shRootDir}/#{buildDir}/#{options[:time]}/#{options[:time]}-coinid-wallet-#{options[:coin].downcase}.apk")
 
-    #upload_to_play_store(
-    #  package_name: "#{options[:package_name]}",
-    #  apk: "#{rootDir}/#{buildDir}/latest/latest-coinid-wallet-#{options[:coin].downcase}.apk"
-    #)
-#
-    #slack(
-    #  message: "Ny #{options[:coin]} Wallet på väg till Play Store!",
-    #  default_payloads: [],
-    #  slack_url: "https://hooks.slack.com/services/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"
-    #)
+    upload_to_play_store(
+      package_name: (options[:package_name]).to_s,
+      apk: "#{rootDir}/#{buildDir}/latest/latest-coinid-wallet-#{options[:coin].downcase}.apk",
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+    )
+
+    message_slack(options)
+  end
+
+  lane :message_slack do |options|
+    slack(
+      message: "Ny #{options[:coin]} Wallet på väg till Play Store!",
+      default_payloads: [],
+      slack_url: ENV['SLACK_URL']
+    )
   end
 
   lane :bump_build_number do
-    path = "../app/build.gradle"
-    re = /versionCode\s+(\d+)/ 
+    path = '../app/build.gradle'
+    re = /versionCode\s+(\d+)/
 
     s = File.read(path)
     versionCode = s[re, 1].to_i

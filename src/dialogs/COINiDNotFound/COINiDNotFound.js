@@ -8,7 +8,6 @@ import {
   Platform,
   Linking,
 } from 'react-native';
-import { getAddressTypeInfo } from 'coinid-address-types';
 import {
   DetailsModal,
   Text,
@@ -24,14 +23,15 @@ const imageFiles = {
 export default class COINiDNotFound extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {
-      selectedIndex: 0,
-    };
+    this.state = { };
   }
 
   getChildContext() {
+    const { theme: propsTheme } = this.props;
+    const { theme: contextTheme } = this.context;
+
     return {
-      theme: this.props.theme ? this.props.theme : this.context.theme,
+      theme: propsTheme || contextTheme,
     };
   }
 

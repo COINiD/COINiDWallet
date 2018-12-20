@@ -362,7 +362,6 @@ class InstalledWallet extends PureComponent {
           ref={(c) => {
             this.receiveModal = c;
           }}
-          currency={this.state.settings.currency}
           address={receiveAddress}
           onOpened={() => {
             this.props.onBuild();
@@ -393,7 +392,6 @@ class InstalledWallet extends PureComponent {
           onAddToBatch={this._onAddToBatch}
           onRemoveFromBatch={this._onRemoveFromBatch}
           balance={this.state.balance}
-          currency={this.state.settings.currency}
           navigation={navigate}
           onOpened={this.props.onBuild}
           onClosed={this.props.onReady}

@@ -1,47 +1,72 @@
-
-
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import {
   Platform,
-  Clipboard,
-  Keyboard,
-  TouchableOpacity,
   TextInput,
   View,
-  KeyboardAvoidingView,
+  TouchableOpacity,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
-import { Button, Text, DetailsModal } from '../../components';
+import Big from 'big.js';
+
+import {
+  Button, Text, DetailsModal, AmountInput, FontScale,
+} from '../../components';
 import styles from './styles';
 import { numFormat } from '../../utils/numFormat';
+import ExchangeHelper from '../../utils/exchangeHelper';
+import { fontSize } from '../../config/styling';
+
+const bip21 = require('bip21');
 
 export default class Send extends PureComponent {
-  constructor(props) {
+  constructor(props, context) {
     super(props);
 
-    const { navigation } = this.props;
+    const { navigation } = props;
+    const { coinid, settingHelper } = context;
+    const { ticker } = coinid;
 
+    this.settingHelper = settingHelper;
+    this.exchangeHelper = ExchangeHelper(ticker);
     this.navigate = navigation;
 
     this.state = {
+      exchangeRate: 0,
+      currency: '',
+      ticker,
       address: undefined,
       amount: '',
       note: undefined,
       editAddress: '',
       editAmount: 0,
+      inputInFiat: false,
     };
-  }
-
-  componentDidMount() {
-    const { ticker } = this.context.coinid;
-    this.setState({ ticker });
   }
 
   getChildContext() {
     return {
       theme: this.props.theme ? this.props.theme : this.context.theme,
     };
+  }
+
+  componentDidMount() {
+    this._onSettingsUpdated(this.settingHelper.getAll());
+    this.settingHelper.on('updated', this._onSettingsUpdated);
+  }
+
+  _onSettingsUpdated = (settings) => {
+    const { currency } = settings;
+    this.setState({ currency });
+    this._refreshExchangeRate(currency);
+  };
+
+  _refreshExchangeRate = (currency) => {
+    this.exchangeHelper
+      .convert(1, currency)
+      .then((exchangeRate) => {
+        this.setState({ exchangeRate });
+      });
   }
 
   _verify = () => {
@@ -67,14 +92,14 @@ export default class Send extends PureComponent {
       });
     }
 
-/*
+    /*
     if (amount > availableBalance) {
       errors.push({
         type: 'balance',
         message: 'not enough funds',
       });
     }
-*/
+    */
 
     if (!this.context.coinid.validateAddress(address)) {
       errors.push({
@@ -120,27 +145,34 @@ export default class Send extends PureComponent {
   };
 
   _parseQRCodeResult = (qrResult) => {
-    if (qrResult.indexOf(':') > 0) {
-      var address = qrResult.match(/[1-9A-HJ-NP-Za-km-z]{26,36}/g);
-      if (address) {
-        address = address[0];
-        this.setState({ address });
+    const { coinid: { network: { bech32, qrScheme } } } = this.context;
 
-        let uriAmount = qrResult.match(/=[0-9\.]+/g);
+    try {
+      // try first with bip21
+      const decoded = bip21.decode(qrResult, qrScheme);
+      const { address, options: { amount = '', message = '' } } = decoded;
 
-        if (uriAmount != null) {
-          uriAmount = uriAmount[0].replace('=', '');
-        }
+      this.setState({ address, amount: `${amount}`, note: `${message}` });
 
-        if (uriAmount) {
-          this.setState({ amount: uriAmount });
-        }
+      this.amountRef._updateAmount(`${amount}`);
+    } catch (err) {
+      // fallback to only match address in qr
+      let addressMatch = qrResult.match(/^[1-9A-HJ-NP-Za-km-z]{26,36}$/);
+
+      if (!addressMatch) {
+        const re = new RegExp(`^${bech32}[0-9a-z]{10,88}$`);
+        addressMatch = qrResult.match(re);
       }
-    } else {
-      var address = qrResult.match(/[1-9A-HJ-NP-Za-km-z]{26,36}/g);
-      address = address[0];
+
+      if (!addressMatch || !addressMatch[0]) {
+        return false;
+      }
+
+      const [address] = addressMatch;
       this.setState({ address });
     }
+
+    return true;
   };
 
   _open = (item) => {
@@ -167,42 +199,41 @@ export default class Send extends PureComponent {
     this.elModal._close();
   };
 
-  _isValidInput = (text) => {
-    const regex = /^([0-9]\d*(\.\d{0,8})?)?$/;
-    return regex.test(text);
-  };
-
-  _onChangeAmountText = (inputAmount) => {
-    const amount = inputAmount
-      .replace(',', '.')
-      .replace(/^\./, '0.')
-      .replace(/^[0]{2,}/, '0')
-      .replace(/([.]\d{8,8})(.*$)/, '$1');
-
-    if (!this._isValidInput(amount)) {
-      return false;
-    }
-
+  _onChangeAmount = (amount) => {
     this.setState({ amount });
   };
 
-  _getAmountMaxLength = (amount) => {
-    const maxLength1 = `${amount}`.replace(/\.[0-9]*$/, '').length + 8 + 1;
-    const maxLength2 = `${amount}`.length + 1;
+  _toggleInputFiat = () => {
+    const { inputInFiat, exchangeRate } = this.state;
 
-    return maxLength1 < maxLength2 ? maxLength1 : maxLength2;
-  };
+    if (!exchangeRate) {
+      return false;
+    }
+
+    this.setState({ inputInFiat: !inputInFiat });
+  }
 
   render() {
     const {
       editAddress,
       editAmount,
-      amount,
       address,
       note,
       ticker,
+      amount,
+      exchangeRate,
+      currency,
     } = this.state;
-    const { onOpened, onClosed, balance } = this.props;
+
+    const {
+      onOpened, onClosed, balance,
+    } = this.props;
+
+    let { inputInFiat } = this.state;
+
+    if (!exchangeRate) {
+      inputInFiat = false;
+    }
 
     const availableBalance = balance + editAmount;
 
@@ -231,6 +262,27 @@ export default class Send extends PureComponent {
       </View>
     );
 
+    const renderAvailableBalance = () => {
+      const getAmount = () => {
+        if (inputInFiat) {
+          const fiatAmount = Big(availableBalance).times(exchangeRate);
+
+          return `${numFormat(fiatAmount, currency)} ${currency}`;
+        }
+
+        return `${numFormat(availableBalance, ticker)} ${ticker}`;
+      };
+
+      return (
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={styles.formInfo}>Available balance: </Text>
+          <Text style={[styles.formInfo, (availableBalance < 0 ? styles.negativeBalance : null)]}>
+            { getAmount() }
+          </Text>
+        </View>
+      );
+    };
+
     const renderSendButton = () => (
       <Button style={styles.formButton} onPress={this._submit}>
           Add transaction
@@ -258,6 +310,7 @@ export default class Send extends PureComponent {
             style={styles.modalContent}
             onLayout={(e) => { this.refContHeight = e.nativeEvent.layout.height; }}
           >
+
             <View
               style={styles.formItem}
               onLayout={c => this.toContPos = c}
@@ -267,19 +320,29 @@ export default class Send extends PureComponent {
             >
               <Text style={styles.formLabel}>To</Text>
               <View style={styles.formItemRow}>
-                <TextInput
-                  keyboardType={Platform.OS === 'ios' ? 'default' : 'visible-password'}
-                  style={styles.formItemInput}
-                  value={address}
-                  autoCorrect={false}
-                  spellCheck={false}
-                  textContentType={false}
-                  onChangeText={address => this.setState({ address: address.trim() })}
-                  ref={(c) => { this.toRef = c; }}
-                  returnKeyType="done"
-                  onSubmitEditing={() => this.amountRef.focus()}
-                  underlineColorAndroid="transparent"
-                />
+                <FontScale
+                  style={{flex: 1, flexDirection: 'column', alignItems: 'flex-start'}}
+                  fontSizeMax={fontSize.base}
+                  fontSizeMin={6}
+                  text={address}
+                  widthScale={0.9}
+                >
+                  {({fontSize}) => (
+                    <TextInput
+                      keyboardType={Platform.OS === 'ios' ? 'default' : 'visible-password'}
+                      style={[styles.formItemInput, {flex: 0, width: '100%', fontSize}]}
+                      value={address}
+                      autoCorrect={false}
+                      spellCheck={false}
+                      textContentType={false}
+                      onChangeText={address => this.setState({ address: address.trim() })}
+                      ref={(c) => { this.toRef = c; }}
+                      returnKeyType="done"
+                      onSubmitEditing={() => this.amountRef.focus()}
+                      underlineColorAndroid="transparent"
+                    />
+                  )}
+                </FontScale>
                 <View style={styles.formItemIcons}>
                   <Icon
                     iconStyle={styles.formItemIcon}
@@ -289,7 +352,7 @@ export default class Send extends PureComponent {
                     hitSlop={{
                       top: 20,
                       bottom: 20,
-                      left: 20,
+                      left: 0,
                       right: 20,
                     }}
                   />
@@ -299,28 +362,35 @@ export default class Send extends PureComponent {
 
             <View
               style={styles.formItem}
-              ref={c => this.amountContRef = c}
+              ref={(c) => { this.amountContRef = c; }}
               onFocus={(e) => { this.elModal._setKeyboardOffset(this.refAmountBottom - this.refContHeight + 8); }}
               onLayout={(e) => { this.refAmountBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height; }}
             >
-              <Text style={styles.formLabel}>Amount</Text>
-              <View style={styles.formItemRow}>
-                <TextInput
-                  ref={c => (this.amountRef = c)}
-                  keyboardType="numeric"
-                  style={styles.formItemInput}
-                  value={`${amount}`}
-                  onChangeText={this._onChangeAmountText}
-                  returnKeyType="done"
-                  onSubmitEditing={() => this.noteRef.focus()}
-                  underlineColorAndroid="transparent"
-                  maxLength={this._getAmountMaxLength(amount)}
-                />
+              <View>
+                <Text style={styles.formLabel}>Amount</Text>
+                <View style={styles.formItemRow}>
+                  <AmountInput
+                    ref={(c) => { this.amountRef = c; }}
+                    style={[styles.formItemInput, { paddingRight: 60 }]}
+                    onChangeAmount={this._onChangeAmount}
+                    onSubmitEditing={() => this.noteRef.focus()}
+                    exchangeRate={exchangeRate}
+                    inputInFiat={inputInFiat}
+                    amount={amount}
+                    exchangeTo={currency}
+                    exchangeFrom={ticker}
+                  />
+                </View>
+                <TouchableOpacity
+                  style={styles.currencyButton}
+                  onPress={this._toggleInputFiat}
+                >
+                  <Text style={styles.currencyButtonText}>
+                    {inputInFiat ? currency : ticker}
+                  </Text>
+                </TouchableOpacity>
               </View>
-              <View style={{ flexDirection: 'row' }}>
-                <Text style={styles.formInfo}>{`Available balance: `}</Text>
-                <Text style={[styles.formInfo, (availableBalance < 0 ? styles.negativeBalance : null)]}>{`${numFormat(availableBalance, ticker)} ${ticker}`}</Text>
-              </View>
+              { renderAvailableBalance() }
             </View>
 
             <View

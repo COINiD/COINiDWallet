@@ -10,6 +10,7 @@ export default theme =>
     modalContent: {
       flexDirection: 'column',
       padding: 16,
+      paddingTop: 0,
       maxHeight: '100%',
       overflow: 'visible',
     },
@@ -49,7 +50,7 @@ export default theme =>
       width: '100%',
       paddingBottom: 8,
     },
-    
+
     formItem: {
       width: '100%',
       padding: 0,
@@ -78,17 +79,19 @@ export default theme =>
       color: colors.black,
       fontSize: fontSize.base,
       paddingBottom: 8,
-      paddingTop: 8,
+      paddingTop: 4,
+      paddingLeft: 0,
+      paddingRight: 0,
       flex: 1,
       ...fontWeight.normal,
     },
     formItemIcons: {
       flexDirection: 'row',
-      marginRight: 10,
+      marginRight: 0,
     },
     formItemIcon: {
       color: colors.getTheme('light').highlight,
       fontSize: 24,
-      marginLeft: 20,
+      marginLeft: 8,
     },
   });

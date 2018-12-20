@@ -1,10 +1,16 @@
 import { StyleSheet } from 'react-native';
 import { isIphoneX } from 'react-native-iphone-x-helper';
 import {
-  colors, fontSize, fontStack, fontWeight, layout,
+  colors, fontSize, fontStack, fontWeight,
 } from '../config/styling';
 
 export default theme => StyleSheet.create({
+  scrollContainer: {
+    marginRight: -16,
+    paddingRight: 16,
+    marginTop: -16,
+    paddingTop: 16,
+  },
   list: {
     marginTop: 0,
     marginBottom: 24,

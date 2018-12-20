@@ -21,6 +21,11 @@ or alternatively using `brew cask install fastlane`
 fastlane android coin_beta
 ```
 
+### android message_slack
+```
+fastlane android message_slack
+```
+
 ### android bump_build_number
 ```
 fastlane android bump_build_number

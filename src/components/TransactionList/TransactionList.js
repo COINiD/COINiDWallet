@@ -39,7 +39,6 @@ class TransactionListItem extends Component {
     const [tx, address, balanceChanged, key] = txData;
 
     const itemKey = tx.txid + address;
-    const { ticker } = context.coinid;
 
     this.propStyle = style;
 
@@ -49,7 +48,6 @@ class TransactionListItem extends Component {
       balanceChanged,
       key,
       confirmations,
-      ticker,
       pendingProgress: new Animated.Value(0),
       confirmationOpacity: new Animated.Value(1),
     };
@@ -68,8 +66,9 @@ class TransactionListItem extends Component {
     const { txData, confirmations } = nextProps;
     const [tx, address, balanceChanged, key] = txData;
     const { unPublished } = tx;
+    const { confirmations: stateConfirmations, unPublished: stateUnPublished } = this.state;
 
-    if (confirmations !== this.state.confirmations || unPublished !== this.state.unPublished) {
+    if (confirmations !== stateConfirmations || unPublished !== stateUnPublished) {
       this._updateConfirmationAnimation(confirmations);
 
       this.setState({
@@ -85,18 +84,24 @@ class TransactionListItem extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     const {
-      tx, ticker, note, confirmations, unPublished,
+      note, confirmations, unPublished,
     } = nextState;
 
-    if (unPublished !== this.state.unPublished) {
+    const {
+      unPublished: stateUnPublished,
+      note: stateNote,
+      confirmations: stateConfirmations,
+    } = this.state;
+
+    if (unPublished !== stateUnPublished) {
       return true;
     }
 
-    if (note !== this.state.note) {
+    if (note !== stateNote) {
       return true;
     }
 
-    if (confirmations !== this.state.confirmations) {
+    if (confirmations !== stateConfirmations) {
       return true;
     }
 
@@ -111,17 +116,17 @@ class TransactionListItem extends Component {
   }
 
   _updateConfirmationAnimation = (confirmations, instant) => {
-    const curVal = this.state.pendingProgress._value;
-
+    const { pendingProgress, confirmationOpacity } = this.state;
+    const { _value: curVal } = pendingProgress;
 
     const newVal = this._percentDone(confirmations);
 
-    Animated.timing(this.state.pendingProgress, {
+    Animated.timing(pendingProgress, {
       toValue: newVal,
       duration: instant ? 0 : 2400 * (newVal - curVal),
     }).start(() => {
       if (this._percentDone(confirmations) === 1) {
-        Animated.timing(this.state.confirmationOpacity, {
+        Animated.timing(confirmationOpacity, {
           toValue: 0,
           duration: instant ? 0 : 400,
         }).start();
@@ -130,18 +135,19 @@ class TransactionListItem extends Component {
   };
 
   _onPress = (info) => {
-    this.props.onPressItem(info);
+    const { onPressItem } = this.props;
+    onPressItem(info);
   };
 
   _percentDone = (confirmations) => {
-    const { confirmations: recommendedConfirmations } = this.context.coinid.network;
+    const { coinid: { network: { confirmations: recommendedConfirmations } } } = this.context;
     const percentage = parseInt((6 * confirmations / recommendedConfirmations), 10) / 6;
 
     return percentage > 1 ? 1 : percentage;
   };
 
   _getDateString = () => {
-    const { time } = this.state.tx;
+    const { tx: { time } } = this.state;
 
     if (time) {
       return moment.unix(time).format('HH:mm');
@@ -170,19 +176,18 @@ class TransactionListItem extends Component {
     } = this.state;
 
     const styles = this._getStyle();
-    const { type, coinid } = this.context;
-    const { ticker } = coinid;
+    const { type, coinid: { ticker, network } } = this.context;
 
     const renderCurrentState = () => {
-      const { unPublished } = this.state.tx;
-      const { confirmations: recommendedConfirmations } = this.context.coinid.network;
+      const { unPublished } = tx;
+      const { confirmations: recommendedConfirmations } = network;
       const { pendingProgress, confirmationOpacity } = this.state;
 
       if (unPublished) {
         return (
           <View style={{ justifyContent: 'center', marginRight: 14 }}>
             <LottieView
-              ref={c => (this.queueAnim = c)}
+              ref={(c) => { this.queueAnim = c; }}
               onLayout={() => {
                 this.queueAnim.play();
               }}
@@ -207,7 +212,7 @@ class TransactionListItem extends Component {
             <View style={{ width: 16, height: 16 }}>
               <LottieView
                 style={{}}
-                ref={c => (this.progressAnim = c)}
+                ref={(c) => { this.progressAnim = c; }}
                 source={lottieFiles.hourglass}
                 loop={false}
                 progress={pendingProgress}
@@ -433,9 +438,10 @@ export default class TransactionList extends PureComponent {
       let prevTx = null;
       let accFee = Big(0);
       let prevDate = '';
+      let i = this.filteredData.length - 1;
 
-      for (var i = this.filteredData.length - 1; i >= 0; i--) {
-        const [tx, address, balanceChanged] = this.filteredData[i];
+      for (; i >= 0; i--) {
+        const [tx,, balanceChanged] = this.filteredData[i];
         const { time } = tx;
 
         if (prevTx !== tx) {
@@ -487,11 +493,13 @@ export default class TransactionList extends PureComponent {
   };
 
   _onPressItem = (info) => {
-    this.props.showTransactionDetails(info);
+    const { showTransactionDetails } = this.props;
+    showTransactionDetails(info);
   };
 
   _toggleFilters = () => {
-    this.setState({ isFiltersOpen: !this.state.isFiltersOpen });
+    const { isFiltersOpen } = this.state;
+    this.setState({ isFiltersOpen: !isFiltersOpen });
   };
 
   _filtersChanged = (filters) => {
@@ -510,30 +518,37 @@ export default class TransactionList extends PureComponent {
   };
 
   _isScrollWithinArea = (direction) => {
+    const { graphHeight } = this.state;
+
     if (!direction) {
-      return this.scrollCurrentY > 0 && this.scrollCurrentY < this.state.graphHeight - 2;
+      return this.scrollCurrentY > 0 && this.scrollCurrentY < graphHeight - 2;
     }
     if (direction === -1) {
       return this.scrollCurrentY > 0;
     }
     if (direction === 1) {
-      return this.scrollCurrentY < this.state.graphHeight - 2;
+      return this.scrollCurrentY < graphHeight - 2;
     }
+
+    return false;
   };
 
   _scrollToFirst = () => {
+    const { headerHeight } = this.state;
     this.sectionRef.scrollToLocation({
       itemIndex: 0,
       sectionIndex: 0,
-      viewOffset: this.state.headerHeight,
+      viewOffset: headerHeight,
     });
   };
 
   _scrollToTop = () => {
+    const { headerHeight, graphHeight } = this.state;
+
     this.sectionRef.scrollToLocation({
       itemIndex: 0,
       sectionIndex: 0,
-      viewOffset: this.state.graphHeight + this.state.headerHeight,
+      viewOffset: graphHeight + headerHeight,
     });
   };
 
@@ -567,20 +582,20 @@ export default class TransactionList extends PureComponent {
     }
   };
 
-  _onMomentumScrollBegin = (e) => {
+  _onMomentumScrollBegin = () => {
     this.momentumStarted = true;
     this._clearScrollToFirstTimeout();
   };
 
-  _onMomentumScrollEnd = (e) => {
+  _onMomentumScrollEnd = () => {
     if (this.momentumStarted) {
       this.momentumStarted = false;
       this._scrollToFirstTimeout();
     }
   };
 
-  _onScrollBeginDrag = (e) => {
-    this.scrollBeginY = e.nativeEvent.contentOffset.y;
+  _onScrollBeginDrag = ({ nativeEvent: { contentOffset: { y } } }) => {
+    this.scrollBeginY = y;
     this._clearScrollToFirstTimeout();
   };
 
@@ -604,45 +619,259 @@ export default class TransactionList extends PureComponent {
   };
 
   _renderItemWrapper = (props) => {
+    const { txItemsOffset, filterHeight } = this.state;
+
     if (props.cellKey === '0:header') {
       return <Animated.View {...props}>{props.children}</Animated.View>;
     }
 
     if (props.prevCellKey === '0:header') {
       return (
-        <Animated.View {...props} style={{ transform: [{ translateY: this.state.txItemsOffset }], zIndex: 5, marginTop: -this.state.filterHeight }}>
+        <Animated.View {...props} style={{ transform: [{ translateY: txItemsOffset }], zIndex: 5, marginTop: -filterHeight }}>
           {props.children}
         </Animated.View>
       );
     }
 
     return (
-      <Animated.View {...props} style={{ transform: [{ translateY: this.state.txItemsOffset }], zIndex: 5 }}>
+      <Animated.View {...props} style={{ transform: [{ translateY: txItemsOffset }], zIndex: 5 }}>
         {props.children}
       </Animated.View>
     );
   };
 
-  render() {
+  _renderListFooter = () => {
+    const { isLoadingTxs } = this.props;
+    const { type } = this.context;
+    const hasFilters = this.filters.type !== 'all' || this.filters.text;
+    const txItemsCount = this.filteredData.length;
+
+    const dailiesCount = Object.keys(this.dailySummary).length;
     const {
-      toggleCurrency, toggleRange, isLoadingTxs,
+      filterHeight, listHeight, headerHeight, txItemsOffset,
+    } = this.state;
+    const maxScroll = listHeight - headerHeight;
+
+    const itemsHeight = txItemsCount * (56 + 6) + dailiesCount * (36);
+
+    if (itemsHeight >= (maxScroll - filterHeight)) {
+      return <View style={{ height: filterHeight }} />;
+    }
+
+    const txListHeight = maxScroll - itemsHeight;
+
+    if (txItemsCount) {
+      return (
+        <Animated.View
+          style={{
+            height: txListHeight,
+            transform: [{ translateY: txItemsOffset }],
+          }}
+        />
+      );
+    }
+
+    if (isLoadingTxs || !this.hasFiltered) {
+      return (
+        <Animated.View
+          style={{
+            height: txListHeight,
+            justifyContent: 'flex-start',
+            transform: [{ translateY: txItemsOffset }],
+          }}
+        >
+          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+            <ActivityIndicator animating size="large" style={{ marginTop: 30 }} />
+            <Text style={{ fontSize: 18, marginTop: 8 }}>Loading transactions</Text>
+            <Text style={{ marginTop: 8 }}>Your wallet will be ready soon</Text>
+          </View>
+        </Animated.View>
+      );
+    }
+
+    if (hasFilters) {
+      return (
+        <Animated.View
+          style={{
+            height: txListHeight,
+            justifyContent: 'flex-start',
+            transform: [{ translateY: txItemsOffset }],
+          }}
+        >
+          <View
+            style={{
+              marginTop: 40,
+              marginBottom: 18,
+              alignItems: 'center',
+            }}
+          >
+            <Text style={{ fontSize: 18 }}>Filter did not match any transactions</Text>
+            <Text
+              style={{
+                fontSize: 16,
+                color: '#8A8A8F',
+                marginTop: 8,
+                ...fontWeight.normal,
+              }}
+            >
+              Try another input
+            </Text>
+          </View>
+        </Animated.View>
+      );
+    }
+
+    return (
+      <Animated.View
+        style={{
+          height: txListHeight,
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          transform: [{ translateY: txItemsOffset }],
+        }}
+      >
+        <View
+          style={{
+            width: 120,
+            height: 120,
+            marginTop: 40,
+            marginBottom: 18,
+          }}
+        >
+          <LottieView
+            style={{}}
+            source={lottieFiles[`emptytrans_${type}`]}
+            autoSize
+          />
+        </View>
+        <Text style={{ fontSize: 18 }}>No transactions</Text>
+        <Text
+          style={{
+            fontSize: 16,
+            color: '#8A8A8F',
+            marginTop: 8,
+            ...fontWeight.normal,
+          }}
+        >
+          Your transactions will be listed here
+        </Text>
+      </Animated.View>
+    );
+  }
+
+  _renderItem = ({ item, index }) => {
+    const {
+      isLoadingTxs,
     } = this.props;
 
-    const { type } = this.context;
+    const { coinid: { ticker } } = this.context;
 
+    if (isLoadingTxs) {
+      return null;
+    }
 
-    const { ticker } = this.context.coinid;
+    const txItem = (
+      <TransactionListItem
+        key="item"
+        txData={item}
+        confirmations={item[0].confirmations}
+        onPressItem={this._onPressItem}
+      />
+    );
 
+    const doRenderItem = () => {
+      if (this.dailySummary[index] !== undefined) {
+        const { accFee, date } = this.dailySummary[index];
+        const dayItem = (
+          <View
+            key="fee"
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              height: 36,
+            }}
+          >
+            <Text style={{ fontSize: 14, ...fontWeight.normal }}>{date}</Text>
+            <Text
+              style={{
+                fontSize: 14,
+                color: '#8A8A8F',
+                ...fontWeight.normal,
+              }}
+            >
+              {`Paid fees ${numFormat(accFee, ticker)} ${ticker}`}
+            </Text>
+          </View>
+        );
 
+        return [dayItem, txItem];
+      }
+      return [txItem];
+    };
+
+    return doRenderItem();
+  }
+
+  _renderSectionHeader = ({ section }) => {
+    const { filterHeight, txItemsOffset, isFiltersOpen } = this.state;
     const styles = this._getStyle();
-
     const hasFilters = this.filters.type !== 'all' || this.filters.text;
 
     const showFilterIndicator = () => {
       if (hasFilters) {
         return <View style={styles.filterIndicator} />;
       }
+
+      return null;
     };
+
+    if (section.title === 'Transactions') {
+      return ( // setState below... might want to change that...
+        <View
+          onLayout={({ nativeEvent: { layout: { height: layoutHeight } } }) => {
+            this.setState({
+              headerHeight: layoutHeight - filterHeight,
+            });
+          }}
+          style={[styles.listHeader, { paddingBottom: filterHeight }]}
+        >
+          <View style={styles.listHeaderTop}>
+            <Text style={styles.subHeader}>Transactions</Text>
+            <Icon
+              iconStyle={styles.subLink}
+              size={24}
+              name="filter-list"
+              onPress={this._toggleFilters}
+              underlayColor={colors.transparent}
+              hitSlop={{
+                top: 20,
+                bottom: 20,
+                left: 20,
+                right: 20,
+              }}
+            />
+            {showFilterIndicator()}
+          </View>
+          <TransactionFilter
+            txItemsOffset={txItemsOffset}
+            isOpen={isFiltersOpen}
+            onFilterChange={this._filtersChanged}
+            onFocus={() => this._scrollToFirstTimeout(1)}
+            changedHeight={height => this.setState({ filterHeight: height })}
+          />
+        </View>
+      );
+    }
+    return null;
+  }
+
+  render() {
+    const {
+      toggleCurrency, toggleRange,
+    } = this.props;
+
+    const styles = this._getStyle();
 
     return (
       <SectionList
@@ -650,225 +879,27 @@ export default class TransactionList extends PureComponent {
         style={[styles.container]}
         CellRendererComponent={this._renderItemWrapper}
         initialNumToRender={10}
-        ref={c => (this.sectionRef = c)}
+        ref={(c) => { this.sectionRef = c; }}
         onMomentumScrollBegin={this._onMomentumScrollBegin}
         onMomentumScrollEnd={this._onMomentumScrollEnd}
         onScrollBeginDrag={this._onScrollBeginDrag}
         onScrollEndDrag={this._onScrollEndDrag}
-        onLayout={(c) => {
-          this.setState({ listHeight: c.nativeEvent.layout.height });
+        onLayout={({ nativeEvent: { layout: { height: listHeight } } }) => {
+          this.setState({ listHeight });
         }}
         ListHeaderComponent={(
           <View
-            onLayout={(c) => {
-              this.setState({ graphHeight: c.nativeEvent.layout.height });
+            onLayout={({ nativeEvent: { layout: { height: graphHeight } } }) => {
+              this.setState({ graphHeight });
             }}
           >
             <Graph toggleCurrency={toggleCurrency} toggleRange={toggleRange} />
           </View>
-)}
-        ListFooterComponent={() => {
-          const txItemsCount = this.filteredData.length;
-
-          const dailiesCount = Object.keys(this.dailySummary).length;
-          const filterHeight = this.state.filterHeight;
-          const maxScroll = this.state.listHeight - this.state.headerHeight;
-
-          const itemsHeight = txItemsCount * (56 + 6) + dailiesCount * (36);
-
-          if (itemsHeight >= (maxScroll - filterHeight)) {
-            return <View style={{ height: filterHeight }} />;
-          }
-
-          const txListHeight = maxScroll - itemsHeight;
-
-          if (txItemsCount) {
-            return (
-              <Animated.View
-                style={{
-                  height: txListHeight,
-                  transform: [{ translateY: this.state.txItemsOffset }],
-                }}
-              />
-            );
-          }
-
-          if (isLoadingTxs || !this.hasFiltered) {
-            return (
-              <Animated.View
-                style={{
-                  height: txListHeight,
-                  justifyContent: 'flex-start',
-                  transform: [{ translateY: this.state.txItemsOffset }],
-                }}
-              >
-                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                  <ActivityIndicator animating size="large" style={{ marginTop: 30 }} />
-                  <Text style={{ fontSize: 18, marginTop: 8 }}>Loading transactions</Text>
-                  <Text style={{ marginTop: 8 }}>Your wallet will be ready soon</Text>
-                </View>
-              </Animated.View>
-            );
-          } if (hasFilters) {
-            return (
-              <Animated.View
-                style={{
-                  height: txListHeight,
-                  justifyContent: 'flex-start',
-                  transform: [{ translateY: this.state.txItemsOffset }],
-                }}
-              >
-                <View
-                  style={{
-                    marginTop: 40,
-                    marginBottom: 18,
-                    alignItems: 'center',
-                  }}
-                >
-                  <Text style={{ fontSize: 18 }}>Filter did not match any transactions</Text>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: '#8A8A8F',
-                      marginTop: 8,
-                      ...fontWeight.normal,
-                    }}
-                  >
-                    Try another input
-                  </Text>
-                </View>
-              </Animated.View>
-            );
-          }
-
-          return (
-            <Animated.View
-              style={{
-                height: txListHeight,
-                alignItems: 'center',
-                justifyContent: 'flex-start',
-                transform: [{ translateY: this.state.txItemsOffset }],
-              }}
-            >
-              <View
-                style={{
-                  width: 120,
-                  height: 120,
-                  marginTop: 40,
-                  marginBottom: 18,
-                }}
-              >
-                <LottieView
-                  style={{}}
-                  ref={c => (this.emptyAnim = c)}
-                  source={lottieFiles[`emptytrans_${type}`]}
-                  autoSize
-                />
-              </View>
-              <Text style={{ fontSize: 18 }}>No transactions</Text>
-              <Text
-                style={{
-                  fontSize: 16,
-                  color: '#8A8A8F',
-                  marginTop: 8,
-                  ...fontWeight.normal,
-                }}
-              >
-                Your transactions will be listed here
-              </Text>
-            </Animated.View>
-          );
-        }}
-        renderItem={({ item, index }) => {
-          if (isLoadingTxs) {
-            return null;
-          }
-
-          const [tx] = item;
-
-          const txItem = (
-            <TransactionListItem
-              key="item"
-              txData={item}
-              confirmations={item[0].confirmations}
-              onPressItem={this._onPressItem}
-            />
-          );
-
-          const doRenderItem = () => {
-            if (this.dailySummary[index] !== undefined) {
-              const { accFee, date } = this.dailySummary[index];
-              const dayItem = (
-                <View
-                  key="fee"
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    height: 36,
-                  }}
-                >
-                  <Text style={{ fontSize: 14, ...fontWeight.normal }}>{date}</Text>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: '#8A8A8F',
-                      ...fontWeight.normal,
-                    }}
-                  >
-                    {`Paid fees ${numFormat(accFee, ticker)} ${ticker}`}
-                  </Text>
-                </View>
-              );
-
-              return [dayItem, txItem];
-            }
-            return [txItem];
-          };
-
-          return doRenderItem();
-        }}
-        renderSectionHeader={({ section }) => {
-          if (section.title == 'Transactions') {
-            return ( // setState below... might want to change that...
-              <View
-                onLayout={(c) => {
-                  this.setState({
-                    headerHeight: c.nativeEvent.layout.height - this.state.filterHeight,
-                  });
-                }}
-                style={[styles.listHeader, { paddingBottom: this.state.filterHeight }]}
-              >
-                <View style={styles.listHeaderTop}>
-                  <Text style={styles.subHeader}>Transactions</Text>
-                  <Icon
-                    iconStyle={styles.subLink}
-                    size={24}
-                    name="filter-list"
-                    onPress={this._toggleFilters}
-                    underlayColor={colors.transparent}
-                    hitSlop={{
-                      top: 20,
-                      bottom: 20,
-                      left: 20,
-                      right: 20,
-                    }}
-                  />
-                  {showFilterIndicator()}
-                </View>
-                <TransactionFilter
-                  txItemsOffset={this.state.txItemsOffset}
-                  isOpen={this.state.isFiltersOpen}
-                  onFilterChange={this._filtersChanged}
-                  onFocus={() => this._scrollToFirstTimeout(1)}
-                  changedHeight={height => this.setState({ filterHeight: height })}
-                />
-              </View>
-            );
-          }
-          return null;
-        }}
-        keyExtractor={(item, index) => item[0].txid + item[1]}
+        )}
+        ListFooterComponent={this._renderListFooter}
+        renderItem={this._renderItem}
+        renderSectionHeader={this._renderSectionHeader}
+        keyExtractor={item => (item[0].txid + item[1])}
         stickySectionHeadersEnabled
         sections={this.sections}
       />

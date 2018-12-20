@@ -40,5 +40,22 @@ export default styleMerge(
       paddingTop: Platform.OS === 'ios' ? 0 : 13,
       paddingLeft: 8,
     },
+    currencyButton: {
+      position: 'absolute',
+      right: 0,
+      bottom: 0,
+      borderWidth: 1,
+      borderColor: colors.purple,
+      borderRadius: 8,
+      paddingTop: 6,
+      paddingBottom: 5,
+      paddingHorizontal: 7,
+      marginBottom: 8,
+    },
+    currencyButtonText: {
+      color: '#617AF7',
+      ...fontWeight.medium,
+      letterSpacing: 0.1,
+    },
   }),
 );

@@ -128,11 +128,23 @@ export default class FeeSlider extends PureComponent {
     doCalcFee();
   }
 
+  _getBlockTime = () => {
+    const { coinid: { network: { blockTime } } } = this.context;
+
+    if (blockTime === undefined) {
+      return 10.0;
+    }
+
+    return blockTime;
+  }
+
   _updateFee = () => {
+    const { onChange } = this.props;
+
     this._calculateFee();
 
     const blocks = this._getCurrentBlocks();
-    const blockTime = 10;
+    const blockTime = this._getBlockTime();
     const timeMinutes = blocks * blockTime;
     const satoshiByte = `${this._getCurrentSatoshiPerByte()}`;
 
@@ -142,10 +154,9 @@ export default class FeeSlider extends PureComponent {
       fee: this.fee,
       blocks,
       timeMinutes,
-      blockTime,
     });
 
-    this.props.onChange(this.fee);
+    onChange(this.fee);
   }
 
   _setSliderVal = (sliderVal) => {

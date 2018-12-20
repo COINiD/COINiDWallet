@@ -13,6 +13,7 @@ export default theme =>
       ...fontWeight.black,
     },
     ticker: {
+      fontWeight: '400',
       ...fontWeight.normal,
     },
     currencyText: {

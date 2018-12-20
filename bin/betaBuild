@@ -1,11 +1,15 @@
 #!/usr/bin/env node
 const { execSync } = require('child_process');
 
-const coins = [
+let coins = [
   {
     ticker: 'btc',
     coin: 'Bitcoin',
     packageName: 'org.coinid.wallet.btc',
+  }, {
+    ticker: 'tbtc',
+    coin: 'Testnet',
+    packageName: 'org.coinid.wallet.tbtc',
   }, {
     ticker: 'xmy',
     coin: 'Myriad',
@@ -15,17 +19,27 @@ const coins = [
     coin: 'Groestlcoin',
     packageName: 'org.coinid.wallet.grs',
   }, {
-    ticker: 'tbtc',
-    coin: 'Testnet',
-    packageName: 'org.coinid.wallet.tbtc',
+    ticker: 'tgrs',
+    coin: 'GRS-Testnet',
+    packageName: 'org.coinid.wallet.tgrs',
   },
 ];
 
+let platforms = ['ios', 'android'];
+
 const rootDir = `${__dirname}/..`;
-const prefix = process.argv[2];
+const [,, prefix, selPlatform, selCoin] = process.argv;
+
+if (selPlatform) {
+  platforms = platforms.filter(e => e === selPlatform);
+}
+
+if (selCoin) {
+  coins = coins.filter(e => e.ticker === selCoin);
+}
 
 let time = new Date().toISOString().replace(/\D/g, '').substr(0, 12);
-if (prefix !== undefined) {
+if (prefix !== undefined && prefix) {
   time = `${prefix}-${time}`;
 }
 
@@ -52,10 +66,17 @@ const pause = (text) => {
   `, { stdio: 'inherit' });
 };
 
-doBuilds('ios');
-doBuilds('android');
+if (coins.length) {
+  platforms.forEach(platform => doBuilds(platform));
 
-pause('Prepare to sign builds... Press enter to continue.');
+  if (platforms.includes('android')) {
+    pause('Prepare to sign builds... Press enter to continue.');
 
-createSHA256SUMS(time);
-createSHA256SUMS('latest');
+    createSHA256SUMS(time);
+    createSHA256SUMS('latest');
+  }
+}
+
+execSync(`
+  ${rootDir}/bin/changeCoin tbtc;
+`, { stdio: 'inherit' });

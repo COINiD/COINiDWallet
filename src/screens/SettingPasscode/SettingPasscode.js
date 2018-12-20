@@ -126,7 +126,7 @@ class Screen extends PureComponent {
     );
 
     return (
-      <ScrollView>
+      <ScrollView style={themeStyle.scrollContainer}>
         <Text style={themeStyle.listHeader}>Shorter times are more secure</Text>
         {buildList(passcodeSettings)}
       </ScrollView>

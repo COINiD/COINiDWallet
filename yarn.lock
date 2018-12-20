@@ -523,8 +523,8 @@
     to-fast-properties "^2.0.0"
 
 "@yarnpkg/lockfile@^1.0.0":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@yarnpkg/lockfile/-/lockfile-1.0.2.tgz#833d163680a151d2441a2489f5fe5fa87ac87726"
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@yarnpkg/lockfile/-/lockfile-1.1.0.tgz#e77a97fbd345b76d83245edcd17d393b1b41fb31"
 
 abab@^1.0.3:
   version "1.0.4"
@@ -564,10 +564,6 @@ acorn@^4.0.4:
 acorn@^5.0.3, acorn@^5.6.0:
   version "5.7.2"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.7.2.tgz#91fa871883485d06708800318404e72bfb26dcc5"
-
-add@^2.0.6:
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/add/-/add-2.0.6.tgz#248f0a9f6e5a528ef2295dbeec30532130ae2235"
 
 after@0.8.2:
   version "0.8.2"
@@ -1635,6 +1631,12 @@ bindings@^1.2.1:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/bindings/-/bindings-1.3.0.tgz#b346f6ecf6a95f5a815c5839fc7cdb22502f1ed7"
 
+bip21@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/bip21/-/bip21-2.0.2.tgz#fa3434a10ed349e37335d2ae7b277e7fd30ea149"
+  dependencies:
+    qs "^6.3.0"
+
 bip32-utils@^0.11.1:
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/bip32-utils/-/bip32-utils-0.11.1.tgz#3ad9b0971fead5683f0c62ccdde62b79b1ecab97"
@@ -1651,7 +1653,7 @@ bitcoin-ops@^1.3.0:
 
 "bitcoinjs-lib@https://github.com/wlc-/bitcoinjs-lib":
   version "3.3.0"
-  resolved "https://github.com/wlc-/bitcoinjs-lib#76ee572efea8a5b20717b415d83a71fc9fdaaf3e"
+  resolved "https://github.com/wlc-/bitcoinjs-lib#8293b6b335cc41617545d3f72392040fa9a76031"
   dependencies:
     bech32 "0.0.3"
     bigi "^1.4.0"
@@ -2030,7 +2032,7 @@ code-point-at@^1.0.0:
 
 "coinid-address-types@https://github.com/wlc-/coinid-address-types.git":
   version "1.0.0"
-  resolved "https://github.com/wlc-/coinid-address-types.git#1cf8460743eae62f3a31a08cd6051415af1adcbd"
+  resolved "https://github.com/wlc-/coinid-address-types.git#3baf47e9632857b11369ccac1ab091c971ed923c"
   dependencies:
     coinid-address-functions "https://github.com/wlc-/coinid-address-functions.git"
 
@@ -3182,7 +3184,7 @@ fresh@0.5.2:
 
 fs-extra@^0.22.1:
   version "0.22.1"
-  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-0.22.1.tgz#5fd6f8049dc976ca19eb2355d658173cabcce056"
+  resolved "http://registry.npmjs.org/fs-extra/-/fs-extra-0.22.1.tgz#5fd6f8049dc976ca19eb2355d658173cabcce056"
   dependencies:
     graceful-fs "^4.1.2"
     jsonfile "^2.1.0"
@@ -4449,10 +4451,12 @@ loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.3.1:
 lottie-ios@^2.5.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/lottie-ios/-/lottie-ios-2.5.0.tgz#55c808e785d4a6933b0c10b395530b17098b05de"
+  integrity sha1-VcgI54XUppM7DBCzlVMLFwmLBd4=
 
-lottie-react-native@^2.5.9:
-  version "2.5.9"
-  resolved "https://registry.yarnpkg.com/lottie-react-native/-/lottie-react-native-2.5.9.tgz#af23764b1b6b43230beeb5e62e1ce86cb879a242"
+lottie-react-native@^2.5.10:
+  version "2.5.10"
+  resolved "https://registry.yarnpkg.com/lottie-react-native/-/lottie-react-native-2.5.10.tgz#703f2fe8305dcb53e993654f7ecd96c2f04c672c"
+  integrity sha512-+uCQ6y4iEamenmL5rKCWOybjC1Ii12FSd+cR1nTdLsJEmKmU7ckoJTtwChj4DHQqnRDzx0oUr9yoJIGPavcaDQ==
   dependencies:
     invariant "^2.2.2"
     lottie-ios "^2.5.0"
@@ -5492,7 +5496,7 @@ qrcode@^1.2.0:
     pngjs "^3.3.0"
     yargs "^8.0.2"
 
-qs@~6.5.2:
+qs@^6.3.0, qs@~6.5.2:
   version "6.5.2"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
 
@@ -5619,6 +5623,11 @@ react-native-fetch-polyfill@^1.1.3:
 react-native-iphone-x-helper@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.2.0.tgz#9f8a376eb00bc712115abff4420318a0063fa796"
+
+react-native-measure-text@^1.0.0-beta.1:
+  version "1.0.0-beta.1"
+  resolved "https://registry.yarnpkg.com/react-native-measure-text/-/react-native-measure-text-1.0.0-beta.1.tgz#b7aab0ef2e5a234f349e15a656af84919af82698"
+  integrity sha512-L34+6zHpj3JUfohBD3pgUUWd1ZZPRnq/NED5Be2Gt9plySssTGiAXSrX9pgaDUrTnHwf+HKzGVP2/b+mn87G+g==
 
 "react-native-p2p-transfer-ble-central@https://github.com/COINiD/react-native-p2p-transfer-ble-central.git":
   version "1.0.0"
@@ -6142,9 +6151,9 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^3.0.0"
     inherits "^2.0.1"
 
-rn-nodeify@^8.2.0:
-  version "8.3.0"
-  resolved "https://registry.yarnpkg.com/rn-nodeify/-/rn-nodeify-8.3.0.tgz#16b54f78c25e766acee6c13966d68d6a28697431"
+rn-nodeify@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/rn-nodeify/-/rn-nodeify-10.0.0.tgz#f2dda38be4189f0eafcd6781b53caa0e32215220"
   dependencies:
     "@yarnpkg/lockfile" "^1.0.0"
     deep-equal "^1.0.0"
@@ -6872,7 +6881,7 @@ util-deprecate@1.0.2, util-deprecate@~1.0.1:
 
 util@0.10.3:
   version "0.10.3"
-  resolved "https://registry.yarnpkg.com/util/-/util-0.10.3.tgz#7afb1afe50805246489e3db7fe0ed379336ac0f9"
+  resolved "http://registry.npmjs.org/util/-/util-0.10.3.tgz#7afb1afe50805246489e3db7fe0ed379336ac0f9"
   dependencies:
     inherits "2.0.1"
 
@@ -7182,10 +7191,6 @@ yargs@~3.10.0:
     cliui "^2.1.0"
     decamelize "^1.0.0"
     window-size "0.1.0"
-
-yarn@^1.9.4:
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.9.4.tgz#3b82d8446b652775723900b470d966861976924b"
 
 yeast@0.1.2:
   version "0.1.2"

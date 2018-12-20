@@ -31,7 +31,6 @@ class FeeHelper extends EventEmitter {
       if (feesInfo === null) {
         return false;
       }
-
       this.setFeesInfo(feesInfo);
     });
 
@@ -44,7 +43,9 @@ class FeeHelper extends EventEmitter {
       || !Array.isArray(feesInfo.fees)
       || feesInfo.fees[0] === undefined
       || !Number.isInteger(feesInfo.fees[0][0])
-      || !Number.isInteger(feesInfo.fees[0][1])) {
+      || !Number.isInteger(feesInfo.fees[0][1])
+      || (this.feesInfo !== undefined && feesInfo.fees[0][1] < this.minimumFee)
+    ) {
       return false;
     }
 

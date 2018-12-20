@@ -1,0 +1,10 @@
+{
+	"coinTicker": "tgrs",
+	"coinName": "groestlcoin-testnet",
+	"appReturnScheme": "coinid-tgrs",
+	"iosIdentifier": "org.coinid.wallet.tgrs",
+	"androidPackageName": "org.coinid.wallet.tgrs",
+	"displayName": "tGRS COINiD",
+	"availableCurrencies": "['BTC', 'USD', 'EUR']",
+	"isTestnet": "true"
+}

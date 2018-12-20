@@ -8,7 +8,7 @@ import io from 'socket.io-client';
 
 import { EventEmitter } from 'events';
 import {
-  getTxUniqueHash, isAddressUsed, removeDoubleSpendTxs, invalidInput,
+  getTxUniqueHash, isAddressUsed, removeDoubleSpendTxs,
 } from './transactionHelper';
 
 const sortTxs = (a, b) => {
@@ -82,7 +82,7 @@ const convertJsonToTxObject = jsonTxs => jsonTxs.filter(e => e !== null).map((js
 
 
 const startHistoryPolling = function (preferedInterval, timer) {
-  var run = () => {
+  const run = () => {
     const clearTimer = () => {
       if (this.historyTimer) {
         clearTimeout(this.historyTimer);
@@ -90,17 +90,9 @@ const startHistoryPolling = function (preferedInterval, timer) {
       }
     };
 
-    var fetchedHistory = (success) => {
+    const fetchedHistory = (success) => {
       this.abortHistory = () => {};
-
       const interval = preferedInterval;
-
-/*
-      if (!success) {
-        console.log('Error while fetching, delaying next fetch...');
-        interval = 60 * 1000;
-      }
-*/
 
       this.historySyncAttemptCount++;
       this.historySyncCount += success ? 1 : 0;
@@ -115,9 +107,7 @@ const startHistoryPolling = function (preferedInterval, timer) {
       }
     };
 
-    const successHistory = () => {
-      return fetchedHistory(true)
-    };
+    const successHistory = () => fetchedHistory(true);
 
     const attemptedHistory = (err) => {
       if (err !== 'abort') {
@@ -199,7 +189,7 @@ class Blockbook extends EventEmitter {
       clearTimeout(disconnectTimer);
       disconnectTimer = setTimeout(() => {
         this.setConnected(false);
-      }, 3000);
+      }, 6000);
     };
 
     const socketConnected = () => {
@@ -246,7 +236,7 @@ class Blockbook extends EventEmitter {
   info = { bridge: 'Blockbook' }
 
   socketSendPromise = ({ method, params }) => new Promise((resolve, reject) => {
-    const timeoutTimer = setTimeout(() => { reject(); }, 10000);
+    const timeoutTimer = setTimeout(() => { reject('socket promise timeout'); }, 10000);
 
     this.socket.send({ method, params }, (data) => {
       clearTimeout(timeoutTimer);
@@ -582,7 +572,7 @@ class Blockbook extends EventEmitter {
     this.addresses = this.addresses.concat(addresses);
   }
 
-  start = () => new Promise((resolve, reject) => {
+  start = () => new Promise((resolve) => {
     Promise.all([
       this.storage.get(`${this.apiUrl}:height`),
       this.storage.get(`${this.apiUrl}:txs`),

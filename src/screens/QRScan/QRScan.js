@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Alert, View, Text } from 'react-native';
+import { View, Text } from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { Icon } from 'react-native-elements';
 import styles from './styles';
@@ -22,17 +22,21 @@ class QRScan extends PureComponent {
   }
 
   _onSuccess = (qrResults) => {
-    this.props.navigation.state.params.qrCodeResult(qrResults.data);
-    this.props.navigation.goBack();
+    const { navigation: { goBack, state: { params: { qrCodeResult } } } } = this.props;
+    qrCodeResult(qrResults.data);
+    goBack();
   };
 
   _onClose = () => {
-    this.props.navigation.goBack();
+    const { navigation: { goBack } } = this.props;
+    goBack();
   };
 
   _onFlip = () => {
+    const { cameraType } = this.state;
+
     this.setState({
-      cameraType: this.state.cameraType === 'back' ? 'front' : 'back',
+      cameraType: cameraType === 'back' ? 'front' : 'back',
     });
   };
 

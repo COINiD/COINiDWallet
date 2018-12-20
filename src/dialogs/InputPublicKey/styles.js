@@ -6,9 +6,10 @@ export default styleMerge(
   parentStyles('light'),
   StyleSheet.create({
     container: {
-      padding: 16,
       justifyContent: 'center',
       alignItems: 'flex-start',
+      padding: 16,
+      paddingTop: 0,
     },
     text: {
       marginBottom: 24,

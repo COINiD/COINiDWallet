@@ -42,10 +42,10 @@ const fetchFromHistoricPriceApi = (ticker, currency, timestamp) => {
 };
 
 class ExchangeHelper extends EventEmitter {
-  constructor(coin) {
+  constructor(coin) {
     super();
 
-    coin = coin == 'TBTC' ? 'BTC' : coin;
+    coin = coin.replace(/^t/, '');
 
     this.storage = storageHelper(coin);
     this.ticker = coin;
@@ -95,7 +95,7 @@ class ExchangeHelper extends EventEmitter {
     return Promise.all(pArr)
       .then((ret) => {
       // update exchangeInfo
-        for (let i = 0; i < this.currencyArr.length; i++) {
+        for (let i = 0; i < this.currencyArr.length; i += 1) {
           if (ret[i]) {
             this.exchangeInfo[this.currencyArr[i]] = {
               ...this.exchangeInfo[this.currencyArr[i]],
@@ -134,7 +134,7 @@ class ExchangeHelper extends EventEmitter {
 
   fetchHistoricPrice = (currency, timestamp) => fetchFromHistoricPriceApi(this.ticker, currency, timestamp)
     .then((historicPrice) => {
-      if (this.exchangeInfo[currency] === undefined) {
+      if (this.exchangeInfo[currency] === undefined) {
         this.exchangeInfo[currency] = {};
       }
 
@@ -155,7 +155,7 @@ class ExchangeHelper extends EventEmitter {
       this.sync();
     }
 
-    if (!this.exchangeInfo.hasOwnProperty(currency)) {
+    if (!this.exchangeInfo.hasOwnProperty(currency)) {
       return {};
     }
 
@@ -177,7 +177,7 @@ class ExchangeHelper extends EventEmitter {
   getCurrentPrice = (currency) => {
     const currencyData = this.getCurrencyData(currency);
 
-    if (!currencyData.hasOwnProperty('current')) {
+    if (!currencyData.hasOwnProperty('current')) {
       return 0;
     }
 
@@ -187,11 +187,11 @@ class ExchangeHelper extends EventEmitter {
   getHistoricPrice = (currency, timestamp) => {
     const currencyData = this.getCurrencyData(currency);
 
-    if (currencyData.historicPrices === undefined) {
+    if (currencyData.historicPrices === undefined) {
       return 0;
     }
 
-    if (currencyData.historicPrices[timestamp] === undefined) {
+    if (currencyData.historicPrices[timestamp] === undefined) {
       return 0;
     }
 
@@ -203,7 +203,7 @@ class ExchangeHelper extends EventEmitter {
   convert = (amount, currency) => {
     const price = this.getCurrentPrice(currency);
 
-    if(!amount) {
+    if (!amount) {
       return Promise.resolve(0);
     }
 
@@ -215,7 +215,7 @@ class ExchangeHelper extends EventEmitter {
       .then(price => price * amount);
   }
 
-  convertOnTime = function (amount, currency, timestamp) {
+  convertOnTime = (amount, currency, timestamp) => {
     const price = this.getHistoricPrice(currency, timestamp);
 
     if (price) {
@@ -229,7 +229,7 @@ class ExchangeHelper extends EventEmitter {
 
 const exchangeHelperCache = {}; // for local caching so we dont create several for same coin.
 
-module.exports = function (coin) {
+module.exports = (coin)  => {
   if (exchangeHelperCache[coin] === undefined) {
     exchangeHelperCache[coin] = new ExchangeHelper(coin);
   }

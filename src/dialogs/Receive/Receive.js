@@ -1,88 +1,93 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { View, TextInput, Clipboard } from 'react-native';
+import { View, Clipboard, TouchableOpacity } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
-import { Text, DetailsModal } from '../../components';
+import {
+  DetailsModal, Text, FontScale, AmountInput,
+} from '../../components';
 import { MoreOptions, ValidateAddress } from '..';
 import styles from './styles';
+import { fontSize } from '../../config/styling';
+import ExchangeHelper from '../../utils/exchangeHelper';
 
 export default class Receive extends PureComponent {
-  constructor(props) {
+  constructor(props, context) {
     super(props);
 
     const { address } = props;
+    const { coinid, settingHelper } = context;
+    const { ticker } = coinid;
+
+    this.settingHelper = settingHelper;
+    this.exchangeHelper = ExchangeHelper(ticker);
 
     this.state = {
       address,
+      ticker,
       qrAddress: address,
       requestAmount: '',
+      exchangeRate: 0,
+      currency: '',
+      amount: 0,
     };
   }
 
   getChildContext() {
+    const { theme: propTheme } = this.props;
+    const { theme: contextTheme } = this.context;
+
     return {
-      theme: this.props.theme ? this.props.theme : this.context.theme,
+      theme: propTheme || contextTheme,
     };
   }
 
   componentDidMount() {
-    const { ticker } = this.context.coinid;
-    this.setState({ ticker });
-    this._handleNewAddress(this.props.address);
+    const { address } = this.props;
+    this._handleNewData({ address });
+
+    this._onSettingsUpdated(this.settingHelper.getAll());
+    this.settingHelper.on('updated', this._onSettingsUpdated);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.address !== nextProps.address) {
-      this._handleNewAddress(nextProps.address);
+    const { address: oldProps } = this.props;
+    const { address } = nextProps;
+
+    if (address !== oldProps) {
+      this._handleNewData({ address });
     }
   }
 
-  _handleNewAddress = (address) => {
-    const uri = this._buildQrURI(address);
-    this.setState({ qrAddress: uri, address });
+  _onSettingsUpdated = (settings) => {
+    const { currency } = settings;
+    this.setState({ currency });
+    this._refreshExchangeRate(currency);
   };
 
-  _isValidInput = (text) => {
-    const regex = /^([0-9]\d*(\.\d{0,8})?)?$/;
-    return regex.test(text);
+  _refreshExchangeRate = (currency) => {
+    this.exchangeHelper
+      .convert(1, currency)
+      .then((exchangeRate) => {
+        this.setState({ exchangeRate });
+      });
+  }
+
+  _handleNewData = (newData) => {
+    const { address: oldAddress, amount: oldAmount } = this.state;
+    const { address = oldAddress, amount = oldAmount } = newData;
+
+    const qrAddress = this._buildQrURI({ address, amount });
+    this.setState({ qrAddress, address, amount });
   };
 
-  _onChangeAmountText = (inputAmount) => {
-    const { address } = this.state;
-
-    const requestAmount = inputAmount
-      .replace(',', '.')
-      .replace(/^\./, '0.')
-      .replace(/^[0]{2,}/, '0')
-      .replace(/([.]\d{8,8})(.*$)/, '$1');
-
-    if (!this._isValidInput(requestAmount)) {
-      return false;
-    }
-
-    this.setState({ requestAmount }, () => {
-      if (this.qrTimer !== undefined) {
-        clearTimeout(this.qrTimer);
-      }
-
-      this.qrTimer = setTimeout(() => {
-        const uri = this._buildQrURI(address, requestAmount);
-        this.setState({ qrAddress: uri });
-      }, 400);
-    });
-
-    return true;
+  _onChangeAmount = (amount) => {
+    this._handleNewData({ amount });
   };
 
-  _getAmountMaxLength = (amount) => {
-    const maxLength1 = `${amount}`.replace(/\.[0-9]*$/, '').length + 8 + 1;
-    const maxLength2 = `${amount}`.length + 1;
-
-    return maxLength1 < maxLength2 ? maxLength1 : maxLength2;
-  };
-
-  _buildQrURI(address, amount, label, message) {
-    const { qrScheme } = this.context.coinid;
+  _buildQrURI = ({
+    address, amount, label, message,
+  }) => {
+    const { coinid: { qrScheme } } = this.context;
     let tmpl = [`${qrScheme}:`, address, '?']; // https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki
 
     if (amount) {
@@ -114,13 +119,15 @@ export default class Receive extends PureComponent {
   };
 
   _copyAddress = () => {
-    Clipboard.setString(this.state.address);
+    const { address } = this.state;
+    Clipboard.setString(address);
     this.refMoreOptions._close();
   };
 
   _validateAddress = () => {
+    const { address } = this.state;
     this.refMoreOptions._close();
-    this.refValidateAddress._open(this.state.address);
+    this.refValidateAddress._open(address);
   };
 
   _showMoreOptions = () => {
@@ -144,6 +151,16 @@ export default class Receive extends PureComponent {
     ]);
   };
 
+  _toggleInputFiat = () => {
+    const { inputInFiat, exchangeRate } = this.state;
+
+    if (!exchangeRate) {
+      return false;
+    }
+
+    this.setState({ inputInFiat: !inputInFiat });
+  };
+
   render() {
     const {
       onOpened,
@@ -154,10 +171,18 @@ export default class Receive extends PureComponent {
 
     const {
       ticker,
-      requestAmount,
       qrAddress,
       address,
+      exchangeRate,
+      currency,
+      amount,
     } = this.state;
+
+    let { inputInFiat } = this.state;
+
+    if (!exchangeRate) {
+      inputInFiat = false;
+    }
 
     return [
       <DetailsModal
@@ -188,11 +213,20 @@ export default class Receive extends PureComponent {
                 logo={require('../../assets/images/qr_logo_full.png')}
                 logoSize={80}
                 logoBackgroundColor="transparent"
-               />
+              />
             </View>
-            <Text style={styles.addressText} selectable numberOfLines={1} ellipsizeMode="middle">
-              {address}
-            </Text>
+            <FontScale
+              fontSizeMax={fontSize.small}
+              fontSizeMin={8}
+              text={address}
+              widthScale={0.9}
+            >
+              {({ fontSize }) => (
+                <Text style={[styles.addressText, { fontSize }]} selectable>
+                  {address}
+                </Text>
+              )}
+            </FontScale>
           </View>
           <View
             style={styles.modalFooter}
@@ -204,15 +238,23 @@ export default class Receive extends PureComponent {
               onFocus={(e) => { this.elModal._setKeyboardOffset(this.refAmountBottom - this.refContHeight + 8); }}
               onLayout={(e) => { this.refAmountBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height; }}
             >
-              <TextInput
-                style={styles.amountInput}
-                value={requestAmount}
-                onChangeText={this._onChangeAmountText}
-                keyboardType="numeric"
-                underlineColorAndroid="transparent"
-                maxLength={this._getAmountMaxLength(requestAmount)}
+              <AmountInput
+                style={[styles.amountInput, { paddingRight: 60 }]}
+                onChangeAmount={this._onChangeAmount}
+                exchangeRate={exchangeRate}
+                inputInFiat={inputInFiat}
+                amount={amount}
+                exchangeTo={currency}
+                exchangeFrom={ticker}
               />
-              <Text style={styles.amountCurrency}>{ticker}</Text>
+              <TouchableOpacity
+                style={styles.currencyButton}
+                onPress={this._toggleInputFiat}
+              >
+                <Text style={styles.currencyButtonText}>
+                  {inputInFiat ? currency : ticker}
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>

@@ -80,8 +80,8 @@ export default class TransactionFilter extends PureComponent {
 
     Animated.timing(this.state.top, {
       toValue: 0,
-      duration: 250,
-      easing: Easing.ease,
+      duration: 350,
+      easing: Easing.inOut(Easing.ease),
       useNativeDriver: true,
     }).start(() => {
       if (!this.isOpen) {
@@ -105,8 +105,8 @@ export default class TransactionFilter extends PureComponent {
 
     Animated.timing(this.state.top, {
       toValue: 91,
-      duration: 250,
-      easing: Easing.ease,
+      duration: 350,
+      easing: Easing.inOut(Easing.ease),
       useNativeDriver: true,
     }).start();
   };

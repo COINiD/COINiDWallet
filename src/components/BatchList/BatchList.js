@@ -3,11 +3,12 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { FlatList, TouchableOpacity, View } from 'react-native';
-import { DirectionIcon, Text } from '../../components';
+import { DirectionIcon, Text, FontScale } from '../../components';
 import styles from './styles';
 import Settings from '../../config/settings';
 import { numFormat } from '../../utils/numFormat';
 import { trimStrLength } from '../../utils/generic';
+import { fontSize } from '../../config/styling';
 
 class BatchListItem extends PureComponent {
   constructor(props) {
@@ -35,16 +36,23 @@ class BatchListItem extends PureComponent {
 
     return (
       <TouchableOpacity style={ itemStyle } onPress={ this._onPress }>
-      
+
         <View style={ styles.infoContainer }>
           <Text style={ [styles.line, styles.amountText] }>{ numFormat(item.amount, ticker) } { ticker }</Text>
-          <Text
-            style={ [styles.line, styles.addressText] }
-            ellipsizeMode={'middle'}
-            numberOfLines={1}
+          <FontScale
+            fontSizeMax={fontSize.small}
+            fontSizeMin={6}
+            text={item.address}
+            widthScale={1.0}
           >
-            { item.address }
-          </Text>
+            {({fontSize}) => (
+              <Text
+                style={ [styles.line, styles.addressText, {fontSize}] }
+              >
+                {item.address}
+              </Text>
+            )}
+          </FontScale>
           <Text style={ [styles.line, styles.noteText] }>{ item.note ? item.note : 'no note' }</Text>
         </View>
       </TouchableOpacity>

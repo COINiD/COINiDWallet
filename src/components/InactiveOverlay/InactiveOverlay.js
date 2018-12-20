@@ -465,6 +465,14 @@ export default class InactiveOverlay extends PureComponent {
       return null;
     }
 
+    const renderTestnet = () => {
+      if (Settings.isTestnet) {
+        return (<Text style={[styles.testnetText]}>Testnet</Text>);
+      }
+
+      return null;
+    }
+
     return (
       <AnimatedBlurView
         style={[styles.container, { opacity }]}
@@ -486,13 +494,14 @@ export default class InactiveOverlay extends PureComponent {
 
         <View style={styles.walletLogoWrapper}>
           <Animated.View
-            style={[
-              styles.walletLogo,
-              { transform: [{ translateY: logoYOffset }] },
-            ]}
+            style={{ transform: [{ translateY: logoYOffset }], marginBottom: 0 - 4 - 1 }}
           >
-            <LottieView style={{}} source={lottieFiles.walletLogo} />
+            <View style={[styles.walletLogo]}>
+              <LottieView style={{}} source={lottieFiles.walletLogo} />
+            </View>
+            {renderTestnet()}
           </Animated.View>
+
         </View>
 
         <Animated.View
