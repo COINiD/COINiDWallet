@@ -1,12 +1,17 @@
-
-
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Alert, View } from 'react-native';
 import Big from 'big.js';
 
 import {
-  Text, BatchList, RowInfo, FeeSlider, DetailsModal, COINiDTransport, Button, CancelButton,
+  Text,
+  BatchList,
+  RowInfo,
+  FeeSlider,
+  DetailsModal,
+  COINiDTransport,
+  Button,
+  CancelButton,
 } from '../../components';
 
 import styles from './styles';
@@ -61,7 +66,7 @@ export default class Sign extends Component {
       subTotal,
       fee,
     });
-  }
+  };
 
   _verify = () => {
     let { total } = this.state;
@@ -70,7 +75,7 @@ export default class Sign extends Component {
     const { payments, balance } = this.props;
     const errors = [];
 
-    if (!payments.length) {
+    if (!payments.length) {
       errors.push({
         type: 'payments',
         message: 'no payments...',
@@ -99,11 +104,11 @@ export default class Sign extends Component {
     }
 
     if (errors.length) {
-      throw (errors);
+      throw errors;
     }
 
     return true;
-  }
+  };
 
   _getTransactionData = () => {
     const { coinid } = this.context;
@@ -124,39 +129,39 @@ export default class Sign extends Component {
         return reject(err);
       }
     });
-  }
+  };
 
   _setFee = (fee) => {
     this.fee = fee;
     this._calculateTotal();
-  }
+  };
 
   _open = () => {
     this.forceNoRender = false;
     this.forceUpdate();
     this.elModal._open();
-  }
+  };
 
   _close = () => {
     this.forceNoRender = true;
     this.elModal._close();
-  }
+  };
 
   _onPressItem = (item) => {
     const { sendModal } = this.props;
     this._close();
     sendModal._open(item);
-  }
+  };
 
   _onOpened = () => {
     const { onOpened } = this.props;
     onOpened();
-  }
+  };
 
   _onClosed = () => {
     const { onClosed } = this.props;
     onClosed();
-  }
+  };
 
   _handleReturnData = (data) => {
     const { coinid } = this.context;
@@ -203,15 +208,13 @@ export default class Sign extends Component {
           <View style={styles.batchedHeaderContainer}>
             <Text style={styles.batchedHeader}>Batched Transactions</Text>
           </View>
-          <BatchList
-            onPress={this._onPressItem}
-            batchedTxs={payments}
-            disabled={isSigning}
-          />
+          <BatchList onPress={this._onPressItem} batchedTxs={payments} disabled={isSigning} />
           <View style={styles.summaryContainer}>
             <View style={{ marginBottom: 24, marginTop: 16 }}>
               <FeeSlider
-                onChange={(val) => { this._setFee(val); }}
+                onChange={(val) => {
+                  this._setFee(val);
+                }}
                 amount={subTotal}
                 batchedTransactions={payments}
                 disabled={isSigning}
@@ -223,7 +226,7 @@ export default class Sign extends Component {
               childStyle={validationError.length ? { color: '#FA503C' } : {}}
               title="Total"
             >
-              { `${numFormat(total, ticker)} ${ticker}` }
+              {`${numFormat(total, ticker)} ${ticker}`}
             </RowInfo>
             <Button
               style={styles.formButton}
@@ -238,12 +241,15 @@ export default class Sign extends Component {
               Cancel
             </CancelButton>
           </View>
-        </View>);
+        </View>
+      );
     };
 
     return (
       <DetailsModal
-        ref={(c) => { this.elModal = c; }}
+        ref={(c) => {
+          this.elModal = c;
+        }}
         title="Sign Transactions"
         verticalPosition="flex-end"
         onOpened={this._onOpened}
@@ -253,7 +259,7 @@ export default class Sign extends Component {
           getData={this._getTransactionData}
           handleReturnData={this._handleReturnData}
         >
-          { renderTransportContent }
+          {renderTransportContent}
         </COINiDTransport>
       </DetailsModal>
     );

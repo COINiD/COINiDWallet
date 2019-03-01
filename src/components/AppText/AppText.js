@@ -1,9 +1,9 @@
-'use strict';
+
 
 import React, { PureComponent } from 'react';
 import { Text } from 'react-native';
-import themeableStyles from './styles';
 import PropTypes from 'prop-types';
+import themeableStyles from './styles';
 
 class AppText extends PureComponent {
   constructor(props) {
@@ -15,10 +15,18 @@ class AppText extends PureComponent {
   };
 
   _updateStyle = () => {
-    const props = this.props,
-      { h1, h2, h3, h4, small, smaller, faded, center, margin, p } = props,
-      { theme } = this.context,
-      styles = themeableStyles(theme);
+    const props = this.props;
+
+
+    const {
+      h1, h2, h3, h4, small, smaller, faded, center, margin, p,
+    } = props;
+
+
+    const { theme } = this.context;
+
+
+    const styles = themeableStyles(theme);
 
     this.style = [styles.text];
 
@@ -62,7 +70,7 @@ class AppText extends PureComponent {
     this._updateStyle();
 
     return (
-      <Text {...this.props} style={this.style}>
+      <Text {...this.props} style={this.style} allowFontScaling={false}>
         {this.props.children}
       </Text>
     );

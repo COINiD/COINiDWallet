@@ -1,15 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {
-  View,
-  TextInput,
-  Alert,
-} from 'react-native';
-import {
-  DetailsModal,
-  Text,
-  Button,
-} from '../../components';
+import { View, TextInput, Alert } from 'react-native';
+import { DetailsModal, Text, Button } from '../../components';
 import styles from './styles';
 
 export default class InputPublicKey extends PureComponent {
@@ -31,12 +23,13 @@ export default class InputPublicKey extends PureComponent {
   }
 
   _open = () => {
+    this.setState({ publicKey: '' });
     this.detailsModal._open();
-  }
+  };
 
   _close = () => {
     this.detailsModal._close();
-  }
+  };
 
   _verifyPublicKey = (data) => {
     const pubKeyData = data.split('/')[1];
@@ -44,11 +37,11 @@ export default class InputPublicKey extends PureComponent {
     const account = this.coinid.getAccountFromPubKeyArray(pubKeyArray);
 
     if (account === undefined) {
-      throw ('The input public key is invalid');
+      throw 'The input public key is invalid';
     }
 
     return true;
-  }
+  };
 
   _continue = () => {
     const { publicKey } = this.state;
@@ -68,18 +61,20 @@ export default class InputPublicKey extends PureComponent {
     } catch (err) {
       Alert.alert('Pubkey invalid', `${err}`);
     }
-  }
+  };
 
   _onChangePublicKey = (publicKey) => {
-    this.setState({publicKey});
-  }
+    this.setState({ publicKey });
+  };
 
   render() {
     const { publicKey } = this.state;
 
     return (
       <DetailsModal
-        ref={(c) => { this.detailsModal = c; }}
+        ref={(c) => {
+          this.detailsModal = c;
+        }}
         title="Enter Public Key"
         avoidKeyboard
         avoidKeyboardOffset={40}
@@ -88,7 +83,7 @@ export default class InputPublicKey extends PureComponent {
           <Text style={styles.formLabel}>Public key data</Text>
           <View style={styles.formItemRow}>
             <TextInput
-              style={[styles.formItemInput, {}]}
+              style={[styles.formItemInput]}
               value={publicKey}
               autoCorrect={false}
               spellCheck={false}
@@ -96,12 +91,12 @@ export default class InputPublicKey extends PureComponent {
               returnKeyType="done"
               onChangeText={this._onChangePublicKey}
               underlineColorAndroid="transparent"
-              blurOnSubmit={true}
+              blurOnSubmit
               multiline
             />
           </View>
-          <Button big onPress={this._continue} style={{marginTop: 24}}>
-              Create Wallet
+          <Button big onPress={this._continue} style={{ marginTop: 24 }}>
+            Create Wallet
           </Button>
         </View>
       </DetailsModal>

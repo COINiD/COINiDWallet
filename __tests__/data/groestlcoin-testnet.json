@@ -1,0 +1,49 @@
+{
+  "coin": "groestlcoin-testnet",
+  "pubKeyData": {
+    "P2SHP2WPKH": "49-*1-*0-$tpubDDJYTZ5AfXWqpqguxVxCES2gszSiGbei96C5hcvecimptwhM6oTnQPFuiuCmBjAKVAamR1P9M4RD2rU74XrcfVy3Kbn8J5FgnLkSD8ZGWQh",
+    "P2PKH": "44-*1-*0-$tpubDDebpBUs3pCHeXVsPgLHBBbPL76cwdEihX6Sdf5TFCheqK8j3WvDQs7SERyzhJXstJAGeryxipbR5BtsRXBy9GrrhJMYnYcxjFhU5nXZXb5",
+    "P2WPKH": "84-*1-*0-$tpubDDiKkNcbGp51ctUrNYrt32UQZSCS6QcZFUeAUPsYLHcUDWmPVir696ps7PoY8gfciEpsisHHyLtpF7P2y2sLF1gf3Rby3KzwHio1JW13h3u"
+  },
+  "unspent": [
+    {
+      "unPublished": 0,
+      "hash": "4c103a492b65aaca41bb3b782c4f590e56d5b269d41ad48121ea2502d86463a0",
+      "index": 2,
+      "address": "2NA5bUXmS96csYzmVJJs828MJehYm2zgQBr",
+      "value": 0.00369796,
+      "valueSat": 369796
+    },
+    {
+      "unPublished": 0,
+      "hash": "4c103a492b65aaca41bb3b782c4f590e56d5b269d41ad48121ea2502d86463a0",
+      "index": 1,
+      "address": "2NCsr6tB8t7D33WcmEsdWG6RGXexbBtdJdJ",
+      "value": 0.0043,
+      "valueSat": 430000
+    },
+    {
+      "unPublished": 0,
+      "hash": "4c103a492b65aaca41bb3b782c4f590e56d5b269d41ad48121ea2502d86463a0",
+      "index": 0,
+      "address": "2N3Ufft2w4dxGTFJV2dWDTai8SXzzUBdDPM",
+      "value": 0.002,
+      "valueSat": 200000
+    }
+  ],
+  "balance": 0.00999796,
+  "correctPayments": [
+    { "amount": 0.002, "address": "2NCvyeutPLBED5fVbPtydrvGX2dUjvaBvUP", "note": "" },
+    { "amount": 0.0043, "address": "ms48Qo1Kb8qQEb5A7UNSLf16pTmdsSWju1", "note": "" },
+    { "amount": 0.0001, "address": "tgrs1q068tj9l2krd8fm3pw6gyfw8rv43t7hfjcyczyg", "note": "" },
+    { "amount": 0.0003, "address": "2NDppLU2NbjiXiiPCoiLZ3n8taoSsU7xjc9", "note": "" }
+  ],
+  "insufficientPayments": [
+    { "amount": 1.002, "address": "2NCvyeutPLBED5fVbPtydrvGX2dUjvaBvUP", "note": "" },
+    { "amount": 0.0043, "address": "ms48Qo1Kb8qQEb5A7UNSLf16pTmdsSWju1", "note": "" }
+  ],
+  "wrongAddressPayments": [
+    { "amount": 0.002, "address": "2NCCvyeutPLBED5fVbPtydrvGX2dUjvaBvUP", "note": "" },
+    { "amount": 0.0043, "address": "ms48Qo1Kb8qQEb5A7UNSLf16pTmdsSWju1", "note": "" }
+  ]
+}

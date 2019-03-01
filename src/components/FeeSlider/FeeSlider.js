@@ -1,8 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {
-  View, Animated, Easing,
-} from 'react-native';
+import { View, Animated, Easing } from 'react-native';
 import Big from 'big.js';
 import { Slider } from 'react-native-elements';
 import { Text, RowInfo } from '..';
@@ -45,7 +43,7 @@ export default class FeeSlider extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.amount !== this.props.amount) {
+    if (nextProps.amount !== this.props.amount || nextProps.extraData !== this.props.extraData) {
       this._updateProps(nextProps);
     }
   }
@@ -53,9 +51,11 @@ export default class FeeSlider extends PureComponent {
   _updateProps = (props) => {
     this.batchedTransactions = props.batchedTransactions;
     this.amount = props.amount;
+    this.customEstimateSizeFn = props.customEstimateSizeFn;
+
     this._updateTxSize();
     this._updateFee();
-  }
+  };
 
   _updateTxSize = () => {
     const { coinid } = this.context;
@@ -67,9 +67,15 @@ export default class FeeSlider extends PureComponent {
     const amountSat = amount.times(1e8);
 
     try {
-      this.txSize = coinid.estimateSize(amountSat, this.batchedTransactions);
-    } catch (err) { console.log(err); }
-  }
+      if (this.customEstimateSizeFn) {
+        this.txSize = this.customEstimateSizeFn(amountSat, this.batchedTransactions);
+      } else {
+        this.txSize = coinid.estimateSize(amountSat, this.batchedTransactions);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   _updateCurrentFeeInfo = () => {
     const fetchedFees = this.feeHelper.getFees();
@@ -79,64 +85,63 @@ export default class FeeSlider extends PureComponent {
     }
 
     this.feeInfo = fetchedFees;
-    /*
-    this.feeInfo = {
-      ...fetchedFees,
-      fees: [],
-    };
-
-    for (let i = 0; i < 200; i += 1) {
-      let realI = parseInt(fetchedFees.fees.length * i / 200, 10);
-      if (realI >= fetchedFees.fees.length) {
-        realI = fetchedFees.fees.length - 1;
-      }
-
-      this.feeInfo.fees.push(fetchedFees.fees[realI]);
-    }
-*/
-
     this.feeCount = this.feeInfo.fees.length - 1;
     this.startValue = parseInt(this.feeCount / 2, 10);
-  }
 
-  _getCurrentSatoshiPerByte = () => this.feeInfo.fees[this.sliderVal][1]
+    return true;
+  };
 
-  _getCurrentBlocks = () => this.feeInfo.fees[this.sliderVal][0]
+  _getCurrentSatoshiPerByte = () => this.feeInfo.fees[this.sliderVal][1];
+
+  _getCurrentBlocks = () => this.feeInfo.fees[this.sliderVal][0];
 
   _calculateFee = () => {
     const satoshiByte = this._getCurrentSatoshiPerByte();
 
-    if (this.prevSatoshiByte === satoshiByte) {
+    if (this.prevSatoshiByte === satoshiByte && this.txSize === this.prevTxSize) {
       return;
     }
     this.prevSatoshiByte = satoshiByte;
+    this.prevTxSize = this.txSize;
 
     this.fee = 1000;
     this._updateTxSize();
 
     const doCalcFee = () => {
-      this.fee = Number(Big(satoshiByte).times(this.txSize).div(1e8));
+      this.fee = Number(
+        Big(satoshiByte)
+          .times(this.txSize)
+          .div(1e8),
+      );
       this.prevTxSize = this.txSize;
       this._updateTxSize();
 
       if (this.txSize < this.prevTxSize) {
         this.txSize = this.prevTxSize;
-        this.fee = Number(Big(satoshiByte).times(this.txSize).div(1e8));
+        this.fee = Number(
+          Big(satoshiByte)
+            .times(this.txSize)
+            .div(1e8),
+        );
       }
     };
 
     doCalcFee();
-  }
+  };
 
   _getBlockTime = () => {
-    const { coinid: { network: { blockTime } } } = this.context;
+    const {
+      coinid: {
+        network: { blockTime },
+      },
+    } = this.context;
 
     if (blockTime === undefined) {
       return 10.0;
     }
 
     return blockTime;
-  }
+  };
 
   _updateFee = () => {
     const { onChange } = this.props;
@@ -157,7 +162,7 @@ export default class FeeSlider extends PureComponent {
     });
 
     onChange(this.fee);
-  }
+  };
 
   _setSliderVal = (sliderVal) => {
     sliderVal = parseInt(sliderVal, 10);
@@ -167,18 +172,18 @@ export default class FeeSlider extends PureComponent {
       this._updateFee();
       this._updateSliderPos();
     }
-  }
+  };
 
   _updateSliderPos = () => {
     if (this.feeCount) {
-      let satByteLeft = (12 + this.sliderVal * (this.width - 24) / this.feeCount - this.satByteWidth / 2);
+      let satByteLeft = 12 + (this.sliderVal * (this.width - 24)) / this.feeCount - this.satByteWidth / 2;
 
       if (satByteLeft < 0) satByteLeft = 0;
       if (satByteLeft > this.width - this.satByteWidth) satByteLeft = this.width - this.satByteWidth;
 
       this.setState({ satByteLeft });
     }
-  }
+  };
 
   _onSlidingStart = () => {
     Animated.timing(this.state.satByteTop, {
@@ -187,7 +192,7 @@ export default class FeeSlider extends PureComponent {
       easing: Easing.ease,
       useNativeDriver: true,
     }).start();
-  }
+  };
 
   _onSlidingComplete = () => {
     Animated.timing(this.state.satByteTop, {
@@ -196,23 +201,30 @@ export default class FeeSlider extends PureComponent {
       easing: Easing.ease,
       useNativeDriver: true,
     }).start();
-  }
+  };
 
   _onLayout = (e) => {
     this.width = e.nativeEvent.layout.width;
     this.setState({ width: this.width });
     this._updateSliderPos();
-  }
+  };
 
   _onSatByteLayout = (e) => {
     this.satByteWidth = e.nativeEvent.layout.width;
     this.setState({ satByteWidth: this.satByteWidth });
     this._updateSliderPos();
-  }
+  };
 
   render() {
     const {
-      satByteTop, satByteLeft, fee, timeMinutes, satoshiByte, txSize, blocks, ticker,
+      satByteTop,
+      satByteLeft,
+      fee,
+      timeMinutes,
+      satoshiByte,
+      txSize,
+      blocks,
+      ticker,
     } = this.state;
 
     const { disabled } = this.props;
@@ -221,15 +233,15 @@ export default class FeeSlider extends PureComponent {
       return null;
     }
 
-    const { fees, lastUpdated } = this.feeInfo;
+    const { fees, lastUpdated } = this.feeInfo;
 
     let priority = 'Normal priority';
 
-    if ((1 + this.sliderVal) < fees.length * (1 / 3)) {
+    if (1 + this.sliderVal < fees.length * (1 / 3)) {
       priority = 'Low priority';
     }
 
-    if ((this.sliderVal) > fees.length * (2 / 3)) {
+    if (this.sliderVal > fees.length * (2 / 3)) {
       priority = 'High priority';
     }
 
@@ -242,7 +254,9 @@ export default class FeeSlider extends PureComponent {
         const msAgo = Date.now() - lastUpdated;
         const hoursAgo = msAgo / 1000 / 60 / 60;
         if (hoursAgo >= 1) {
-          return `${hoursAgo.toFixed(0)} hours since fee estimation was synced so it may be inaccurate`;
+          return `${hoursAgo.toFixed(
+            0,
+          )} hours since fee estimation was synced so it may be inaccurate`;
         }
 
         return '';
@@ -250,7 +264,7 @@ export default class FeeSlider extends PureComponent {
 
       const warning = getWarningText();
       if (warning) {
-        return (<Text style={styles.warningText}>{ warning }</Text>);
+        return <Text style={styles.warningText}>{warning}</Text>;
       }
 
       return null;
@@ -260,24 +274,24 @@ export default class FeeSlider extends PureComponent {
       if (!blocks) {
         return (
           <Text style={styles.estimationText}>
-            { `Warning: Highly uncertain when this transaction will be confirmed. Size: ${txSize} bytes` }
+            {`Warning: Highly uncertain when this transaction will be confirmed. Size: ${txSize} bytes`}
           </Text>
         );
       }
 
       return (
         <Text style={styles.estimationText}>
-          { `${priority}: Estimated to confirm within ${blocks} blocks. (~${timeMinutes} min). Size: ${txSize} bytes` }
+          {`${priority}: Should confirm within ${blocks} blocks. (~${timeMinutes} min). ${txSize} bytes`}
         </Text>
       );
     };
 
     const renderSlider = () => {
-      if(this.feeCount <= 1) {
+      if (this.feeCount <= 1) {
         return (
           <React.Fragment>
             <View style={{ height: 8 }} />
-            { getEstimationText() }
+            {getEstimationText()}
           </React.Fragment>
         );
       }
@@ -286,17 +300,20 @@ export default class FeeSlider extends PureComponent {
         <React.Fragment>
           <Animated.View
             onLayout={this._onSatByteLayout}
-            ref={c => this.refSatByte = c}
+            ref={c => (this.refSatByte = c)}
             pointerEvents="none"
-            style={[styles.satByteDot, { transform: [{ translateY: satByteTop }, { translateX: satByteLeft }] }]}
+            style={[
+              styles.satByteDot,
+              { transform: [{ translateY: satByteTop }, { translateX: satByteLeft }] },
+            ]}
           >
-            <Text style={styles.satByteText}>
-              { `${satoshiByte} sat/b` }
-            </Text>
+            <Text style={styles.satByteText}>{`${satoshiByte} sat/b`}</Text>
           </Animated.View>
           <Slider
             onSlidingStart={this._onSlidingStart}
-            onValueChange={(val) => { this._setSliderVal(val); }}
+            onValueChange={(val) => {
+              this._setSliderVal(val);
+            }}
             onSlidingComplete={this._onSlidingComplete}
             maximumValue={this.feeCount}
             minimumValue={0}
@@ -310,21 +327,18 @@ export default class FeeSlider extends PureComponent {
             trackStyle={styles.track}
             disabled={disabled}
           />
-          { getEstimationText() }
+          {getEstimationText()}
         </React.Fragment>
       );
     };
 
     return (
-      <View
-        onLayout={this._onLayout}
-        ref={c => this.refCont = c}
-      >
+      <View onLayout={this._onLayout} ref={c => (this.refCont = c)}>
         <RowInfo title="Fee" style={{ marginBottom: 0 }}>
-          { `${numFormat(fee, ticker)} ${ticker}` }
+          {`${numFormat(fee, ticker)} ${ticker}`}
         </RowInfo>
-        { renderSlider() }
-        { getWarning() }
+        {renderSlider()}
+        {getWarning()}
       </View>
     );
   }
@@ -338,8 +352,10 @@ FeeSlider.contextTypes = {
 
 FeeSlider.propTypes = {
   batchedTransactions: PropTypes.array,
+  customEstimateSizeFn: PropTypes.func,
 };
 
 FeeSlider.defaultProps = {
   batchedTransactions: [],
+  customEstimateSizeFn: undefined,
 };

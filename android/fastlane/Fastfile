@@ -28,6 +28,7 @@ platform :android do
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
+      track: "beta",
     )
 
     message_slack(options)
@@ -35,7 +36,7 @@ platform :android do
 
   lane :message_slack do |options|
     slack(
-      message: "Ny #{options[:coin]} Wallet på väg till Play Store!",
+      message: "New #{options[:coin]} Wallet coming to Play Store!",
       default_payloads: [],
       slack_url: ENV['SLACK_URL']
     )

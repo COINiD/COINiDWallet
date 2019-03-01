@@ -1,4 +1,5 @@
 import { Platform } from 'react-native';
+import { ifSmallDevice } from '../utils/device';
 
 export const colors = {
   transparent: 'transparent',
@@ -33,7 +34,7 @@ export const colors = {
   getOffline: () => colors.orange,
   getAlphaBg: () => 'rgba(0,0,0,0.8)',
 
-  getTheme: theme => {
+  getTheme: (theme) => {
     if (theme == 'light') {
       return {
         background: colors.white,
@@ -86,16 +87,28 @@ export const colors = {
   },
 };
 
-export const fontSize = {
-  h1: 40,
-  large: 28,
-  h2: 22,
-  h3: 18,
-  h4: 17,
-  base: 16,
-  small: 14,
-  smaller: 12,
-};
+export const fontSize = ifSmallDevice(
+  {
+    h1: 32,
+    large: 22,
+    h2: 18,
+    h3: 16,
+    h4: 15,
+    base: 14,
+    small: 14,
+    smaller: 12,
+  },
+  {
+    h1: 40,
+    large: 28,
+    h2: 22,
+    h3: 18,
+    h4: 17,
+    base: 16,
+    small: 14,
+    smaller: 12,
+  },
+);
 
 export const fontStack = {
   primary: Platform.OS === 'android' ? 'Inter-UI' : 'Inter UI',
@@ -111,28 +124,29 @@ export const buttonSize = {
   big: 64,
 };
 
-export const fontWeight =
-  Platform.OS === 'android'
-    ? {
-        book: { fontFamily: fontStack.book },
-        normal: { fontFamily: fontStack.primary },
-        medium: { fontFamily: fontStack.medium },
-        bold: { fontFamily: fontStack.bold },
-        black: { fontFamily: fontStack.black },
-      }
-    : {
-        book: { fontWeight: '300' },
-        normal: { fontWeight: '400' },
-        medium: { fontWeight: '500' },
-        bold: { fontWeight: '700' },
-        black: { fontWeight: '900' },
-      };
+export const fontWeight = Platform.OS === 'android'
+  ? {
+    book: { fontFamily: fontStack.book },
+    normal: { fontFamily: fontStack.primary },
+    medium: { fontFamily: fontStack.medium },
+    bold: { fontFamily: fontStack.bold },
+    black: { fontFamily: fontStack.black },
+  }
+  : {
+    book: { fontWeight: '300' },
+    normal: { fontWeight: '400' },
+    medium: { fontWeight: '500' },
+    bold: { fontWeight: '700' },
+    black: { fontWeight: '900' },
+  };
+
+export const gridMultiplier = ifSmallDevice(4, 8);
 
 export const layout = {
-  paddingTop: 16,
-  paddingBottom: 16,
-  paddingLeft: 16,
-  paddingRight: 16,
+  paddingTop: gridMultiplier * 2,
+  paddingBottom: gridMultiplier * 2,
+  paddingLeft: gridMultiplier * 2,
+  paddingRight: gridMultiplier * 2,
 };
 
 export const modal = {

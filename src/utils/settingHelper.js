@@ -12,6 +12,8 @@ class SettingHelper extends EventEmitter {
   constructor(coin) {
     super();
 
+    this.setMaxListeners(50);
+
     this.storageNS = `${coin}:settings`;
     this.storage = storageHelper(this.storageNS);
     this.defaultSettings = {
@@ -23,7 +25,7 @@ class SettingHelper extends EventEmitter {
       lockAfterDuration: 60000,
       preferredColdTransport: '',
     };
-    this.settings = {};
+    this.settings = { ...this.defaultSettings };
   }
 
   load = () => {

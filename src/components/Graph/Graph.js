@@ -4,7 +4,7 @@ import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
 import { LineChart } from 'react-native-svg-charts';
 import * as shape from 'd3-shape';
 
-import { Text, FontScale } from '../../components';
+import { Text, FontScale } from '..';
 import Settings from '../../config/settings';
 import ExchangeHelper from '../../utils/exchangeHelper';
 import { numFormat } from '../../utils/numFormat';
@@ -29,7 +29,7 @@ export default class Graph extends PureComponent {
 
   componentDidMount() {
     const { ticker, coinTitle } = this.context.coinid;
-    this.setState({ticker, coinTitle});
+    this.setState({ ticker, coinTitle });
 
     this.settingHelper = this.context.settingHelper;
     this.exchangeHelper = ExchangeHelper(ticker);
@@ -45,19 +45,23 @@ export default class Graph extends PureComponent {
   }
 
   _refreshFiatData = () => {
-    const dataPoints = this.exchangeHelper.getDataPoints(this.currentCurrency, this.currentRange),
-          currentPrice = this.exchangeHelper.getCurrentPrice(this.currentCurrency);
+    const dataPoints = this.exchangeHelper.getDataPoints(this.currentCurrency, this.currentRange);
+
+
+    const currentPrice = this.exchangeHelper.getCurrentPrice(this.currentCurrency);
 
     this.setState({
       isLoading: false,
       dataPoints,
-      currentPrice
+      currentPrice,
     });
-  }
+  };
 
-  _onSettingsUpdated = settings => {
-    const { currency, range: rangeIndex } = settings,
-          range = Settings.ranges[rangeIndex];
+  _onSettingsUpdated = (settings) => {
+    const { currency, range: rangeIndex } = settings;
+
+
+    const range = Settings.ranges[rangeIndex];
 
     this.setState({ currency, range });
 
@@ -68,45 +72,40 @@ export default class Graph extends PureComponent {
   };
 
   _diffRaw = () => {
-    var first = this.state.dataPoints[0];
-    var last = this.state.dataPoints[this.state.dataPoints.length - 1];
+    const first = this.state.dataPoints[0];
+    const last = this.state.dataPoints[this.state.dataPoints.length - 1];
     return last - first;
-  }
+  };
 
   _diffRound = () => {
     // Round to max 3 decimals, extra *1000 and /1000
-    let diff = Math.round(this._diffRaw() * 1000) / 1000;
+    const diff = Math.round(this._diffRaw() * 1000) / 1000;
 
     if (diff === 0) {
       return '< 0,001';
     }
 
     return numFormat(diff, this.state.currency, 3);
-  }
+  };
 
-  _diffPercent = () => {
-    // Round to max 2 decimals, extra *100 and /100
-    return numFormat(
-      Math.round(this._diffRaw() / this.state.dataPoints[0] * 100 * 100) / 100
-    );
-  }
+  _diffPercent = () => numFormat(Math.round((this._diffRaw() / this.state.dataPoints[0]) * 100 * 100) / 100)
+  ;
 
   _diffValue = () => {
     if (this.state.diffType == 'percent') {
-      return this._diffPercent() + '%';
-    } else {
-      return this._diffRound() + ' ' + this.state.currency;
+      return `${this._diffPercent()}%`;
     }
-  }
+    return `${this._diffRound()} ${this.state.currency}`;
+  };
 
   _getStyle = () => {
     const { theme } = this.context;
     return themeableStyles(theme);
-  }
+  };
 
   render() {
     const styles = this._getStyle();
-    const {ticker, coinTitle} = this.state;
+    const { ticker, coinTitle } = this.state;
 
     const toggleDiff = () => {
       /*
@@ -120,14 +119,10 @@ export default class Graph extends PureComponent {
       this.props.toggleRange();
     };
 
-    const diffColor = () => {
-      return this._diffRaw() < 0.0 ? styles.negative : styles.positive;
-    }
+    const diffColor = () => (this._diffRaw() < 0.0 ? styles.negative : styles.positive);
 
     if (this.state.isLoading) {
-      return (
-        <ActivityIndicator animating size={'small'} style={styles.loader} />
-      );
+      return <ActivityIndicator animating size="small" style={styles.loader} />;
     }
 
     return (
@@ -142,20 +137,16 @@ export default class Graph extends PureComponent {
             {({ fontSize }) => (
               <View style={[styles.textContainer]}>
                 <View style={styles.textContainer}>
-                  <Text style={[styles.coinText, styles.coinTitle, {fontSize}]}>
-                    {coinTitle}
-                  </Text>
+                  <Text style={[styles.coinText, styles.coinTitle, { fontSize }]}>{coinTitle}</Text>
                   <TouchableOpacity onPress={() => this.props.toggleCurrency()}>
-                    <Text style={[styles.coinText, styles.coinTicker, {fontSize}]}>
+                    <Text style={[styles.coinText, styles.coinTicker, { fontSize }]}>
                       {ticker}/{this.state.currency}
                     </Text>
                   </TouchableOpacity>
                 </View>
 
                 <View style={styles.coinDiffContainer}>
-                  <Text
-                    style={[styles.coinText, styles.coinDiff, diffColor(), {fontSize}]}
-                  >
+                  <Text style={[styles.coinText, styles.coinDiff, diffColor(), { fontSize }]}>
                     {this._diffValue()}
                   </Text>
                 </View>
@@ -164,37 +155,28 @@ export default class Graph extends PureComponent {
           </FontScale>
           <View style={[styles.textContainer]}>
             <TouchableOpacity onPress={() => toggleRange()}>
-              <Text style={styles.currencyText}>
-                Past {this.state.range}
-              </Text>
+              <Text style={styles.currencyText}>Past {this.state.range}</Text>
             </TouchableOpacity>
-            <Text
-              style={[
-                styles.currencyText,
-                styles.coinDiffContainer,
-                styles.coinDiff,
-              ]}
-            >
+            <Text style={[styles.currencyText, styles.coinDiffContainer, styles.coinDiff]}>
               {numFormat(this.state.currentPrice, this.state.currency, undefined, 1)}{' '}
               {this.state.currency}
             </Text>
           </View>
         </View>
 
-
         <View
           style={{ height: this.state.graphHeight, marginBottom: 8 }}
-          onLayout={e => {
-            let ratio = 128 / 343; // ratio according to design.
-            let graphHeight = ratio * e.nativeEvent.layout.width;
+          onLayout={(e) => {
+            const ratio = 128 / 343; // ratio according to design.
+            const graphHeight = ratio * e.nativeEvent.layout.width;
             this.setState({ graphHeight });
           }}
         >
           <LineChart
             style={{ height: this.state.graphHeight }}
-            dataPoints={ this.state.dataPoints }
+            dataPoints={this.state.dataPoints}
             curve={shape.curveLinear}
-            showGrid={true}
+            showGrid
             numberOfTicks={1}
             animationDuration={300}
             svg={{

@@ -5,7 +5,7 @@ import QRCode from 'react-native-qrcode-svg';
 import {
   DetailsModal, Text, FontScale, AmountInput,
 } from '../../components';
-import { MoreOptions, ValidateAddress } from '..';
+import { MoreOptions, ValidateAddress, SweepPrivateKey } from '..';
 import styles from './styles';
 import { fontSize } from '../../config/styling';
 import ExchangeHelper from '../../utils/exchangeHelper';
@@ -25,7 +25,6 @@ export default class Receive extends PureComponent {
       address,
       ticker,
       qrAddress: address,
-      requestAmount: '',
       exchangeRate: 0,
       currency: '',
       amount: 0,
@@ -58,6 +57,10 @@ export default class Receive extends PureComponent {
     }
   }
 
+  componentWillUnmount() {
+    this.settingHelper.removeListener('updated', this._onSettingsUpdated);
+  }
+
   _onSettingsUpdated = (settings) => {
     const { currency } = settings;
     this.setState({ currency });
@@ -65,12 +68,10 @@ export default class Receive extends PureComponent {
   };
 
   _refreshExchangeRate = (currency) => {
-    this.exchangeHelper
-      .convert(1, currency)
-      .then((exchangeRate) => {
-        this.setState({ exchangeRate });
-      });
-  }
+    this.exchangeHelper.convert(1, currency).then((exchangeRate) => {
+      this.setState({ exchangeRate });
+    });
+  };
 
   _handleNewData = (newData) => {
     const { address: oldAddress, amount: oldAmount } = this.state;
@@ -87,7 +88,9 @@ export default class Receive extends PureComponent {
   _buildQrURI = ({
     address, amount, label, message,
   }) => {
-    const { coinid: { qrScheme } } = this.context;
+    const {
+      coinid: { qrScheme },
+    } = this.context;
     let tmpl = [`${qrScheme}:`, address, '?']; // https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki
 
     if (amount) {
@@ -108,7 +111,7 @@ export default class Receive extends PureComponent {
       tmpl = tmpl.splice(0, tmpl.length - 1);
     }
     return tmpl.join('');
-  }
+  };
 
   _open = () => {
     this.elModal._open();
@@ -127,7 +130,18 @@ export default class Receive extends PureComponent {
   _validateAddress = () => {
     const { address } = this.state;
     this.refMoreOptions._close();
-    this.refValidateAddress._open(address);
+    setTimeout(() => {
+      this.refValidateAddress._open(address);
+    }, 100);
+  };
+
+  _sweepPrivateKey = () => {
+    const { address } = this.state;
+    this._close();
+    this.refMoreOptions._close();
+    setTimeout(() => {
+      this.refSweepPrivateKey._open(address);
+    }, 100);
   };
 
   _showMoreOptions = () => {
@@ -140,6 +154,10 @@ export default class Receive extends PureComponent {
         {
           title: 'Validate Address',
           onPress: this._validateAddress,
+        },
+        {
+          title: 'Sweep Private Key',
+          onPress: this._sweepPrivateKey,
         },
       ],
       [
@@ -163,19 +181,11 @@ export default class Receive extends PureComponent {
 
   render() {
     const {
-      onOpened,
-      onClosed,
-      onOpen,
-      onClose,
+      onOpened, onClosed, onOpen, onClose,
     } = this.props;
 
     const {
-      ticker,
-      qrAddress,
-      address,
-      exchangeRate,
-      currency,
-      amount,
+      ticker, qrAddress, address, exchangeRate, currency, amount,
     } = this.state;
 
     let { inputInFiat } = this.state;
@@ -184,95 +194,107 @@ export default class Receive extends PureComponent {
       inputInFiat = false;
     }
 
-    return [
-      <DetailsModal
-        key="modal"
-        verticalPosition="flex-end"
-        ref={(el) => {
-          this.elModal = el;
-        }}
-        onOpened={onOpened}
-        onClosed={onClosed}
-        onOpen={onOpen}
-        onClose={onClose}
-        showMoreOptions
-        onMoreOptions={this._showMoreOptions}
-        avoidKeyboard
-        avoidKeyboardOffset={40}
-        title="Receive"
-      >
-        <View
-          style={styles.container}
+    return (
+      <React.Fragment>
+        <DetailsModal
+          verticalPosition="flex-end"
+          ref={(el) => {
+            this.elModal = el;
+          }}
+          onOpened={onOpened}
+          onClosed={onClosed}
+          onOpen={onOpen}
+          onClose={onClose}
+          showMoreOptions
+          onMoreOptions={this._showMoreOptions}
+          avoidKeyboard
+          avoidKeyboardOffset={40}
+          title="Receive"
         >
-          <View style={styles.modalContent}>
-            <View style={styles.qrCode}>
-              <QRCode
-                value={qrAddress}
-                size={160}
-                ecl="Q"
-                logo={require('../../assets/images/qr_logo_full.png')}
-                logoSize={80}
-                logoBackgroundColor="transparent"
-              />
-            </View>
-            <FontScale
-              fontSizeMax={fontSize.small}
-              fontSizeMin={8}
-              text={address}
-              widthScale={0.9}
-            >
-              {({ fontSize }) => (
-                <Text style={[styles.addressText, { fontSize }]} selectable>
-                  {address}
-                </Text>
-              )}
-            </FontScale>
-          </View>
-          <View
-            style={styles.modalFooter}
-            onLayout={(e) => { this.refContHeight = e.nativeEvent.layout.height; }}
-          >
-            <Text style={styles.smallText}>Request custom amount</Text>
-            <View
-              style={styles.amountForm}
-              onFocus={(e) => { this.elModal._setKeyboardOffset(this.refAmountBottom - this.refContHeight + 8); }}
-              onLayout={(e) => { this.refAmountBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height; }}
-            >
-              <AmountInput
-                style={[styles.amountInput, { paddingRight: 60 }]}
-                onChangeAmount={this._onChangeAmount}
-                exchangeRate={exchangeRate}
-                inputInFiat={inputInFiat}
-                amount={amount}
-                exchangeTo={currency}
-                exchangeFrom={ticker}
-              />
-              <TouchableOpacity
-                style={styles.currencyButton}
-                onPress={this._toggleInputFiat}
+          <View style={styles.container}>
+            <View style={styles.modalContent}>
+              <View style={styles.qrCode}>
+                <QRCode
+                  value={qrAddress}
+                  size={160}
+                  ecl="Q"
+                  logo={require('../../assets/images/qr_logo_full.png')}
+                  logoSize={80}
+                  logoBackgroundColor="transparent"
+                />
+              </View>
+              <FontScale
+                fontSizeMax={fontSize.small}
+                fontSizeMin={8}
+                text={address}
+                widthScale={0.9}
               >
-                <Text style={styles.currencyButtonText}>
-                  {inputInFiat ? currency : ticker}
-                </Text>
-              </TouchableOpacity>
+                {({ fontSize }) => (
+                  <Text style={[styles.addressText, { fontSize }]} selectable>
+                    {address}
+                  </Text>
+                )}
+              </FontScale>
+            </View>
+            <View
+              style={styles.modalFooter}
+              onLayout={(e) => {
+                this.refContHeight = e.nativeEvent.layout.height;
+              }}
+            >
+              <Text style={styles.smallText}>Request custom amount</Text>
+              <View
+                style={styles.amountForm}
+                onFocus={(e) => {
+                  this.elModal._setKeyboardOffset(this.refAmountBottom - this.refContHeight + 8);
+                }}
+                onLayout={(e) => {
+                  this.refAmountBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
+                }}
+              >
+                <AmountInput
+                  style={[styles.amountInput, { paddingRight: 60 }]}
+                  onChangeAmount={this._onChangeAmount}
+                  exchangeRate={exchangeRate}
+                  inputInFiat={inputInFiat}
+                  amount={amount}
+                  exchangeTo={currency}
+                  exchangeFrom={ticker}
+                />
+                <TouchableOpacity style={styles.currencyButton} onPress={this._toggleInputFiat}>
+                  <Text style={styles.currencyButtonText}>{inputInFiat ? currency : ticker}</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      </DetailsModal>,
-      <MoreOptions key="more" ref={c => (this.refMoreOptions = c)} />,
-      <ValidateAddress
-        key="validateaddress"
-        ref={c => (this.refValidateAddress = c)}
-      />,
-    ];
+        </DetailsModal>
+        <MoreOptions
+          ref={(c) => {
+            this.refMoreOptions = c;
+          }}
+        />
+        <ValidateAddress
+          ref={(c) => {
+            this.refValidateAddress = c;
+          }}
+        />
+        <SweepPrivateKey
+          onOpened={onOpened}
+          onClosed={onClosed}
+          ref={(c) => {
+            this.refSweepPrivateKey = c;
+          }}
+        />
+      </React.Fragment>
+    );
   }
 }
 
 Receive.contextTypes = {
-  coinid: PropTypes.object,
+  coinid: PropTypes.shape({}),
   type: PropTypes.string,
   theme: PropTypes.string,
-  settingHelper: PropTypes.object,
+  settingHelper: PropTypes.shape({}),
 };
 
 Receive.childContextTypes = {

@@ -1,0 +1,49 @@
+{
+  "coin": "testnet",
+  "pubKeyData": {
+    "P2SHP2WPKH": "49-*1-*0-$tpubDDJYTZ5AfXWqpqguxVxCES2gszSiGbei96C5hcvecimptwhM6oTnQPFuiuCmBjAKVAamR1P9M4RD2rU74XrcfVy3Kbn8J5FgnLkSD6gEPxD",
+    "P2PKH": "44-*1-*0-$tpubDDebpBUs3pCHeXVsPgLHBBbPL76cwdEihX6Sdf5TFCheqK8j3WvDQs7SERyzhJXstJAGeryxipbR5BtsRXBy9GrrhJMYnYcxjFhU5r5ANde",
+    "P2WPKH": "84-*1-*0-$tpubDDiKkNcbGp51ctUrNYrt32UQZSCS6QcZFUeAUPsYLHcUDWmPVir696ps7PoY8gfciEpsisHHyLtpF7P2y2sLF1gf3Rby3KzwHio1JWctyV2"
+  },
+  "unspent": [
+    {
+      "unPublished": 0,
+      "hash": "4c103a492b65aaca41bb3b782c4f590e56d5b269d41ad48121ea2502d86463a0",
+      "index": 2,
+      "address": "2MtRGW1E2E3jXe1rtaEw3VpCNsiDwbVW1eQ",
+      "value": 0.00369796,
+      "valueSat": 369796
+    },
+    {
+      "unPublished": 0,
+      "hash": "4c103a492b65aaca41bb3b782c4f590e56d5b269d41ad48121ea2502d86463a0",
+      "index": 1,
+      "address": "2N7UPz9tH9hkmAoKnR1VhkgBq9TyyHVL68t",
+      "value": 0.0043,
+      "valueSat": 430000
+    },
+    {
+      "unPublished": 0,
+      "hash": "4c103a492b65aaca41bb3b782c4f590e56d5b269d41ad48121ea2502d86463a0",
+      "index": 0,
+      "address": "2N3Ufft2w4dxGTFJV2dWDTai8SXzzTx3e8K",
+      "value": 0.002,
+      "valueSat": 200000
+    }
+  ],
+  "balance": 0.00999796,
+  "correctPayments": [
+    { "amount": 0.002, "address": "2N2c2wH4LcxhRjGXxggzmDL2iXsVBQEjwsK", "note": "" },
+    { "amount": 0.0043, "address": "2NCLeVvnAoXZou3LrZv9bJMcykSrXnjcRR1", "note": "" },
+    { "amount": 0.0001, "address": "n3WDexiKdJ7RA2xW1Zxx16UpBtuy276Los", "note": "" },
+    { "amount": 0.0003, "address": "tb1qprp7xuz0c5gta60j7ptgdjlj4865rc3l8gthfl", "note": "" }
+  ],
+  "insufficientPayments": [
+    { "amount": 1.002, "address": "2N2c2wH4LcxhRjGXxggzmDL2iXsVBQEjwsK", "note": "" },
+    { "amount": 0.0043, "address": "2NCLeVvnAoXZou3LrZv9bJMcykSrXnjcRR1", "note": "" }
+  ],
+  "wrongAddressPayments": [
+    { "amount": 0.002, "address": "2N2c2wfH4LcxhRjGXxggzmDL2iXsVBQEjwsK", "note": "" },
+    { "amount": 0.0043, "address": "2NCLeVvnAoXZou3LrZv9bJMcykSrXnjcRR1", "note": "" }
+  ]
+}

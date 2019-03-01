@@ -1,0 +1,34 @@
+{
+  "coin": "myriad",
+  "pubKeyData": {
+    "P2SHP2WPKH": "49-*90-*0-$xpub6CLcS66ooFPGSmHTjTJsMWHEQFX3gNgXuE8aQSxJtpo4BrjpVRqcx3s7uwvqnWDuirsT81c62gaAaWdY5oNSzCaNRxUbSyGpQ9SbQrNRtDu",
+    "P2PKH": "44-*90-*0-$xpub6CHoWiY52in9RiM2WXoeDajSrcUF9nGDbw3J2wijcodZqynKQFDWzhjNWWF4B5m2TGQyaY9xCVrUKit7nUyogK94WNfNA2DMSrJgAa4LSFb",
+    "P2WPKH": "84-*90-*0-$xpub6D7Po26pEeV5EifhhxdfTmNnbTPjsHDj9LrYsWj9TJTM7HLaACT7xUjPTa3Gso1yTCpNMeHbTHJhuwmMRz4TNurcvcXZajb2MrQ9gvwQKUR"
+  },
+  "unspent": [
+    {
+      "unPublished": 0,
+      "hash": "386774cf1fd27435ed63b08c44ba184a4ff7402647a92747d1f1b9871e4f4e0d",
+      "index": 0,
+      "value": 50.39991221,
+      "valueSat": 5039991221,
+      "address": "4fy57d6G6L16DDJgUXPLEy2GBJ3DwmFpTT"
+    }
+  ],
+  "balance": 50.39991221,
+  "correctPayments": [
+    { "amount": 0.002, "address": "MNMr2wBZNHXpqXJKfwqFzHxNhUNa3PFvPG", "note": "" },
+    { "amount": 0.0043, "address": "4mBf9jhXHGNP2PY22uoGo4FQL5dErYxcJr", "note": "" },
+    { "amount": 0.0001, "address": "my1q9y7mc2mt0nkn6lekxjt2fcqtxvhjpxu5thhhqj", "note": "" }
+  ],
+  "insufficientPayments": [
+    { "amount": 0.002, "address": "MNMr2wBZNHXpqXJKfwqFzHxNhUNa3PFvPG", "note": "" },
+    { "amount": 100.0043, "address": "4mBf9jhXHGNP2PY22uoGo4FQL5dErYxcJr", "note": "" },
+    { "amount": 0.0001, "address": "my1q9y7mc2mt0nkn6lekxjt2fcqtxvhjpxu5thhhqj", "note": "" }
+  ],
+  "wrongAddressPayments": [
+    { "amount": 0.002, "address": "MNMer2wBZNHXpqXJKfwqFzHxNhUNa3PFvPG", "note": "" },
+    { "amount": 0.0043, "address": "4mBf9jhXHGNP2PY22uoGo4FQL5dErYxcJr", "note": "" },
+    { "amount": 0.0001, "address": "my1q9y7mc2mt0nkn6lekxjt2fcqtxvhjpxu5thhhqj", "note": "" }
+  ]
+}

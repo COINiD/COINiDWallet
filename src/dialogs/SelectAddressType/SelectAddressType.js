@@ -1,13 +1,15 @@
-'use strict';
+
 
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { View, TextInput } from 'react-native';
-import { DetailsModal, Text, Button, CheckBoxSelect } from '../../components';
+import { View } from 'react-native';
+import { getAddressTypeInfo } from 'coinid-address-types';
+import {
+  DetailsModal, Text, Button, CheckBoxSelect,
+} from '../../components';
 import { fontWeight } from '../../config/styling';
 import styles from './styles';
 
-import { getAddressTypeInfo } from 'coinid-address-types';
 
 export default class SelectAddressType extends PureComponent {
   constructor(props) {
@@ -35,21 +37,19 @@ export default class SelectAddressType extends PureComponent {
     const { selectedIndex } = this.state;
     const { supportedAddressTypes } = this.context.coinid.network;
 
-    let addressType = supportedAddressTypes[selectedIndex];
+    const addressType = supportedAddressTypes[selectedIndex];
     this.props.onSelectAddressType(addressType);
   };
 
   render() {
     const { selectedIndex } = this.state;
     const { supportedAddressTypes } = this.context.coinid.network;
-    const addressTypesInfo = supportedAddressTypes.map(e =>
-      getAddressTypeInfo(e)
-    );
+    const addressTypesInfo = supportedAddressTypes.map(e => getAddressTypeInfo(e));
     const selectedAddressTypeInfo = addressTypesInfo[selectedIndex];
 
     return (
       <DetailsModal
-        ref={c => {
+        ref={(c) => {
           this.detailsModal = c;
         }}
         title="Select address type"

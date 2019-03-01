@@ -6,19 +6,23 @@ let coins = [
     ticker: 'btc',
     coin: 'Bitcoin',
     packageName: 'org.coinid.wallet.btc',
-  }, {
+  },
+  {
     ticker: 'tbtc',
     coin: 'Testnet',
     packageName: 'org.coinid.wallet.tbtc',
-  }, {
+  },
+  {
     ticker: 'xmy',
     coin: 'Myriad',
     packageName: 'org.coinid.wallet.xmy',
-  }, {
+  },
+  {
     ticker: 'grs',
     coin: 'Groestlcoin',
     packageName: 'org.coinid.wallet.grs',
-  }, {
+  },
+  {
     ticker: 'tgrs',
     coin: 'GRS-Testnet',
     packageName: 'org.coinid.wallet.tgrs',
@@ -28,7 +32,7 @@ let coins = [
 let platforms = ['ios', 'android'];
 
 const rootDir = `${__dirname}/..`;
-const [,, prefix, selPlatform, selCoin] = process.argv;
+const [, , prefix, selPlatform, selCoin] = process.argv;
 
 if (selPlatform) {
   platforms = platforms.filter(e => e === selPlatform);
@@ -38,45 +42,62 @@ if (selCoin) {
   coins = coins.filter(e => e.ticker === selCoin);
 }
 
-let time = new Date().toISOString().replace(/\D/g, '').substr(0, 12);
+let time = new Date()
+  .toISOString()
+  .replace(/\D/g, '')
+  .substr(0, 12);
 if (prefix !== undefined && prefix) {
   time = `${prefix}-${time}`;
 }
 
-const doBuilds = (platform) => {
+const runTests = () => {
+  try {
+    execSync(`cd ${rootDir}; yarn test`, { stdio: 'inherit' });
+  } catch (err) {
+    return false;
+  }
+  return true;
+};
+
+const doBuilds = platform => {
   execSync(`cd ${rootDir}/${platform}; fastlane bump_build_number`, { stdio: 'inherit' });
   for (let i = 0; i < coins.length; i += 1) {
     const { ticker, coin, packageName } = coins[i];
-    execSync(`cd ${rootDir}/${platform}; fastlane coin_beta ticker:${ticker} coin:${coin} time:${time} package_name:${packageName}`, { stdio: 'inherit' });
+    execSync(
+      `cd ${rootDir}/${platform}; fastlane coin_beta ticker:${ticker} coin:${coin} time:${time} package_name:${packageName}`,
+      { stdio: 'inherit' },
+    );
   }
 };
 
-const createSHA256SUMS = (dir) => {
-  execSync(`
+const createSHA256SUMS = dir => {
+  execSync(
+    `
     cd ${rootDir}/builds/wallet/${dir};
     shasum -a256 *.apk > SHA256SUMS;
     gpg  --yes --digest-algo sha256 --clearsign SHA256SUMS;
     rm SHA256SUMS;
-  `, { stdio: 'inherit' });
+  `,
+    { stdio: 'inherit' },
+  );
 };
 
-const pause = (text) => {
-  execSync(`
-    read -p "${text}" nothing;
-  `, { stdio: 'inherit' });
+const pause = text => {
+  execSync(`read -p "${text}" nothing;`, { stdio: 'inherit' });
 };
 
-if (coins.length) {
-  platforms.forEach(platform => doBuilds(platform));
+if (runTests()) {
+  if (coins.length) {
+    platforms.forEach(platform => doBuilds(platform));
 
-  if (platforms.includes('android')) {
-    pause('Prepare to sign builds... Press enter to continue.');
+    if (platforms.includes('android')) {
+      pause('Prepare to sign builds... Press enter to continue.');
 
-    createSHA256SUMS(time);
-    createSHA256SUMS('latest');
+      createSHA256SUMS(time);
+      createSHA256SUMS('latest');
+    }
   }
+} else {
+  console.log('Tests failed!');
 }
-
-execSync(`
-  ${rootDir}/bin/changeCoin tbtc;
-`, { stdio: 'inherit' });
+execSync(`${rootDir}/bin/changeCoin tbtc;`, { stdio: 'inherit' });

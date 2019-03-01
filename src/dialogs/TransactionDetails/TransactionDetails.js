@@ -1,13 +1,7 @@
-
-
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import {
-  ScrollView,
-  View,
-  Platform,
-  TextInput,
-  Alert,
+  ScrollView, View, Platform, TextInput, Alert, Text as DefaultText,
 } from 'react-native';
 import moment from 'moment';
 import Big from 'big.js';
@@ -20,13 +14,17 @@ import {
   RowInfo,
   COINiDTransport,
   CancelButton,
+  FontScale,
 } from '../../components';
 import Settings from '../../config/settings';
 import ExchangeHelper from '../../utils/exchangeHelper';
 import { numFormat } from '../../utils/numFormat';
 import styles from './styles';
-import { getConfirmationsFromBlockHeight, getMaxFeeIncrease } from '../../libs/coinid-public/transactionHelper';
-import { fontStack, fontWeight } from '../../config/styling';
+import {
+  getConfirmationsFromBlockHeight,
+  getMaxFeeIncrease,
+} from '../../libs/coinid-public/transactionHelper';
+import { fontStack, fontWeight, fontSize } from '../../config/styling';
 
 export default class TransactionDetails extends PureComponent {
   constructor(props, context) {
@@ -74,17 +72,13 @@ export default class TransactionDetails extends PureComponent {
           this._refreshFiatAmountOnDate(balanceChanged, currency, tx.time);
         }
 
-        this.noteHelper
-          .loadNote(tx, address)
-          .then(note => this.setState({ note }));
+        this.noteHelper.loadNote(tx, address).then(note => this.setState({ note }));
       }
     }
   }
 
   _refreshFiatAmount = (amount, currency) => {
-    this.exchangeHelper
-      .convert(amount, currency)
-      .then(fiatAmount => this.setState({ fiatAmount }));
+    this.exchangeHelper.convert(amount, currency).then(fiatAmount => this.setState({ fiatAmount }));
   };
 
   _refreshFiatAmountOnDate = (amount, currency, time) => {
@@ -114,25 +108,28 @@ export default class TransactionDetails extends PureComponent {
       };
 
       if (action === 'TX' && hex) {
-        coinid.queueTx(hex, this.savedUnsignedHex, tx.txid)
+        coinid
+          .queueTx(hex, this.savedUnsignedHex, tx.txid)
           .then(() => refresh())
           .catch((err) => {
             Alert.alert(err);
           });
       }
     }
-  }
+  };
 
   _onOpened = () => {
     this.props.onOpened();
-  }
+  };
 
   _onClosed = () => {
     this.props.onClosed();
-  }
+  };
 
   _getNewFee = () => {
-    const { info: { tx } } = this.props;
+    const {
+      info: { tx },
+    } = this.props;
     const { maxFeeIncrease } = this.state;
     const oldFee = tx.fees;
     const maxFee = Number(Big(maxFeeIncrease).plus(oldFee));
@@ -144,12 +141,19 @@ export default class TransactionDetails extends PureComponent {
 
     const feeIncrease = Number(Big(newFee).minus(oldFee));
 
-    return {oldFee, newFee, feeIncrease, maxFeeIncrease};
-  }
+    return {
+      oldFee,
+      newFee,
+      feeIncrease,
+      maxFeeIncrease,
+    };
+  };
 
   _getBumpFeeData = () => {
-    const { info: { tx } } = this.props;
-    const {newFee} = this._getNewFee();
+    const {
+      info: { tx },
+    } = this.props;
+    const { newFee } = this._getNewFee();
 
     return new Promise((resolve, reject) => {
       try {
@@ -161,8 +165,7 @@ export default class TransactionDetails extends PureComponent {
         return reject(err);
       }
     });
-  }
-
+  };
 
   render() {
     const { currency, info, blockHeight } = this.props;
@@ -172,12 +175,15 @@ export default class TransactionDetails extends PureComponent {
 
       const { tx, address, balanceChanged } = info;
       const {
-        fiatAmount, fiatAmountOnDate, note, ticker, recommendedConfirmations, maxFeeIncrease,
+        fiatAmount,
+        fiatAmountOnDate,
+        note,
+        ticker,
+        recommendedConfirmations,
+        maxFeeIncrease,
       } = this.state;
       const { time, fees, size } = tx;
-      const date = !time
-        ? '-'
-        : moment.unix(time).format('H:mm:ss - MMM D, YYYY');
+      const date = !time ? '-' : moment.unix(time).format('H:mm:ss - MMM D, YYYY');
 
       const confirmations = getConfirmationsFromBlockHeight(tx, blockHeight);
 
@@ -199,13 +205,19 @@ export default class TransactionDetails extends PureComponent {
                 <React.Fragment>
                   <Button
                     onPress={() => {
-                      const {oldFee, newFee, feeIncrease} = this._getNewFee();
+                      const { oldFee, newFee, feeIncrease } = this._getNewFee();
                       Alert.alert(
                         'Bump fee?',
-                        `Previous fee: ${oldFee.toFixed(8)}\nIncrease: ${feeIncrease.toFixed(8)}\n New fee: ${newFee.toFixed(8)}`,
+                        `Previous fee: ${oldFee.toFixed(8)}\nIncrease: ${feeIncrease.toFixed(
+                          8,
+                        )}\n New fee: ${newFee.toFixed(8)}`,
                         [
-                          {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-                          {text: 'Yes', onPress: () => submit()},
+                          {
+                            text: 'Cancel',
+                            onPress: () => console.log('Cancel Pressed'),
+                            style: 'cancel',
+                          },
+                          { text: 'Yes', onPress: () => submit() },
                         ],
                       );
                     }}
@@ -227,20 +239,35 @@ export default class TransactionDetails extends PureComponent {
 
       return (
         <View style={styles.modalContent}>
-          <View
-            style={styles.header}
-          >
-            <Text
-              style={[
-                styles.amountText,
-                styles[balanceChanged < 0 ? 'outgoing' : 'incoming'],
-              ]}
+          <View style={styles.header}>
+            <FontScale
+              fontSizeMax={fontSize.large}
+              fontSizeMin={fontSize.large / 3}
+              text={`${numFormat(balanceChanged, ticker)} ${ticker}`}
+              widthScale={0.95}
             >
-              {`${numFormat(balanceChanged, ticker)} ${ticker}`}
-            </Text>
-            <Text style={[styles.fiatText]}>
-              {`${numFormat(fiatAmount, currency)} ${currency}`}
-            </Text>
+              {({ fontSize: variableFontSize, text }) => (
+                <Text
+                  style={[
+                    styles.amountText,
+                    styles[balanceChanged < 0 ? 'outgoing' : 'incoming'],
+                    { fontSize: variableFontSize },
+                  ]}
+                >
+                  {text}
+                </Text>
+              )}
+            </FontScale>
+            <FontScale
+              fontSizeMax={fontSize.h2}
+              fontSizeMin={fontSize.h2 / 3}
+              text={`${numFormat(fiatAmount, currency)} ${currency}`}
+              widthScale={0.65}
+            >
+              {({ fontSize: variableFontSize, text }) => (
+                <Text style={[styles.fiatText, { fontSize: variableFontSize }]}>{text}</Text>
+              )}
+            </FontScale>
           </View>
           <ScrollView
             style={{
@@ -252,28 +279,45 @@ export default class TransactionDetails extends PureComponent {
             contentContainerStyle={{
               paddingBottom: 16,
             }}
-            onLayout={(e) => { this.refContHeight = e.nativeEvent.layout.height; this.refContScroll = 0; }}
-            onScroll={(e) => { this.refContScroll = e.nativeEvent.contentOffset.y; }}
+            onLayout={(e) => {
+              this.refContHeight = e.nativeEvent.layout.height;
+              this.refContScroll = 0;
+            }}
+            onScroll={(e) => {
+              this.refContScroll = e.nativeEvent.contentOffset.y;
+            }}
             scrollEventThrottle={16}
           >
-            <RowInfo
-              title={balanceChanged < 0 ? 'To' : 'On'}
-              childStyle={{ width: '80%' }}
-              numberOfLines={1}
-              selectable
-            >
-              {address}
+            <RowInfo title={balanceChanged < 0 ? 'Sent to' : 'Received on'} selectable multiLine>
+              <FontScale
+                fontSizeMax={fontSize.base}
+                fontSizeMin={fontSize.base / 3}
+                text={`${address}`}
+                widthScale={0.98}
+              >
+                {({ fontSize: variableFontSize, text }) => (
+                  <Text selectable style={{ fontSize: variableFontSize, ...fontWeight.medium }}>
+                    {text}
+                  </Text>
+                )}
+              </FontScale>
             </RowInfo>
+            <View style={styles.separator} />
             <RowInfo title="Date">{date}</RowInfo>
             <RowInfo title="Status">
-              <TransactionState confirmations={confirmations} recommendedConfirmations={recommendedConfirmations} />
+              <TransactionState
+                confirmations={confirmations}
+                recommendedConfirmations={recommendedConfirmations}
+              />
             </RowInfo>
             <RowInfo title="Confirmations">{confirmations}</RowInfo>
             <View style={styles.separator} />
             <RowInfo
               title="Note"
               multiLine
-              onLayout={(e) => { this.refNoteBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height; }}
+              onLayout={(e) => {
+                this.refNoteBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
+              }}
             >
               <TextInput
                 value={note}
@@ -287,6 +331,7 @@ export default class TransactionDetails extends PureComponent {
                   fontSize: 16,
                   fontFamily: fontStack.primary,
                   ...fontWeight.medium,
+                  paddingVertical: 0,
                 }}
                 underlineColorAndroid="transparent"
                 keyboardType={Platform.OS === 'ios' ? 'default' : 'visible-password'}
@@ -294,26 +339,20 @@ export default class TransactionDetails extends PureComponent {
                 spellCheck={false}
                 textContentType={false}
                 onFocus={(e) => {
-                  this.elModal._setKeyboardOffset(this.refNoteBottom - this.refContHeight + 8 - this.refContScroll);
+                  this.elModal._setKeyboardOffset(
+                    this.refNoteBottom - this.refContHeight + 8 - this.refContScroll,
+                  );
                 }}
               />
             </RowInfo>
             <View style={styles.separator} />
-            <RowInfo title="Fee">
-              {`${numFormat(fees, ticker)} ${ticker}`}
-            </RowInfo>
-            <RowInfo title="Size">
-              {`${size} bytes`}
-            </RowInfo>
+            <RowInfo title="Fee">{`${numFormat(fees, ticker)} ${ticker}`}</RowInfo>
+            <RowInfo title="Size">{`${size} bytes`}</RowInfo>
             <RowInfo title={`${currency} on completion`}>
               {`${numFormat(fiatAmountOnDate, currency)} ${currency}`}
             </RowInfo>
             <View style={styles.separator} />
-            <RowInfo
-              title="Included in TXID"
-              multiLine
-              selectable
-            >
+            <RowInfo title="Included in TXID" multiLine selectable>
               {tx.txid}
             </RowInfo>
             {renderToolBox()}
@@ -325,7 +364,9 @@ export default class TransactionDetails extends PureComponent {
 
     return (
       <DetailsModal
-        ref={(c) => { this.elModal = c; }}
+        ref={(c) => {
+          this.elModal = c;
+        }}
         title="Transaction Details"
         onOpened={this._onOpened}
         onClosed={this._onClosed}

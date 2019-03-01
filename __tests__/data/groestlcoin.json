@@ -1,0 +1,49 @@
+{
+  "coin": "groestlcoin",
+  "pubKeyData": {
+    "P2SHP2WPKH": "49-*17-*0-$xpub6C2to84hFLdu4JMxvaoaSiJ1r9buS5Y7nXQGPSuRRYPWX1ATTwB4zdvZq9XeS3C1Bkv1EJp3zQpW7hLN7N2ZjU2cbD1bHMP1NQ2HaAaFo4S",
+    "P2PKH": "44-*17-*0-$xpub6DBEGvvZFPMwFakEFPZ9Xf3MPvVXiBgHrGZrJMwRSoAtKWhUyMSHQsrRYvdftodqdENyoiVXPE9Y2insgH823cXu7sPbLPvVv822VA9nR1Y",
+    "P2WPKH": "84-*17-*0-$xpub6CDFmeMKBS8snYzUYhYPVgnto3oJgw5DthZhA1q8ABfnFLgXAaFqLFtUphLrYmdsajWVJGZ91puqADSc9nxcj9D9RLTTmNNqbEVJJhNbDNM"
+  },
+  "unspent": [
+    {
+      "unPublished": 0,
+      "hash": "4c103a492b65aaca41bb3b782c4f590e56d5b269d41ad48121ea2502d86463a0",
+      "index": 2,
+      "address": "3HmjusqAu6EtPPSpKW88w5tsjf2tx6236S",
+      "value": 0.00369796,
+      "valueSat": 369796
+    },
+    {
+      "unPublished": 0,
+      "hash": "4c103a492b65aaca41bb3b782c4f590e56d5b269d41ad48121ea2502d86463a0",
+      "index": 1,
+      "address": "3CKE8pix4iEczW18HNYNQgQLK2fEd5jxp8",
+      "value": 0.0043,
+      "valueSat": 430000
+    },
+    {
+      "unPublished": 0,
+      "hash": "4c103a492b65aaca41bb3b782c4f590e56d5b269d41ad48121ea2502d86463a0",
+      "index": 0,
+      "address": "37gYXpSdraphpFgCBMUfryiAcYhmGhMbTr",
+      "value": 0.002,
+      "valueSat": 200000
+    }
+  ],
+  "balance": 0.00999796,
+  "correctPayments": [
+    { "amount": 0.002, "address": "3Kew2dzLeMDUMchRrVse1e1SVYW3odQM3w", "note": "" },
+    { "amount": 0.0043, "address": "Fry6TmG62wfuFP4JKhjuKNjKv8wmjiTVou", "note": "" },
+    { "amount": 0.0001, "address": "grs1qauszw9f5p9029f5sv33qze8jfzvh6extzjr2wm", "note": "" },
+    { "amount": 0.0003, "address": "3AVkPZwZ4XGKpKjboxgi6C4qqZGaMqqd4v", "note": "" }
+  ],
+  "insufficientPayments": [
+    { "amount": 1.002, "address": "3Kew2dzLeMDUMchRrVse1e1SVYW3odQM3w", "note": "" },
+    { "amount": 0.0043, "address": "Fry6TmG62wfuFP4JKhjuKNjKv8wmjiTVou", "note": "" }
+  ],
+  "wrongAddressPayments": [
+    { "amount": 0.002, "address": "3KKew2dzLeMDUMchRrVse1e1SVYW3odQM3w", "note": "" },
+    { "amount": 0.0043, "address": "Fry6TmG62wfuFP4JKhjuKNjKv8wmjiTVou", "note": "" }
+  ]
+}

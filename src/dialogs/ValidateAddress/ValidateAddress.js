@@ -1,13 +1,9 @@
-
-
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {
-  View,
-} from 'react-native';
+import { View } from 'react-native';
 import { fontWeight } from '../../config/styling';
 import {
-  Button, DetailsModal, Text, COINiDTransport,
+  Button, CancelButton, DetailsModal, Text, COINiDTransport,
 } from '../../components';
 import styles from './styles';
 
@@ -20,105 +16,73 @@ export default class ValidateAddress extends PureComponent {
 
   _open = (address) => {
     this.address = address;
-    this.transportRef._submit(undefined, true);
+    this.refModal._open();
   };
 
   _getValidateData = () => {
     const { coinid } = this.context;
     const valData = coinid.buildValCoinIdData(this.address);
     return Promise.resolve(valData);
-  }
+  };
 
   _close = () => {
     this.refModal._close();
   };
 
   render() {
-    const renderStatus = ({ signingText, signingCode }) => {
-      if (signingCode) {
-        return (
-          <React.Fragment>
-            <Text
-              style={{
-                color: '#8A8A8F',
-                fontSize: 22,
-                marginBottom: 8,
-                marginTop: 25,
-                textAlign: 'center',
-              }}
-            >
-              Connect with code
-            </Text>
-            <Text
-              style={{
-                color: '#617AF7',
-                fontSize: 28,
-                marginBottom: 32,
-                textAlign: 'center',
-                ...fontWeight.bold,
-              }}
-            >
-              {signingCode}
-            </Text>
-          </React.Fragment>
-        );
+    const renderTransportContent = ({
+      isSigning, signingText, cancel, submit,
+    }) => {
+      let disableButton = false;
+      if (isSigning) {
+        disableButton = true;
       }
 
       return (
-        <React.Fragment>
-          <Text
-            style={{
-              color: '#8A8A8F',
-              fontSize: 22,
-              marginBottom: 8,
-              marginTop: 25,
-              textAlign: 'center',
-            }}
-          >
-            Status
+        <View style={styles.container}>
+          <Text style={styles.textContainer}>
+            The COINiD Vault will independently generate the expected receive address.
           </Text>
-          <Text
-            style={{
-              color: '#617AF7',
-              fontSize: 22,
-              marginBottom: 32,
-              textAlign: 'center',
-              ...fontWeight.bold,
-            }}
-          >
-            {signingText}
+          <Text style={styles.textContainer}>
+            If it generates a different address. The wallet might have been compromised or been
+            created with a different private key.
           </Text>
-        </React.Fragment>
+          <Text style={[styles.textContainer, { ...fontWeight.bold }]}>
+            In that case the receive address must not be used or shared!
+          </Text>
+          <Button
+            onPress={submit}
+            disabled={disableButton}
+            isLoading={isSigning}
+            loadingText={signingText}
+          >
+            Validate with COINiD Vault
+          </Button>
+          <CancelButton show={isSigning} onPress={cancel} marginTop={16}>
+            Cancel
+          </CancelButton>
+        </View>
       );
     };
 
-    const renderTransportContent = transportArgs => (
+    return (
       <DetailsModal
         ref={(c) => {
           this.refModal = c;
         }}
-        title="Validate address"
+        title="Validate Address"
         onClosed={this._onClosed}
       >
-        <View style={styles.container}>
-          {renderStatus(transportArgs)}
-          <Button style={styles.cancelButton} onPress={this._close}>
-            Cancel
-          </Button>
-        </View>
+        <COINiDTransport
+          ref={(c) => {
+            this.transportRef = c;
+          }}
+          getData={this._getValidateData}
+          onSent={this._close}
+        >
+          {renderTransportContent}
+        </COINiDTransport>
       </DetailsModal>
-    );
-
-    return (
-      <COINiDTransport
-        ref={(c) => { this.transportRef = c; }}
-        getData={this._getValidateData}
-        onSent={this._close}
-        onBLEInit={() => { this.refModal._open(); }}
-        onBLEFail={() => { this.refModal._close(); }}
-      >
-        { renderTransportContent }
-      </COINiDTransport>
     );
   }
 }

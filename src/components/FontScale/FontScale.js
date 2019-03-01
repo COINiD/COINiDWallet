@@ -29,11 +29,15 @@ export default class FontScale extends PureComponent {
 
   _onLayout = (e) => {
     const { widthScale } = this.props;
-    const { nativeEvent: { layout: { width } } } = e;
+    const {
+      nativeEvent: {
+        layout: { width },
+      },
+    } = e;
     this.setState({ layoutWidth: width * widthScale });
-  }
+  };
 
-  _updateFontSize = ({text, fontSizeMax}) => {
+  _updateFontSize = ({ text, fontSizeMax }) => {
     MeasureText.widths({
       texts: [text],
       fontSize: fontSizeMax,
@@ -41,10 +45,9 @@ export default class FontScale extends PureComponent {
       height: 100,
       fontWeight: '400',
     }).then((maxFontSizeWidth) => {
-      console.log('fetched new', {text, maxFontSizeWidth})
       this.setState({ maxFontSizeWidth });
     });
-  }
+  };
 
   _calc = () => {
     const { layoutWidth, maxFontSizeWidth } = this.state;
@@ -57,9 +60,7 @@ export default class FontScale extends PureComponent {
       return null;
     }
 
-    const {
-      fontSizeMax, fontSizeMin, lineHeightMax,
-    } = this.props;
+    const { fontSizeMax, fontSizeMin, lineHeightMax } = this.props;
 
     let fontSize = fontSizeMax;
 
@@ -75,21 +76,21 @@ export default class FontScale extends PureComponent {
     fontSize = fontSize > fontSizeMax ? fontSizeMax : fontSize;
     fontSize = fontSize < fontSizeMin ? fontSizeMin : fontSize;
 
-    const lineHeight = lineHeightMax * fontSize / fontSizeMax;
+    const lineHeight = (lineHeightMax * fontSize) / fontSizeMax;
 
     return { fontSize, lineHeight };
-  }
+  };
 
   render() {
     const renderChildren = () => {
-      const { children } = this.props;
+      const { children, text } = this.props;
       const { fontSize = 0, lineHeight = 0 } = this._calc() || {};
 
       if (!fontSize) {
         return null;
       }
 
-      return children({ fontSize, lineHeight });
+      return children({ fontSize, lineHeight, text });
     };
 
     return (

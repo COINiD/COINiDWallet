@@ -7,15 +7,11 @@ import moment from 'moment';
 import { Icon } from 'react-native-elements';
 import LottieView from 'lottie-react-native';
 import Big from 'big.js';
-import {
-  Graph, Text, TransactionFilter,
-} from '..';
+import { Graph, Text, TransactionFilter } from '..';
 import themeableStyles from './styles';
 import { numFormat } from '../../utils/numFormat';
 
-import {
-  getTxBalanceChange,
-} from '../../libs/coinid-public/transactionHelper';
+import { getTxBalanceChange } from '../../libs/coinid-public/transactionHelper';
 
 import { colors, fontWeight } from '../../config/styling';
 
@@ -38,7 +34,7 @@ class TransactionListItem extends Component {
     const { txData, style, confirmations } = this.props;
     const [tx, address, balanceChanged, key] = txData;
 
-    const itemKey = tx.txid + address;
+    const itemKey = tx.txid + address + this.noteHelper.getBaseKey();
 
     this.propStyle = style;
 
@@ -83,9 +79,7 @@ class TransactionListItem extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const {
-      note, confirmations, unPublished,
-    } = nextState;
+    const { note, confirmations, unPublished } = nextState;
 
     const {
       unPublished: stateUnPublished,
@@ -111,7 +105,7 @@ class TransactionListItem extends Component {
   componentWillUnmount() {
     const { tx, address } = this.state;
 
-    const itemKey = tx.txid + address;
+    const itemKey = tx.txid + address + +this.noteHelper.getBaseKey();
     delete activeItems[itemKey];
   }
 
@@ -140,14 +134,20 @@ class TransactionListItem extends Component {
   };
 
   _percentDone = (confirmations) => {
-    const { coinid: { network: { confirmations: recommendedConfirmations } } } = this.context;
-    const percentage = parseInt((6 * confirmations / recommendedConfirmations), 10) / 6;
+    const {
+      coinid: {
+        network: { confirmations: recommendedConfirmations },
+      },
+    } = this.context;
+    const percentage = parseInt((6 * confirmations) / recommendedConfirmations, 10) / 6;
 
     return percentage > 1 ? 1 : percentage;
   };
 
   _getDateString = () => {
-    const { tx: { time } } = this.state;
+    const {
+      tx: { time },
+    } = this.state;
 
     if (time) {
       return moment.unix(time).format('HH:mm');
@@ -176,7 +176,10 @@ class TransactionListItem extends Component {
     } = this.state;
 
     const styles = this._getStyle();
-    const { type, coinid: { ticker, network } } = this.context;
+    const {
+      type,
+      coinid: { ticker, network },
+    } = this.context;
 
     const renderCurrentState = () => {
       const { unPublished } = tx;
@@ -187,7 +190,9 @@ class TransactionListItem extends Component {
         return (
           <View style={{ justifyContent: 'center', marginRight: 14 }}>
             <LottieView
-              ref={(c) => { this.queueAnim = c; }}
+              ref={(c) => {
+                this.queueAnim = c;
+              }}
               onLayout={() => {
                 this.queueAnim.play();
               }}
@@ -212,7 +217,9 @@ class TransactionListItem extends Component {
             <View style={{ width: 16, height: 16 }}>
               <LottieView
                 style={{}}
-                ref={(c) => { this.progressAnim = c; }}
+                ref={(c) => {
+                  this.progressAnim = c;
+                }}
                 source={lottieFiles.hourglass}
                 loop={false}
                 progress={pendingProgress}
@@ -232,7 +239,7 @@ class TransactionListItem extends Component {
             opacity: confirmationOpacity,
           }}
         >
-          { renderHourglass() }
+          {renderHourglass()}
 
           <Text
             style={[styles.smallText, confirmations ? styles.pendingText : styles.unconfirmedText]}
@@ -267,9 +274,7 @@ class TransactionListItem extends Component {
                       balanceChanged > 0 ? styles.positiveAmount : styles.negativeAmount,
                     ]}
                   >
-                    {numFormat(balanceChanged, ticker)}
-                    {' '}
-                    {ticker}
+                    {numFormat(balanceChanged, ticker)} {ticker}
                   </Text>
                   {renderCurrentState()}
                   <Text style={[styles.smallText]}>{this._getDateString()}</Text>
@@ -338,9 +343,7 @@ export default class TransactionList extends PureComponent {
       return;
     }
 
-    if (
-      this.transactions !== nextProps.transactions
-    ) {
+    if (this.transactions !== nextProps.transactions) {
       this._parseTransactionsProp(nextProps.transactions);
     }
   }
@@ -350,7 +353,6 @@ export default class TransactionList extends PureComponent {
     const addresses = this.coinid.getAllAddresses();
 
     let i = 0;
-
 
     let oldTx;
     const pushTxData = (tx, addr, balance) => {
@@ -394,7 +396,7 @@ export default class TransactionList extends PureComponent {
   };
 
   _onSavedNote = (tx, address) => {
-    const itemKey = tx.txid + address;
+    const itemKey = tx.txid + address + this.noteHelper.getBaseKey();
     if (activeItems[itemKey] !== undefined) {
       activeItems[itemKey]._loadNote();
     }
@@ -441,7 +443,7 @@ export default class TransactionList extends PureComponent {
       let i = this.filteredData.length - 1;
 
       for (; i >= 0; i--) {
-        const [tx,, balanceChanged] = this.filteredData[i];
+        const [tx, , balanceChanged] = this.filteredData[i];
         const { time } = tx;
 
         if (prevTx !== tx) {
@@ -594,7 +596,11 @@ export default class TransactionList extends PureComponent {
     }
   };
 
-  _onScrollBeginDrag = ({ nativeEvent: { contentOffset: { y } } }) => {
+  _onScrollBeginDrag = ({
+    nativeEvent: {
+      contentOffset: { y },
+    },
+  }) => {
     this.scrollBeginY = y;
     this._clearScrollToFirstTimeout();
   };
@@ -627,7 +633,14 @@ export default class TransactionList extends PureComponent {
 
     if (props.prevCellKey === '0:header') {
       return (
-        <Animated.View {...props} style={{ transform: [{ translateY: txItemsOffset }], zIndex: 5, marginTop: -filterHeight }}>
+        <Animated.View
+          {...props}
+          style={{
+            transform: [{ translateY: txItemsOffset }],
+            zIndex: 5,
+            marginTop: -filterHeight,
+          }}
+        >
           {props.children}
         </Animated.View>
       );
@@ -652,9 +665,9 @@ export default class TransactionList extends PureComponent {
     } = this.state;
     const maxScroll = listHeight - headerHeight;
 
-    const itemsHeight = txItemsCount * (56 + 6) + dailiesCount * (36);
+    const itemsHeight = txItemsCount * (56 + 6) + dailiesCount * 36;
 
-    if (itemsHeight >= (maxScroll - filterHeight)) {
+    if (itemsHeight >= maxScroll - filterHeight) {
       return <View style={{ height: filterHeight }} />;
     }
 
@@ -738,11 +751,7 @@ export default class TransactionList extends PureComponent {
             marginBottom: 18,
           }}
         >
-          <LottieView
-            style={{}}
-            source={lottieFiles[`emptytrans_${type}`]}
-            autoSize
-          />
+          <LottieView style={{}} source={lottieFiles[`emptytrans_${type}`]} autoSize />
         </View>
         <Text style={{ fontSize: 18 }}>No transactions</Text>
         <Text
@@ -757,14 +766,14 @@ export default class TransactionList extends PureComponent {
         </Text>
       </Animated.View>
     );
-  }
+  };
 
   _renderItem = ({ item, index }) => {
-    const {
-      isLoadingTxs,
-    } = this.props;
+    const { isLoadingTxs } = this.props;
 
-    const { coinid: { ticker } } = this.context;
+    const {
+      coinid: { ticker },
+    } = this.context;
 
     if (isLoadingTxs) {
       return null;
@@ -811,7 +820,7 @@ export default class TransactionList extends PureComponent {
     };
 
     return doRenderItem();
-  }
+  };
 
   _renderSectionHeader = ({ section }) => {
     const { filterHeight, txItemsOffset, isFiltersOpen } = this.state;
@@ -827,9 +836,14 @@ export default class TransactionList extends PureComponent {
     };
 
     if (section.title === 'Transactions') {
-      return ( // setState below... might want to change that...
+      return (
+        // setState below... might want to change that...
         <View
-          onLayout={({ nativeEvent: { layout: { height: layoutHeight } } }) => {
+          onLayout={({
+            nativeEvent: {
+              layout: { height: layoutHeight },
+            },
+          }) => {
             this.setState({
               headerHeight: layoutHeight - filterHeight,
             });
@@ -864,12 +878,10 @@ export default class TransactionList extends PureComponent {
       );
     }
     return null;
-  }
+  };
 
   render() {
-    const {
-      toggleCurrency, toggleRange,
-    } = this.props;
+    const { toggleCurrency, toggleRange } = this.props;
 
     const styles = this._getStyle();
 
@@ -879,27 +891,37 @@ export default class TransactionList extends PureComponent {
         style={[styles.container]}
         CellRendererComponent={this._renderItemWrapper}
         initialNumToRender={10}
-        ref={(c) => { this.sectionRef = c; }}
+        ref={(c) => {
+          this.sectionRef = c;
+        }}
         onMomentumScrollBegin={this._onMomentumScrollBegin}
         onMomentumScrollEnd={this._onMomentumScrollEnd}
         onScrollBeginDrag={this._onScrollBeginDrag}
         onScrollEndDrag={this._onScrollEndDrag}
-        onLayout={({ nativeEvent: { layout: { height: listHeight } } }) => {
+        onLayout={({
+          nativeEvent: {
+            layout: { height: listHeight },
+          },
+        }) => {
           this.setState({ listHeight });
         }}
         ListHeaderComponent={(
           <View
-            onLayout={({ nativeEvent: { layout: { height: graphHeight } } }) => {
+            onLayout={({
+              nativeEvent: {
+                layout: { height: graphHeight },
+              },
+            }) => {
               this.setState({ graphHeight });
             }}
           >
             <Graph toggleCurrency={toggleCurrency} toggleRange={toggleRange} />
           </View>
-        )}
+)}
         ListFooterComponent={this._renderListFooter}
         renderItem={this._renderItem}
         renderSectionHeader={this._renderSectionHeader}
-        keyExtractor={item => (item[0].txid + item[1])}
+        keyExtractor={item => item[0].txid + item[1]}
         stickySectionHeadersEnabled
         sections={this.sections}
       />

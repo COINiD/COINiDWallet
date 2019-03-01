@@ -1,18 +1,24 @@
-
-
 /**
-* Lib for CoinID Wallets
-*/
+ * Lib for CoinID Wallets
+ */
 
 import Big from 'big.js';
 
 import { EventEmitter } from 'events';
 
-import { getAddressTypeInfo, getTypeFromDerivation, getAddInputFunctionFromDerivation } from 'coinid-address-types';
+import {
+  getAddressTypeInfo,
+  getTypeFromDerivation,
+  getAddInputFunctionFromDerivation,
+} from 'coinid-address-types';
 import feeHelper from '../../utils/feeHelper';
 import noteHelper from '../../utils/noteHelper';
 import {
-  rawHexToObject, cleanQueuedTxs, fillTxBalanceChange, getUnspent, isAddressUsed,
+  rawHexToObject,
+  cleanQueuedTxs,
+  fillTxBalanceChange,
+  getUnspent,
+  isAddressUsed,
 } from './transactionHelper';
 import {
   getByteCount, dataToString, derivationToQr, derivationArrToQr,
@@ -36,20 +42,22 @@ class COINiDPublic extends EventEmitter {
     this.ticker = this.network.ticker;
     this.qrScheme = this.network.qrScheme;
     this.coinTitle = this.network.title;
+    this.unspent = [];
 
     this.blockchain = Blockchain(this.network.bridgeParameterArr, this.storage, this.network);
 
     this.txQueueArr = [];
     this.feeHelper = feeHelper(coin);
     this.noteHelper = noteHelper(key);
+    this.key = key;
     this.pubKeyData = '';
   }
 
-  getStorage = () => this.storage
+  getStorage = () => this.storage;
 
   createPubKeyArrayFromDataString = (data) => {
     if (!data) {
-      throw('Data is empty');
+      throw 'Data is empty';
     }
 
     const pubKeyArray = data
@@ -61,11 +69,11 @@ class COINiDPublic extends EventEmitter {
       }));
 
     if (pubKeyArray[0].derivationPath === undefined) {
-      throw ('Invalid data format');
+      throw 'Invalid data format';
     }
 
     if (pubKeyArray[0].publicKey === undefined) {
-      throw ('Invalid data format');
+      throw 'Invalid data format';
     }
 
     return pubKeyArray;
@@ -75,53 +83,56 @@ class COINiDPublic extends EventEmitter {
     const derivationArr = derivationPath.split('/');
 
     if (derivationArr[0] !== 'm') {
-      throw ('Derivation path format error');
+      throw 'Derivation path format error';
     }
 
     for (let i = 1; i < derivationArr.length; i += 1) {
       const curDir = derivationArr[i].replace(/'$/, '');
       if (!Number.isInteger(parseInt(curDir, 10))) {
-        throw('Derivation path format error');
+        throw 'Derivation path format error';
       }
     }
 
     const accountAddressType = getTypeFromDerivation(derivationPath);
     if (accountAddressType === undefined) {
-      throw ('Derivation path purpose error');
+      throw 'Derivation path purpose error';
     }
 
     if (this.network.supportedAddressTypes.indexOf(accountAddressType) === -1) {
-      throw ('Unsupported address type in derivation');
+      throw 'Unsupported address type in derivation';
     }
 
     if (parseInt(derivationArr[2], 10) !== this.network.bip44Derivation) {
-      throw ('Unsupported coin in derivation');
+      throw 'Unsupported coin in derivation';
     }
 
     if (parseInt(derivationArr[3], 10) !== 0) {
-      throw ('Derivation path specifies unsupported account');
+      throw 'Derivation path specifies unsupported account';
     }
 
     return true;
-  }
+  };
 
   getAccountFromPubKeyArray = (pubKeyArray) => {
     const pubKeyHash = pubKeyArray[0];
 
     this.verifyDerivationPath(pubKeyHash.derivationPath);
 
-    const chainsArr = bip32utils
-      .createChains(pubKeyHash.derivationPath, pubKeyHash.publicKey, this.network);
+    const chainsArr = bip32utils.createChains(
+      pubKeyHash.derivationPath,
+      pubKeyHash.publicKey,
+      this.network,
+    );
 
     const account = new bip32utils.Account(chainsArr);
 
     return account;
-  }
+  };
 
   createWallet = (pubKeyArray) => {
     this.account = this.getAccountFromPubKeyArray(pubKeyArray);
     return this.account;
-  }
+  };
 
   startWallet = () => {
     const promises = [
@@ -133,11 +144,12 @@ class COINiDPublic extends EventEmitter {
       this.loadPubKeyData(),
     ];
 
-    return Promise.all(promises)
-      .then(([account, txQueueArr, balance, txs, blockHeight, pubKeyData]) => {
+    return Promise.all(promises).then(
+      ([account, txQueueArr, balance, txs, blockHeight, pubKeyData]) => {
         this.txQueueArr = txQueueArr;
         this.balance = balance;
         this.pubKeyData = pubKeyData;
+        console.log({ pubKeyData });
 
         this.onBlockHeight(blockHeight);
 
@@ -153,22 +165,25 @@ class COINiDPublic extends EventEmitter {
         this.start();
 
         return true;
-      });
-  }
+      },
+    );
+  };
 
-  start = () => {    
+  start = () => {
     this.startListeners();
     this.blockchain.start().then(() => {
       this.startPublishQueue();
       this.blockchain.startPolling();
       this.blockchain.setStopWhenSynced(false);
     });
-  }
+  };
 
   startPublishQueue = () => {
     const filterPublishErrors = () => {
       const txQueueLength = this.txQueueArr.length;
-      this.txQueueArr = this.txQueueArr.filter(e => (e.publishErrors === undefined || e.publishErrors < 10));
+      this.txQueueArr = this.txQueueArr.filter(
+        e => e.publishErrors === undefined || e.publishErrors < 10,
+      );
 
       if (txQueueLength !== this.txQueueArr.length) {
         console.log('Removed tx with to many publish errors...');
@@ -201,31 +216,31 @@ class COINiDPublic extends EventEmitter {
     };
 
     publishQueue();
-  }
+  };
 
   startListeners = () => {
     this.blockchain.on('blockHeight', this.onBlockHeight);
     this.blockchain.on('connectionChange', this.onConnectionChange);
     this.blockchain.on('txChange', this.onTxChange);
     this.blockchain.on('allsynced', this.onAllSynced);
-  }
+  };
 
   onAllSynced = () => {
     if (this.transactions === null) {
       // first time synced, but no transactions (removes loading on tx)
       this.onTxChange();
     }
-  }
+  };
 
   onConnectionChange = (isConnected) => {
     this.connected = isConnected;
     this.emit('connectionChange', isConnected);
-  }
+  };
 
   onBlockHeight = (blockHeight) => {
     this.blockHeight = blockHeight;
     this.emit('blockHeight', blockHeight);
-  }
+  };
 
   checkAndGenerateNewReceiveAddresses = (txs) => {
     if (isAddressUsed(this.getReceiveAddress(), txs)) {
@@ -233,7 +248,7 @@ class COINiDPublic extends EventEmitter {
       this.blockchain.setAddresses(this.account.getAllAddresses());
       this.checkAndGenerateNewReceiveAddresses(txs);
     }
-  }
+  };
 
   checkAndGenerateNewChangeAddresses = (txs) => {
     if (isAddressUsed(this.getChangeAddress(), txs)) {
@@ -241,7 +256,7 @@ class COINiDPublic extends EventEmitter {
       this.blockchain.setAddresses(this.account.getAllAddresses());
       this.checkAndGenerateNewChangeAddresses(txs);
     }
-  }
+  };
 
   onTxChange = () => {
     this.txQueueArr = cleanQueuedTxs(this.txQueueArr, this.blockchain.transactions, this.network);
@@ -262,35 +277,53 @@ class COINiDPublic extends EventEmitter {
     this.emit('balance');
 
     this.saveAll();
-  }
+  };
 
   discover = (chain, derivedCallback, usedCallback) => {
     const checkForUsedAddresses = (addresses, callback, reject) => {
-      const timeoutTimer = setTimeout(() => { reject('Discovering addresses took to long. Make sure you are connected to the internet...'); }, 30 * 1000);
+      const timeoutTimer = setTimeout(() => {
+        reject(
+          'Discovering addresses took to long. Make sure you are connected to the internet...',
+        );
+      }, 30 * 1000);
 
-      return this.blockchain.getUsedAddresses(addresses).then((usedAddresses) => {
-        clearTimeout(timeoutTimer);
+      return this.blockchain
+        .getUsedAddresses(addresses)
+        .then((usedAddresses) => {
+          clearTimeout(timeoutTimer);
 
-        usedCallback(usedAddresses)
-          .then(() => callback(undefined, usedAddresses));
+          usedCallback(usedAddresses).then(() => callback(undefined, usedAddresses));
 
-        return usedAddresses;
-      })
+          return usedAddresses;
+        })
         .catch((err) => {
           clearTimeout(timeoutTimer);
-          reject('Error while fetching used addresses. Make sure you are connected to the internet...');
+          reject(
+            'Error while fetching used addresses. Make sure you are connected to the internet...',
+          );
         });
     };
 
-    const discoverChain = i => new Promise((resolve, reject) => {
-      return this.account.discoverChain(i, 5, (addresses, callback) => {
-        derivedCallback(addresses)
-          .then(() => checkForUsedAddresses(addresses, callback, reject));
-      }, resolve);
-    });
+    const discoverChain = i => new Promise((resolve, reject) => this.account.discoverChain(
+      i,
+      5,
+      (addresses, callback) => {
+        derivedCallback(addresses).then(() => checkForUsedAddresses(addresses, callback, reject));
+      },
+      resolve,
+    ));
 
     return discoverChain(chain);
-  }
+  };
+
+  fetchUnspent = addresses => this.blockchain.fetchUnspent(addresses);
+
+  getAccountAddressType = () => {
+    const accountDerivation = this.account.getChains()[0].getDerivationPath();
+    const accountAddressType = getTypeFromDerivation(accountDerivation);
+
+    return accountAddressType;
+  };
 
   estimateSize = (requiredSat, batchedTransactions) => {
     const balanceSat = Big(this.balance).times(1e8);
@@ -312,8 +345,7 @@ class COINiDPublic extends EventEmitter {
     let outputP2PKHCount = 0;
     let outputP2WPKHCount = 0;
 
-    const accountDerivation = this.account.getChains()[0].getDerivationPath();
-    const accountAddressType = getTypeFromDerivation(accountDerivation);
+    const accountAddressType = this.getAccountAddressType();
 
     [inputs, reservedSat] = this.selectInputs(requiredSat, true);
 
@@ -355,8 +387,13 @@ class COINiDPublic extends EventEmitter {
 
     addToInputCount(inputs.length, accountAddressType);
 
-    const outputs = this.getOutputsArray(batchedTransactions, requiredSat, reservedSat, alwaysAddChange);
-    for (var i = 0; i < outputs.length; i++) {
+    const outputs = this.getOutputsArray(
+      batchedTransactions,
+      requiredSat,
+      reservedSat,
+      alwaysAddChange,
+    );
+    for (let i = 0; i < outputs.length; i++) {
       addToOutputCount(1, getAddressType(outputs[i].address));
     }
 
@@ -374,7 +411,7 @@ class COINiDPublic extends EventEmitter {
     const byteCount = getByteCount(inputsCounts, outputCounts);
 
     return byteCount;
-  }
+  };
 
   selectInputs = (requiredSat, disableChecks) => {
     let reservedSat = Big(0);
@@ -410,7 +447,7 @@ class COINiDPublic extends EventEmitter {
     }
 
     return [inputsToSign, reservedSat];
-  }
+  };
 
   getOutputsArray = (batchedTransactions, requiredSat, reservedSat, alwaysAddChange) => {
     const changeSat = reservedSat.minus(requiredSat);
@@ -434,30 +471,40 @@ class COINiDPublic extends EventEmitter {
     }
 
     return outputs;
-  }
+  };
 
   // Owner check: [derivationPath]$[first 6 uppercase letters in address]
   // If left out owner check is ignored by coinid
-  getOwnerCheck = address => [
-    this.getChainAndIndex(address),
-    address.substr(0, 6).toUpperCase(),
-  ].join('+');
+  getOwnerCheck = (address) => {
+    const chainAndIndex = this.getChainAndIndex(address);
 
-  getChainAndIndex = address => this.account.getChains().map((e, c) => {
-    const pathArray = e.getDerivationPath().split('/');
-
-    const addressIndex = e.find(address);
-    if (addressIndex === undefined) {
-      return undefined;
+    if (chainAndIndex === undefined) {
+      throw 'Could not get index of ownercheck!';
     }
 
-    pathArray.push(e.find(address));
+    return [chainAndIndex, address.substr(0, 6).toUpperCase()].join('+');
+  };
 
-    return derivationToQr(pathArray.join('/'));
-  }).filter(e => (e !== undefined))[0];
+  getChainAndIndex = address => this.account
+    .getChains()
+    .map((e, c) => {
+      const pathArray = e.getDerivationPath().split('/');
+
+      const addressIndex = e.find(address);
+      if (addressIndex === undefined) {
+        return undefined;
+      }
+
+      pathArray.push(e.find(address));
+
+      return derivationToQr(pathArray.join('/'));
+    })
+    .filter(e => e !== undefined)[0];
 
   buildBumpFeeTransactionData = (tx, newFee) => {
-    const feeIncreaseSat = Big(newFee).minus(tx.fees).times(1e8);
+    const feeIncreaseSat = Big(newFee)
+      .minus(tx.fees)
+      .times(1e8);
     let outputSatToDecrease = feeIncreaseSat;
 
     const sendTx = new bitcoin.TransactionBuilder(this.network);
@@ -477,9 +524,9 @@ class COINiDPublic extends EventEmitter {
     const ownAddresses = this.account.getAllAddresses();
 
     const outputs = tx.vout.map((e, i, arr) => {
-      let orgAmountSat = Number(Big(e.value).times(1e8));
+      const orgAmountSat = Number(Big(e.value).times(1e8));
       let amountSat = orgAmountSat;
-      let isOwnAddress = (ownAddresses.indexOf(e.addr) !== -1);
+      const isOwnAddress = ownAddresses.indexOf(e.addr) !== -1;
 
       if (outputSatToDecrease > 0 && isOwnAddress) {
         amountSat = Number(Big(amountSat).minus(outputSatToDecrease));
@@ -538,7 +585,7 @@ class COINiDPublic extends EventEmitter {
     ];
 
     return dataToString(coinDataArr);
-  }
+  };
 
   buildTransactionData = (batchedTransactions, fee, isRBFEnabled) => {
     const sendTx = new bitcoin.TransactionBuilder(this.network);
@@ -582,44 +629,61 @@ class COINiDPublic extends EventEmitter {
     ];
 
     return dataToString(coinDataArr);
-  }
+  };
 
-  buildValCoinIdData = address => [
-    `VAL/${this.ticker}`,
-    this.getOwnerCheck(address),
-    this.getChainAndIndex(address),
-  ].join(':')
+  buildValCoinIdData = address => [`VAL/${this.ticker}`, this.getOwnerCheck(address), this.getChainAndIndex(address)].join(':');
+
+  buildSwpCoinIdData = address => [`SWP/${this.ticker}`, this.getOwnerCheck(address), this.getChainAndIndex(address)].join(':');
+
+  buildSwpTxCoinIdData = (outputAddress, formattedInputArr, feeSat) => {
+    const inputData = formattedInputArr
+      .map(({
+        type, address, hash, index, valueSat,
+      }) => [type, address, hash, index, valueSat].join('*'))
+      .join('+');
+
+    const total = formattedInputArr.reduce((a, c) => a.plus(c.valueSat), Big(0));
+    const totalOutput = Number(total.minus(feeSat));
+
+    const outputData = [outputAddress, this.getChainAndIndex(outputAddress), totalOutput].join('+');
+
+    return [`SWPTX/${this.ticker}`, this.getOwnerCheck(outputAddress), outputData, inputData].join(
+      ':',
+    );
+  };
 
   buildPubCoinIdData = derivationPathsArr => [
     `PUB/${this.ticker}`,
     '', // empty owner check normally for pubkey.. unless we extend wallet...
     derivationArrToQr(derivationPathsArr),
-  ].join(':')
+  ].join(':');
 
   buildMsgCoinIdData = (address, message) => [
     `MSG/${this.ticker}`,
     this.getOwnerCheck(address),
     this.getChainAndIndex(address),
     encodeURIComponent(message),
-  ].join(':')
+  ].join(':');
 
   build2FACoinIdData = (address, message) => [
     `2FA/${this.ticker}`,
     this.getOwnerCheck(address),
     this.getChainAndIndex(address),
     encodeURIComponent(message),
-  ].join(':')
+  ].join(':');
 
   buildSimpleAuthCoinIdData = (address, message) => [
     `SAH/${this.ticker}`,
     this.getOwnerCheck(address),
     this.getChainAndIndex(address),
     encodeURIComponent(message),
-  ].join(':')
+  ].join(':');
 
-  queueTx = (txHex, unsignedHex, replacingTxid) => new Promise((resolve, reject) => {
+  queueTx = (txHex, unsignedHex, replacingTxid, inputInfo) => new Promise((resolve, reject) => {
     if (txHex.length > 100000) {
-      return reject(`Transaction size exceeds maximum limit of 100000 bytes. Size was ${txHex.length}`);
+      return reject(
+        `Transaction size exceeds maximum limit of 100000 bytes. Size was ${txHex.length}`,
+      );
     }
 
     const queuedTx = this.txQueueArr.map(e => e.tx);
@@ -627,40 +691,39 @@ class COINiDPublic extends EventEmitter {
 
     const queueData = {
       hex: txHex,
-      tx: rawHexToObject(txHex, txs, this.network),
+      tx: rawHexToObject(txHex, txs, this.network, inputInfo),
     };
 
-    if(replacingTxid) {
+    if (replacingTxid) {
       queueData.tx.replacingTxid = replacingTxid;
     }
 
-    if(unsignedHex !== undefined) {
-      var unsignedTx = rawHexToObject(unsignedHex, txs, this.network);
+    if (unsignedHex !== undefined) {
+      const unsignedTx = rawHexToObject(unsignedHex, txs, this.network);
 
-      if(queueData.tx.uniqueHash !== unsignedTx.uniqueHash) {
-        return reject(`Transaction check mismatch.`);
+      if (queueData.tx.uniqueHash !== unsignedTx.uniqueHash) {
+        return reject('Transaction check mismatch.');
       }
     }
 
     this.txQueueArr.unshift(queueData);
     this.onTxChange();
-
     return resolve(queueData);
-  })
+  });
 
-  publishTx = rawTx => this.blockchain.publishTx(rawTx)
+  publishTx = rawTx => this.blockchain.publishTx(rawTx);
 
-  getTx = txId => this.blockchain.getTx(txId, this.account.getAllAddresses())
+  getTx = txId => this.blockchain.getTx(txId, this.account.getAllAddresses());
 
-  nextReceiveAddress = () => this.account.nextChainAddress(0)
+  nextReceiveAddress = () => this.account.nextChainAddress(0);
 
-  getReceiveAddress = () => this.account.getChainAddress(0)
+  getReceiveAddress = () => this.account.getChainAddress(0);
 
-  nextChangeAddress = () => this.account.nextChainAddress(1)
+  nextChangeAddress = () => this.account.nextChainAddress(1);
 
-  getChangeAddress = () => this.account.getChainAddress(1)
+  getChangeAddress = () => this.account.getChainAddress(1);
 
-  getAllAddresses = () => this.account.getAllAddresses()
+  getAllAddresses = () => this.account.getAllAddresses();
 
   getDerivationPath = (addressType, qrFriendly) => {
     const purpose = `${getAddressTypeInfo(addressType).bip44Derivation}'`;
@@ -678,7 +741,7 @@ class COINiDPublic extends EventEmitter {
     }
 
     return derivationPath;
-  }
+  };
 
   setTransactions = (newTransactions) => {
     if (newTransactions !== this.transactions) {
@@ -686,7 +749,7 @@ class COINiDPublic extends EventEmitter {
     }
 
     return newTransactions;
-  }
+  };
 
   /* Account */
   getAccount = () => new Promise((resolve, reject) => {
@@ -703,7 +766,7 @@ class COINiDPublic extends EventEmitter {
       this.account = bip32utils.Account.fromCoinIdJSON(storedAccount, this.network);
       return resolve(this.account);
     });
-  })
+  });
 
   loadTxQueueArr = () => new Promise((resolve, reject) => this.storage.get('txQueueArr').then((txQueueArr) => {
     if (!txQueueArr) {
@@ -711,7 +774,7 @@ class COINiDPublic extends EventEmitter {
     }
 
     return resolve(txQueueArr);
-  }))
+  }));
 
   loadBalance = () => new Promise((resolve, reject) => this.storage.get('balance').then((balance) => {
     if (!balance) {
@@ -719,7 +782,7 @@ class COINiDPublic extends EventEmitter {
     }
 
     return resolve(balance);
-  }))
+  }));
 
   loadPubKeyData = () => new Promise((resolve, reject) => this.storage.get('pubKeyData').then((pubKeyData) => {
     if (!pubKeyData) {
@@ -727,7 +790,7 @@ class COINiDPublic extends EventEmitter {
     }
 
     return resolve(pubKeyData);
-  }))
+  }));
 
   loadBlockHeight = () => new Promise((resolve, reject) => this.storage.get('blockHeight').then((blockHeight) => {
     if (!blockHeight) {
@@ -735,9 +798,9 @@ class COINiDPublic extends EventEmitter {
     }
 
     return resolve(blockHeight);
-  }))
+  }));
 
-  setAccount = newAccount => this.account = newAccount
+  setAccount = newAccount => (this.account = newAccount);
 
   validateAddress = (address) => {
     try {
@@ -746,23 +809,21 @@ class COINiDPublic extends EventEmitter {
     } catch (err) {
       return false;
     }
-  }
+  };
 
-  saveAll = () => {
-    return Promise.all([
-      this.storage.set('account', this.account),
-      this.storage.set('pubKeyData', this.pubKeyData),
-      this.storage.set('txQueueArr', this.txQueueArr),
-      this.storage.set('balance', this.balance),
-      this.storage.set('transactions', this.transactions),
-      this.storage.set('blockHeight', this.blockHeight),
-    ]);
-  }
+  saveAll = () => Promise.all([
+    this.storage.set('account', this.account),
+    this.storage.set('pubKeyData', this.pubKeyData),
+    this.storage.set('txQueueArr', this.txQueueArr),
+    this.storage.set('balance', this.balance),
+    this.storage.set('transactions', this.transactions),
+    this.storage.set('blockHeight', this.blockHeight),
+  ]);
 }
 
 /**
  * Module exports...
  */
-module.exports = function (coin, storage) {
-  return new COINiDPublic(coin, storage);
+module.exports = function (coin, storage, key) {
+  return new COINiDPublic(coin, storage, key);
 };

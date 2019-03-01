@@ -32,13 +32,13 @@ var addBridges = function(bridgeParameterArr, storage, network) {
 
 var getStatus = function() {
   var bridgeStatusPromises = this.bridges.map(b => b.getStatus());
-  
+
   return Promise.all(bridgeStatusPromises)
-    .then(results => { 
-      return results 
+    .then(results => {
+      return results
     })
     .catch(e => console.log(e));
-} 
+}
 
 var getSummary = function(addresses) {
   return getBridgeFunction(this.bridges, 'getSummary').getSummary(addresses);
@@ -48,8 +48,8 @@ var getHistory = function(addresses) {
   return getBridgeFunction(this.bridges, 'getHistory').getHistory(addresses);
 }
 
-var getUnspent = function(addresses) {
-  return getBridgeFunction(this.bridges, 'getUnspent').getUnspent(addresses);
+var fetchUnspent = function(addresses) {
+  return getBridgeFunction(this.bridges, 'fetchUnspent').fetchUnspent(addresses);
 }
 
 var getBalance = function(addresses) {
@@ -150,7 +150,7 @@ class Blockchain extends EventEmitter {
   getHistory = getHistory
   getSummary = getSummary
   getBalance = getBalance
-  getUnspent = getUnspent
+  fetchUnspent = fetchUnspent
   setAddresses = setAddresses
   addAddresses = addAddresses
   getUsedAddresses = getUsedAddresses
@@ -187,7 +187,7 @@ class Blockchain extends EventEmitter {
   onBridgeFetchedHistory = () => {
     var hasOneSynced = this.bridges.map(b => b.historySyncCount > 0 ? 1 : 0).includes(1);
     var hasAllAttempted = !this.bridges.map(b => b.historySyncAttemptCount > 0 ? 1 : 0).includes(0);
-    
+
     if(hasAllAttempted) {
     };
 
@@ -230,7 +230,7 @@ class Blockchain extends EventEmitter {
     }
 
     this.selectBestBridge();
-    
+
     var selectedTxs = this.selectedBridge.transactions;
     var requiredAgreements = Math.ceil(bridges.length / 2.0);
     selectedTxs = selectedTxs.filter(tx => tx.agreements >= requiredAgreements); // remove txs that have lower than required agreements
@@ -252,7 +252,7 @@ class Blockchain extends EventEmitter {
       return ;
     }
 
-    sortBridges.sort((a, b) => b.totalAgreements - a.totalAgreements);   
+    sortBridges.sort((a, b) => b.totalAgreements - a.totalAgreements);
 
     var bestTotal = sortBridges[0].totalAgreements;
     var filteredBridges = sortBridges.filter(bridge => bestTotal === bridge.totalAgreements && bridge.connected);
@@ -299,4 +299,3 @@ class Blockchain extends EventEmitter {
 }
 
 module.exports = (bridgeParameterArr, storage, network) => new Blockchain(bridgeParameterArr, storage, network);
-

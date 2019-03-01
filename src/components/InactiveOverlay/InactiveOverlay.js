@@ -1,5 +1,3 @@
-
-
 import React, { PureComponent } from 'react';
 
 import {
@@ -56,7 +54,6 @@ export default class InactiveOverlay extends PureComponent {
     this.appState = 'initial';
 
     this.settingHelper = settingHelper(Settings.coin);
-    this.settingHelper.on('updated', this._updateSettings);
 
     this.isViewLocked = true;
     this.usePasscode = true;
@@ -67,6 +64,7 @@ export default class InactiveOverlay extends PureComponent {
   }
 
   componentDidMount() {
+    this.settingHelper.on('updated', this._updateSettings);
     AppState.addEventListener('change', this._handleAppStateChange);
     this.forceUpdate();
   }
@@ -82,6 +80,7 @@ export default class InactiveOverlay extends PureComponent {
   }
 
   componentWillUnmount() {
+    this.settingHelper.removeListener('updated', this._updateSettings);
     AppState.removeEventListener('change', this._handleAppStateChange);
   }
 
@@ -209,8 +208,6 @@ export default class InactiveOverlay extends PureComponent {
       if (this._getCOINiD() === undefined) {
         return resolve(false);
       }
-
-      console.log('checking...');
 
       this._getCOINiD()
         .getAccount()

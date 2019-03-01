@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Receive gets matches snapshot 1`] = `
+Object {
+  "address": "msvEw9nCEtDtayUe9Mthh657yaDaqNN5A7",
+  "amount": 0,
+  "currency": "USD",
+  "exchangeRate": 0,
+  "qrAddress": "bitcoin:msvEw9nCEtDtayUe9Mthh657yaDaqNN5A7",
+  "ticker": "tBTC",
+}
+`;

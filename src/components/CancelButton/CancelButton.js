@@ -43,7 +43,7 @@ class CancelButton extends PureComponent {
 
       this.appState = newAppState;
     }
-  }
+  };
 
   _handleShow = (show) => {
     if (show) {
@@ -51,7 +51,7 @@ class CancelButton extends PureComponent {
     } else {
       this._exitAnimation();
     }
-  }
+  };
 
   _enterAnimation = () => {
     const { height } = this.state;
@@ -61,9 +61,9 @@ class CancelButton extends PureComponent {
       Animated.timing(height, {
         toValue: this.buttonHeight + marginTop,
         duration: 250,
-      }).start(() => { });
+      }).start(() => {});
     }, showTimeout);
-  }
+  };
 
   _exitAnimation = () => {
     const { height } = this.state;
@@ -75,29 +75,33 @@ class CancelButton extends PureComponent {
     Animated.timing(height, {
       toValue: 0,
       duration: 250,
-    }).start(() => { });
-  }
+    }).start(() => {});
+  };
 
   _getStyle = () => {
     const { theme } = this.context;
     return themeableStyles(theme);
-  }
+  };
 
   render() {
-    const { onPress, children, style, marginTop } = this.props;
+    const {
+      onPress, children, style, marginTop, show,
+    } = this.props;
     const { height } = this.state;
     const styles = this._getStyle();
 
     return (
-      <Animated.View style={[{ height, overflow: 'hidden' }]}>
+      <Animated.View style={[{ height, overflow: 'hidden', backgroundColor: 'transparent' }]}>
         <Button
-          onLayout={(c) => { this.buttonHeight = c.nativeEvent.layout.height; }}
+          onLayout={(c) => {
+            this.buttonHeight = c.nativeEvent.layout.height;
+          }}
           style={[styles.button, style, { marginTop }]}
           textStyle={styles.buttonText}
           onPress={onPress}
           {...this.props}
         >
-          { children }
+          {children}
         </Button>
       </Animated.View>
     );
@@ -117,7 +121,7 @@ CancelButton.propTypes = {
 
 CancelButton.defaultProps = {
   show: false,
-  onPress: () => { },
+  onPress: () => {},
   showTimeout: 5000,
   marginTop: 16,
 };

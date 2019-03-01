@@ -26,6 +26,11 @@ fastlane ios bump_build_number
 fastlane ios coin_beta
 ```
 
+### ios message_slack
+```
+fastlane ios message_slack
+```
+
 
 ----
 

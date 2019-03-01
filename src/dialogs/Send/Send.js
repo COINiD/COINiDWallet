@@ -1,10 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Platform,
-  TextInput,
-  View,
-  TouchableOpacity,
+  Platform, TextInput, View, TouchableOpacity,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import Big from 'big.js';
@@ -16,8 +13,7 @@ import styles from './styles';
 import { numFormat } from '../../utils/numFormat';
 import ExchangeHelper from '../../utils/exchangeHelper';
 import { fontSize } from '../../config/styling';
-
-const bip21 = require('bip21');
+import { decodeQrRequest } from '../../utils/addressHelper';
 
 export default class Send extends PureComponent {
   constructor(props, context) {
@@ -55,6 +51,10 @@ export default class Send extends PureComponent {
     this.settingHelper.on('updated', this._onSettingsUpdated);
   }
 
+  componentWillUnmount() {
+    this.settingHelper.removeListener('updated', this._onSettingsUpdated);
+  }
+
   _onSettingsUpdated = (settings) => {
     const { currency } = settings;
     this.setState({ currency });
@@ -62,12 +62,10 @@ export default class Send extends PureComponent {
   };
 
   _refreshExchangeRate = (currency) => {
-    this.exchangeHelper
-      .convert(1, currency)
-      .then((exchangeRate) => {
-        this.setState({ exchangeRate });
-      });
-  }
+    this.exchangeHelper.convert(1, currency).then((exchangeRate) => {
+      this.setState({ exchangeRate });
+    });
+  };
 
   _verify = () => {
     let { amount, address, editAmount } = this.state;
@@ -104,8 +102,7 @@ export default class Send extends PureComponent {
     if (!this.context.coinid.validateAddress(address)) {
       errors.push({
         type: 'address',
-        message:
-          `address is not a valid ${this.context.coinid.coin} address`,
+        message: `address is not a valid ${this.context.coinid.coin} address`,
       });
     }
 
@@ -145,34 +142,22 @@ export default class Send extends PureComponent {
   };
 
   _parseQRCodeResult = (qrResult) => {
-    const { coinid: { network: { bech32, qrScheme } } } = this.context;
+    const {
+      coinid: {
+        network: { bech32, qrScheme },
+      },
+    } = this.context;
 
-    try {
-      // try first with bip21
-      const decoded = bip21.decode(qrResult, qrScheme);
-      const { address, options: { amount = '', message = '' } } = decoded;
+    const decoded = decodeQrRequest(qrResult, { qrScheme, bech32 });
+    const { address, amount = '', note = '' } = decoded;
 
-      this.setState({ address, amount: `${amount}`, note: `${message}` });
-
-      this.amountRef._updateAmount(`${amount}`);
-    } catch (err) {
-      // fallback to only match address in qr
-      let addressMatch = qrResult.match(/^[1-9A-HJ-NP-Za-km-z]{26,36}$/);
-
-      if (!addressMatch) {
-        const re = new RegExp(`^${bech32}[0-9a-z]{10,88}$`);
-        addressMatch = qrResult.match(re);
-      }
-
-      if (!addressMatch || !addressMatch[0]) {
-        return false;
-      }
-
-      const [address] = addressMatch;
-      this.setState({ address });
+    if (address) {
+      this.amountRef._updateAmount(amount);
+      this.setState({ address, amount, note });
+      return true;
     }
 
-    return true;
+    return false;
   };
 
   _open = (item) => {
@@ -211,7 +196,7 @@ export default class Send extends PureComponent {
     }
 
     this.setState({ inputInFiat: !inputInFiat });
-  }
+  };
 
   render() {
     const {
@@ -225,9 +210,7 @@ export default class Send extends PureComponent {
       currency,
     } = this.state;
 
-    const {
-      onOpened, onClosed, balance,
-    } = this.props;
+    const { onOpened, onClosed, balance } = this.props;
 
     let { inputInFiat } = this.state;
 
@@ -257,7 +240,7 @@ export default class Send extends PureComponent {
           />
         </Button>
         <Button style={styles.formButton} onPress={this._submit}>
-            Update
+          Update
         </Button>
       </View>
     );
@@ -276,8 +259,8 @@ export default class Send extends PureComponent {
       return (
         <View style={{ flexDirection: 'row' }}>
           <Text style={styles.formInfo}>Available balance: </Text>
-          <Text style={[styles.formInfo, (availableBalance < 0 ? styles.negativeBalance : null)]}>
-            { getAmount() }
+          <Text style={[styles.formInfo, availableBalance < 0 ? styles.negativeBalance : null]}>
+            {getAmount()}
           </Text>
         </View>
       );
@@ -285,13 +268,15 @@ export default class Send extends PureComponent {
 
     const renderSendButton = () => (
       <Button style={styles.formButton} onPress={this._submit}>
-          Add transaction
+        Add transaction
       </Button>
     );
 
     return (
       <DetailsModal
-        ref={(c) => { this.elModal = c; }}
+        ref={(c) => {
+          this.elModal = c;
+        }}
         title={editAddress ? 'Edit Transaction' : 'Send'}
         verticalPosition="flex-end"
         onOpened={onOpened}
@@ -308,35 +293,42 @@ export default class Send extends PureComponent {
         >
           <View
             style={styles.modalContent}
-            onLayout={(e) => { this.refContHeight = e.nativeEvent.layout.height; }}
+            onLayout={(e) => {
+              this.refContHeight = e.nativeEvent.layout.height;
+            }}
           >
-
             <View
               style={styles.formItem}
-              onLayout={c => this.toContPos = c}
-              ref={c => this.toContRef = c}
-              onFocus={(e) => { this.elModal._setKeyboardOffset(this.refToBottom - this.refContHeight + 8); }}
-              onLayout={(e) => { this.refToBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height; }}
+              onLayout={c => (this.toContPos = c)}
+              ref={c => (this.toContRef = c)}
+              onFocus={(e) => {
+                this.elModal._setKeyboardOffset(this.refToBottom - this.refContHeight + 8);
+              }}
+              onLayout={(e) => {
+                this.refToBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
+              }}
             >
               <Text style={styles.formLabel}>To</Text>
               <View style={styles.formItemRow}>
                 <FontScale
-                  style={{flex: 1, flexDirection: 'column', alignItems: 'flex-start'}}
+                  style={{ flex: 1, flexDirection: 'column', alignItems: 'flex-start' }}
                   fontSizeMax={fontSize.base}
                   fontSizeMin={6}
                   text={address}
                   widthScale={0.9}
                 >
-                  {({fontSize}) => (
+                  {({ fontSize }) => (
                     <TextInput
                       keyboardType={Platform.OS === 'ios' ? 'default' : 'visible-password'}
-                      style={[styles.formItemInput, {flex: 0, width: '100%', fontSize}]}
+                      style={[styles.formItemInput, { flex: 0, width: '100%', fontSize }]}
                       value={address}
                       autoCorrect={false}
                       spellCheck={false}
                       textContentType={false}
                       onChangeText={address => this.setState({ address: address.trim() })}
-                      ref={(c) => { this.toRef = c; }}
+                      ref={(c) => {
+                        this.toRef = c;
+                      }}
                       returnKeyType="done"
                       onSubmitEditing={() => this.amountRef.focus()}
                       underlineColorAndroid="transparent"
@@ -362,15 +354,23 @@ export default class Send extends PureComponent {
 
             <View
               style={styles.formItem}
-              ref={(c) => { this.amountContRef = c; }}
-              onFocus={(e) => { this.elModal._setKeyboardOffset(this.refAmountBottom - this.refContHeight + 8); }}
-              onLayout={(e) => { this.refAmountBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height; }}
+              ref={(c) => {
+                this.amountContRef = c;
+              }}
+              onFocus={(e) => {
+                this.elModal._setKeyboardOffset(this.refAmountBottom - this.refContHeight + 8);
+              }}
+              onLayout={(e) => {
+                this.refAmountBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
+              }}
             >
               <View>
                 <Text style={styles.formLabel}>Amount</Text>
                 <View style={styles.formItemRow}>
                   <AmountInput
-                    ref={(c) => { this.amountRef = c; }}
+                    ref={(c) => {
+                      this.amountRef = c;
+                    }}
                     style={[styles.formItemInput, { paddingRight: 60 }]}
                     onChangeAmount={this._onChangeAmount}
                     onSubmitEditing={() => this.noteRef.focus()}
@@ -381,22 +381,21 @@ export default class Send extends PureComponent {
                     exchangeFrom={ticker}
                   />
                 </View>
-                <TouchableOpacity
-                  style={styles.currencyButton}
-                  onPress={this._toggleInputFiat}
-                >
-                  <Text style={styles.currencyButtonText}>
-                    {inputInFiat ? currency : ticker}
-                  </Text>
+                <TouchableOpacity style={styles.currencyButton} onPress={this._toggleInputFiat}>
+                  <Text style={styles.currencyButtonText}>{inputInFiat ? currency : ticker}</Text>
                 </TouchableOpacity>
               </View>
-              { renderAvailableBalance() }
+              {renderAvailableBalance()}
             </View>
 
             <View
               style={styles.formItem}
-              onFocus={(e) => { this.elModal._setKeyboardOffset(this.refNoteBottom - this.refContHeight + 8); }}
-              onLayout={(e) => { this.refNoteBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height; }}
+              onFocus={(e) => {
+                this.elModal._setKeyboardOffset(this.refNoteBottom - this.refContHeight + 8);
+              }}
+              onLayout={(e) => {
+                this.refNoteBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
+              }}
             >
               <Text style={styles.formLabel}>Note</Text>
               <View style={styles.formItemRow}>

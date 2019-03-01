@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { fontWeight } from '../../config/styling';
 import parentStyles from '../dialogStyles';
+import styleMerge from '../../utils/styleMerge';
 
 export default styleMerge(
   parentStyles('light'),
@@ -17,5 +18,5 @@ export default styleMerge(
       color: '#000',
       ...fontWeight.normal,
     },
-  })
+  }),
 );

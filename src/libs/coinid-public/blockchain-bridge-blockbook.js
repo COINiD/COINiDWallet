@@ -1,14 +1,15 @@
-
-
 /**
-* Parses data from insight and sends it back.
-*/
+ * Parses data from insight and sends it back.
+ */
 
 import io from 'socket.io-client';
 
 import { EventEmitter } from 'events';
 import {
-  getTxUniqueHash, isAddressUsed, removeDoubleSpendTxs,
+  getTxUniqueHash,
+  isAddressUsed,
+  removeDoubleSpendTxs,
+  getUnspent,
 } from './transactionHelper';
 
 const sortTxs = (a, b) => {
@@ -31,55 +32,52 @@ const sortTxs = (a, b) => {
   return b.time - a.time;
 };
 
-const convertJsonToTxObject = jsonTxs => jsonTxs.filter(e => e !== null).map((jsonTx) => {
-  const { tx, confirmations } = jsonTx;
-  const {
-    height: blockHeight,
-    blockTimestamp: time,
-    hash: txid,
-  } = tx;
+const convertJsonToTxObject = jsonTxs => jsonTxs
+  .filter(e => e !== null)
+  .map((jsonTx) => {
+    const { tx, confirmations } = jsonTx;
+    const { height: blockHeight, blockTimestamp: time, hash: txid } = tx;
 
-  let feeSat = 0;
+    let feeSat = 0;
 
-  const vin = tx.inputs.map((input, index) => {
-    feeSat += Number(input.satoshis);
-    return {
-      n: index,
-      addr: input.address,
-      txid: input.txid,
-      value: Number(input.satoshis) / 1e8,
-      vout: input.outputIndex,
-      sequence: input.sequence,
+    const vin = tx.inputs.map((input, index) => {
+      feeSat += Number(input.satoshis);
+      return {
+        n: index,
+        addr: input.address,
+        txid: input.txid,
+        value: Number(input.satoshis) / 1e8,
+        vout: input.outputIndex,
+        sequence: input.sequence,
+      };
+    });
+
+    const vout = tx.outputs.map((output, index) => {
+      feeSat -= Number(output.satoshis);
+      return {
+        n: index,
+        addr: output.address,
+        value: Number(output.satoshis) / 1e8,
+      };
+    });
+
+    const fees = feeSat / 1e8;
+    const size = tx.hex.length;
+
+    const cleanTx = {
+      blockHeight: blockHeight < 0 ? undefined : blockHeight,
+      confirmations,
+      fees,
+      size,
+      time,
+      txid,
+      vin,
+      vout,
     };
+
+    cleanTx.uniqueHash = getTxUniqueHash(cleanTx);
+    return cleanTx;
   });
-
-  const vout = tx.outputs.map((output, index) => {
-    feeSat -= Number(output.satoshis);
-    return {
-      n: index,
-      addr: output.address,
-      value: Number(output.satoshis) / 1e8,
-    };
-  });
-
-  const fees = feeSat / 1e8;
-  const size = tx.hex.length;
-
-  const cleanTx = {
-    blockHeight: blockHeight < 0 ? undefined : blockHeight,
-    confirmations,
-    fees,
-    size,
-    time,
-    txid,
-    vin,
-    vout,
-  };
-
-  cleanTx.uniqueHash = getTxUniqueHash(cleanTx);
-  return cleanTx;
-});
-
 
 const startHistoryPolling = function (preferedInterval, timer) {
   const run = () => {
@@ -207,54 +205,59 @@ class Blockbook extends EventEmitter {
 
     this.socket.on('connect', () => socketConnected());
     this.socket.on('disconnect', () => socketDisconnected());
-  }
+  };
 
-  abortHistory = () => { console.log('emptyAbort...'); }
+  abortHistory = () => {
+    console.log('emptyAbort...');
+  };
 
-  statusSyncCount = 0
+  statusSyncCount = 0;
 
-  statusSyncAttemptCount = 0
+  statusSyncAttemptCount = 0;
 
-  historySyncCount = 0
+  historySyncCount = 0;
 
-  historySyncAttemptCount = 0
+  historySyncAttemptCount = 0;
 
-  stopWhenSynced = false
+  stopWhenSynced = false;
 
-  started = false
+  started = false;
 
-  addresses = []
+  addresses = [];
 
-  transactions = []
+  transactions = [];
 
-  blockHeight = 0
+  blockHeight = 0;
 
-  connected = true
+  connected = true;
 
-  historyTo = 0
+  historyTo = 0;
 
-  info = { bridge: 'Blockbook' }
+  info = { bridge: 'Blockbook' };
 
   socketSendPromise = ({ method, params }) => new Promise((resolve, reject) => {
-    const timeoutTimer = setTimeout(() => { reject('socket promise timeout'); }, 10000);
+    const timeoutTimer = setTimeout(() => {
+      reject('socket promise timeout');
+    }, 10000);
 
     this.socket.send({ method, params }, (data) => {
       clearTimeout(timeoutTimer);
       resolve(data);
     });
-  })
+  });
 
   publishTx = (rawTx) => {
     const method = 'sendTransaction';
     const params = [rawTx];
 
     return this.socketSendPromise({ method, params }).then((json) => {
+      console.log({ json });
       if (json.error) {
-        throw ('Error while publishing');
+        throw 'Error while publishing';
       }
       return json;
     });
-  }
+  };
 
   getStatus = () => {
     const method = 'getInfo';
@@ -278,7 +281,7 @@ class Blockbook extends EventEmitter {
       })
       .catch(() => {
         this.setConnected(false);
-        throw ('Error while fetching');
+        throw 'Error while fetching';
       });
   };
 
@@ -288,10 +291,10 @@ class Blockbook extends EventEmitter {
         addresses, from, to, fromBlock, toBlock,
       }) => ({
         addresses,
-        from: (from === undefined ? 0 : from),
-        to: (to === undefined ? 2000000000 : to),
-        fromBlock: (fromBlock === undefined ? 0 : fromBlock),
-        toBlock: (toBlock === undefined ? 2000000000 : toBlock),
+        from: from === undefined ? 0 : from,
+        to: to === undefined ? 2000000000 : to,
+        fromBlock: fromBlock === undefined ? 0 : fromBlock,
+        toBlock: toBlock === undefined ? 2000000000 : toBlock,
       });
 
       const {
@@ -315,24 +318,25 @@ class Blockbook extends EventEmitter {
         const { result } = json;
 
         if (result === undefined) {
-          throw ('Error while fetching from blockbook');
+          throw 'Error while fetching from blockbook';
         }
 
         return result;
       });
     };
 
-    return Promise.all([doLookup(false), doLookup(true)])
-      .then(([dbLookup, mempoolLookup]) => ({
-        totalCount: mempoolLookup.totalCount + dbLookup.totalCount,
-        items: mempoolLookup.items.concat(dbLookup.items),
-      }));
+    return Promise.all([doLookup(false), doLookup(true)]).then(([dbLookup, mempoolLookup]) => ({
+      totalCount: mempoolLookup.totalCount + dbLookup.totalCount,
+      items: mempoolLookup.items.concat(dbLookup.items),
+    }));
   };
-
 
   getHistory = (addresses, skipinconsistencycheck) => {
     this.totalItems = 0;
-    let txChange = ((this.transactions === undefined || this.transactions.length === 0) && this.hasFetchedHistory === undefined) ? 1 : 0;
+    let txChange = (this.transactions === undefined || this.transactions.length === 0)
+      && this.hasFetchedHistory === undefined
+      ? 1
+      : 0;
     this.hasFetchedHistory = true;
 
     const removeDuplicates = (txs) => {
@@ -396,7 +400,9 @@ class Blockbook extends EventEmitter {
 
     const checkIfComplete = (txs) => {
       if (skipinconsistencycheck) return txs;
-      const includedTxs = txs.filter(tx => tx.confirmations >= this.network.confirmations || tx.orphaned); // always refetch until txs has 6 confirmations.
+      const includedTxs = txs.filter(
+        tx => tx.confirmations >= this.network.confirmations || tx.orphaned,
+      ); // always refetch until txs has 6 confirmations.
 
       if (txChange) {
         this.transactions = txs;
@@ -407,12 +413,27 @@ class Blockbook extends EventEmitter {
       this.inconsistent = false;
 
       if (includedTxs.length !== this.totalItems) {
-        if ((this.historyTo === 0 || includedTxs.length !== txs.length) && includedTxs.length < this.totalItems) {
-          this.historyTo = (this.totalItems - includedTxs.length); // take som height in case other order...
+        if (
+          (this.historyTo === 0 || includedTxs.length !== txs.length)
+          && includedTxs.length < this.totalItems
+        ) {
+          this.historyTo = this.totalItems - includedTxs.length; // take som height in case other order...
 
-          console.log('detected new tx on api, fetching...', includedTxs.length, txs.length, this.totalItems, this.historyTo);
+          console.log(
+            'detected new tx on api, fetching...',
+            includedTxs.length,
+            txs.length,
+            this.totalItems,
+            this.historyTo,
+          );
         } else {
-          console.log('inconsistency detected, doing a full refresh', this.historyTo, this.totalItems, includedTxs, txs);
+          console.log(
+            'inconsistency detected, doing a full refresh',
+            this.historyTo,
+            this.totalItems,
+            includedTxs,
+            txs,
+          );
           this.historyTo = undefined;
           this.inconsistent = true;
         }
@@ -443,21 +464,20 @@ class Blockbook extends EventEmitter {
         .then(resolve)
         .catch(reject);
     });
-  }
+  };
 
   fetchTotalItemsOnExplorer = addresses => this.lookupAddressHistories({ addresses, to: 0 }).then((json) => {
     const { totalCount } = json;
 
     if (totalCount === undefined) {
-      throw ('Error while fetching from blockbook');
+      throw 'Error while fetching from blockbook';
     }
 
     return totalCount;
-  })
+  });
 
   getLastTransactionBlockHeight = () => {
-    if (this.transactions === undefined
-      || this.transactions.length === 0) {
+    if (this.transactions === undefined || this.transactions.length === 0) {
       return 0;
     }
 
@@ -468,7 +488,21 @@ class Blockbook extends EventEmitter {
         return this.transactions[i].blockHeight;
       }
     }
-  }
+  };
+
+  fetchUnspent = addresses => this.lookupAndConvertAddressHistories({ addresses }).then(txs => getUnspent(txs, addresses));
+
+  lookupAndConvertAddressHistories = args => this.lookupAddressHistories(args).then((json) => {
+    const { items } = json;
+
+    if (items === undefined) {
+      throw 'Error while fetching from blockbook';
+    }
+
+    const convertedItems = convertJsonToTxObject(items, this.network);
+
+    return convertedItems;
+  });
 
   fetchTransactions = (addresses, to) => this.fetchTotalItemsOnExplorer(addresses).then((totalItems) => {
     this.totalItems = totalItems;
@@ -482,32 +516,21 @@ class Blockbook extends EventEmitter {
       fromBlock = this.getLastTransactionBlockHeight() + 1;
     }
 
-    return this.lookupAddressHistories({ addresses, fromBlock }).then((json) => {
-      const { items } = json;
+    return this.lookupAndConvertAddressHistories({ addresses, fromBlock });
+  });
 
-      if (items === undefined) {
-        throw ('Error while fetching from blockbook');
-      }
+  getUsedAddresses = addresses => this.fetchTransactions(addresses).then((txs) => {
+    const usedAddresses = {};
 
-      const convertedItems = convertJsonToTxObject(items, this.network);
+    for (let i = 0; i < addresses.length; i += 1) {
+      const address = addresses[i];
+      usedAddresses[address] = isAddressUsed(address, txs);
+    }
 
-      return convertedItems;
-    });
-  })
+    return usedAddresses;
+  });
 
-  getUsedAddresses = addresses => this.fetchTransactions(addresses)
-    .then((txs) => {
-      const usedAddresses = {};
-
-      for (let i = 0; i < addresses.length; i += 1) {
-        const address = addresses[i];
-        usedAddresses[address] = isAddressUsed(address, txs);
-      }
-
-      return usedAddresses;
-    })
-
-  resetSyncCounts = resetSyncCounts
+  resetSyncCounts = resetSyncCounts;
 
   startPolling = () => {
     this.resetSyncCounts();
@@ -515,15 +538,15 @@ class Blockbook extends EventEmitter {
     this.startHistoryPolling(20000);
   };
 
-  startHistoryPolling = startHistoryPolling
+  startHistoryPolling = startHistoryPolling;
 
-  startStatusPolling = startStatusPolling
+  startStatusPolling = startStatusPolling;
 
-  connectionFailsThreshold = 1
+  connectionFailsThreshold = 1;
 
-  connectionFails = 0
+  connectionFails = 0;
 
-  lastSetConnected = false
+  lastSetConnected = false;
 
   setConnected = (isConnected) => {
     if (isConnected === false && this.lastSetConnected === false) {
@@ -546,7 +569,7 @@ class Blockbook extends EventEmitter {
 
       return true;
     }
-  }
+  };
 
   setBlockHeight = (blockHeight) => {
     if (this.blockHeight !== blockHeight) {
@@ -554,23 +577,23 @@ class Blockbook extends EventEmitter {
       this.emit('blockHeight', blockHeight);
       this.storage.set(`${this.apiUrl}:height`, blockHeight);
     }
-  }
+  };
 
-  setStopWhenSynced = setStopWhenSynced
+  setStopWhenSynced = setStopWhenSynced;
 
   saveTransactions = () => this.storage.set(`${this.apiUrl}:txs`, this.transactions).then(() => {
     console.log('saved...', this.transactions.length);
-  })
+  });
 
   setAddresses = (addresses) => {
     // change addresses.
     this.addresses = addresses;
-  }
+  };
 
   addAddresses = (addresses) => {
     // change addresses.
     this.addresses = this.addresses.concat(addresses);
-  }
+  };
 
   start = () => new Promise((resolve) => {
     Promise.all([
@@ -590,7 +613,7 @@ class Blockbook extends EventEmitter {
 
       return resolve(blockHeight);
     });
-  })
+  });
 }
 
 module.exports = (apiUrl, storage, network) => new Blockbook(apiUrl, storage, network);

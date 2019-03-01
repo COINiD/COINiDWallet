@@ -23,7 +23,6 @@ class Screen extends PureComponent {
 
     this.parentNavigation = screenProps.parentNavigation;
     this.settingHelper = screenProps.settingHelper;
-    this.settingHelper.on('updated', this._onSettingsUpdated);
 
     this.state = {
       slides: this.parentNavigation.state.params.slides,
@@ -33,6 +32,8 @@ class Screen extends PureComponent {
   }
 
   componentDidMount() {
+    this.settingHelper.on('updated', this._onSettingsUpdated);
+
     Linking.canOpenURL('coinid://').then((hasCOINiD) => {
       this.setState({ hasCOINiD });
     });

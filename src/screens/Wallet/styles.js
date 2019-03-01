@@ -1,6 +1,8 @@
 import { StyleSheet } from 'react-native';
-import { colors } from '../../config/styling';
 import { ifIphoneX } from 'react-native-iphone-x-helper';
+
+import { colors } from '../../config/styling';
+import styleMerge from '../../utils/styleMerge';
 
 export default (theme) => styleMerge(StyleSheet.create({
   container: {

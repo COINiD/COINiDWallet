@@ -21,7 +21,6 @@ export default class Balance extends PureComponent {
     this.state = {
       fiatBalance: 0.0,
       currency: undefined,
-      layoutWidth: 320,
       ticker,
     };
   }
@@ -47,11 +46,9 @@ export default class Balance extends PureComponent {
   }
 
   _refreshFiatBalance = (balance) => {
-    this.exchangeHelper
-      .convert(balance, this.currentCurrency)
-      .then((fiatBalance) => {
-        this.setState({ fiatBalance });
-      });
+    this.exchangeHelper.convert(balance, this.currentCurrency).then((fiatBalance) => {
+      this.setState({ fiatBalance });
+    });
   };
 
   _onSettingsUpdated = (settings) => {
@@ -64,18 +61,16 @@ export default class Balance extends PureComponent {
 
   _onSyncedExchange = () => {
     this._refreshFiatBalance(this.props.balance);
-  }
+  };
 
   _getStyle = () => {
     const { theme } = this.context;
     return themeableStyles(theme);
-  }
+  };
 
   render() {
     const styles = this._getStyle();
-    const {
-      fiatBalance, currency, ticker,
-    } = this.state;
+    const { fiatBalance, currency, ticker } = this.state;
     const { balance, style, toggleCurrency } = this.props;
 
     if (currency === undefined) {
@@ -92,14 +87,14 @@ export default class Balance extends PureComponent {
           fontSizeMin={12}
           lineHeightMax={62.5}
           text={balanceText}
-          widthScale={0.90}
+          widthScale={0.9}
         >
           {({ fontSize, lineHeight }) => (
-            <Text style={styles.coinText} numberOfLines={1}>
-              <DefaultText style={{ fontSize, lineHeight }}>
+            <Text style={styles.coinText} numberOfLines={1} allowFontScaling={false}>
+              <DefaultText style={{ fontSize, lineHeight }} allowFontScaling={false}>
                 {numFormat(balance, ticker)}
               </DefaultText>
-              <DefaultText style={[styles.ticker, { fontSize }]}>
+              <DefaultText style={[styles.ticker, { fontSize }]} allowFontScaling={false}>
                 {` ${ticker}`}
               </DefaultText>
             </Text>
@@ -115,7 +110,10 @@ export default class Balance extends PureComponent {
         >
           {({ fontSize, lineHeight }) => (
             <TouchableOpacity style={{ alignSelf: 'flex-start' }} onPress={() => toggleCurrency()}>
-              <Text style={[styles.currencyText, { fontSize, lineHeight }]}>
+              <Text
+                style={[styles.currencyText, { fontSize, lineHeight }]}
+                allowFontScaling={false}
+              >
                 {currencyText}
               </Text>
             </TouchableOpacity>

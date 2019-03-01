@@ -1,11 +1,10 @@
 import { StyleSheet } from 'react-native';
-import { colors, fontSize, fontWeight } from '../../config/styling';
+import { colors, fontWeight } from '../../config/styling';
 
 export default StyleSheet.create({
   row: {
     marginVertical: 8,
     flexDirection: 'row',
-    justifyContent: 'space-between',
   },
   multiRow: {
     marginVertical: 8,
@@ -15,10 +14,12 @@ export default StyleSheet.create({
   },
   rowTitle: {
     color: colors.getTheme('light').fadedText,
+    flexShrink: 1,
   },
   rowText: {
     ...fontWeight.medium,
   },
+  childStyle: { flexGrow: 1 },
   childTextStyle: {
     textAlign: 'right',
   },

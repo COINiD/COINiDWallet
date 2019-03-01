@@ -12,8 +12,8 @@ import {
   Platform,
   Keyboard,
 } from 'react-native';
-import styles from './styles';
 import { getBottomSpace, getStatusBarHeight } from 'react-native-iphone-x-helper';
+import styles from './styles';
 
 const BackButton = BackHandler || BackAndroid;
 
@@ -32,7 +32,9 @@ export default class Modal extends PureComponent {
     this.subscriptions = [];
 
     if (Platform.OS === 'ios') {
-      this.subscriptions.push(Keyboard.addListener('keyboardWillChangeFrame', this._onKeyboardChange));
+      this.subscriptions.push(
+        Keyboard.addListener('keyboardWillChangeFrame', this._onKeyboardChange),
+      );
     }
   }
 
@@ -63,7 +65,7 @@ export default class Modal extends PureComponent {
     ]).start(() => {
       this.props.onOpened();
     });
-  }
+  };
 
   _close = () => {
     if (Platform.OS === 'android') {
@@ -87,16 +89,16 @@ export default class Modal extends PureComponent {
       this.setState({ isOpen: false });
       this.props.onClosed();
     });
-  }
+  };
 
   _onBackPress = () => {
     this._close();
     return true;
-  }
+  };
 
   _onKeyboardChange = (e) => {
     this.keyBoardEvent = e;
-  }
+  };
 
   _setKeyboardOffset = (offset) => {
     if (Platform.OS === 'ios') {
@@ -104,11 +106,11 @@ export default class Modal extends PureComponent {
         this.keyboardAvoid._onKeyboardChange(this.keyBoardEvent);
       });
     }
-  }
+  };
 
   render() {
     const {
-      verticalPosition, children, avoidKeyboard, avoidKeyboardOffset, onLayout
+      verticalPosition, children, avoidKeyboard, avoidKeyboardOffset, onLayout,
     } = this.props;
     const {
       isOpen, overlayOpacity, scale, top, keyboardOffset,
@@ -119,17 +121,19 @@ export default class Modal extends PureComponent {
     }
 
     const renderView = () => {
-      if( Platform.OS === 'ios' ) {
+      if (Platform.OS === 'ios') {
         return (
           <KeyboardAvoidingView
-            ref={(c) => { this.keyboardAvoid = c; }}
+            ref={(c) => {
+              this.keyboardAvoid = c;
+            }}
             behavior="position"
             enabled={avoidKeyboard}
             keyboardVerticalOffset={avoidKeyboardOffset + keyboardOffset + getStatusBarHeight(true)}
             style={{ width: '100%' }}
           >
             <Animated.View style={[styles.dialog, { transform: [{ scale }, { translateY: top }] }]}>
-              { children}
+              {children}
             </Animated.View>
           </KeyboardAvoidingView>
         );
@@ -137,7 +141,7 @@ export default class Modal extends PureComponent {
 
       return (
         <Animated.View style={[styles.dialog, { transform: [{ scale }, { translateY: top }] }]}>
-          { children}
+          {children}
         </Animated.View>
       );
     };
@@ -147,14 +151,15 @@ export default class Modal extends PureComponent {
         style={[
           styles.container,
           isOpen ? styles.visible : styles.hidden,
-          { justifyContent: verticalPosition }]}
+          { justifyContent: verticalPosition },
+        ]}
         onLayout={onLayout}
       >
         <TouchableWithoutFeedback onPress={this._close}>
           <Animated.View style={[styles.overlay, { opacity: overlayOpacity }]} />
         </TouchableWithoutFeedback>
 
-        { renderView() }
+        {renderView()}
       </View>
     );
   }

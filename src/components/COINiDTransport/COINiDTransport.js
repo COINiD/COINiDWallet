@@ -1,9 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Linking, Alert,
-} from 'react-native';
+import { Linking, Alert } from 'react-native';
 import bleCentral from 'react-native-p2p-transfer-ble-central';
+import KeepAwake from 'react-native-keep-awake';
 
 import Settings from '../../config/settings';
 import { p2pServer } from '../../utils/p2p-ble-central';
@@ -24,12 +23,11 @@ export default class COINiDTransport extends PureComponent {
     const { type } = this.context;
 
     if (type === 'cold') {
-      bleCentral.isSupported()
-        .then((isBLESupported) => {
-          this.setState({
-            isBLESupported,
-          });
+      bleCentral.isSupported().then((isBLESupported) => {
+        this.setState({
+          isBLESupported,
         });
+      });
     }
   }
 
@@ -38,9 +36,11 @@ export default class COINiDTransport extends PureComponent {
   }
 
   _openNotFoundModal = () => {
-    const { modals: { notFoundModal } } = this.context;
+    const {
+      modals: { notFoundModal },
+    } = this.context;
     notFoundModal._open();
-  }
+  };
 
   _checkForCOINiD = () => {
     const { type } = this.context;
@@ -50,22 +50,22 @@ export default class COINiDTransport extends PureComponent {
     }
 
     return Linking.canOpenURL('coinid://');
-  }
+  };
 
   _addUrlListener = () => {
     global.disableInactiveOverlay();
     Linking.addEventListener('url', this._handleURLEvent);
-  }
+  };
 
   _removeUrlListener = () => {
     global.enableInactiveOverlay();
     Linking.removeEventListener('url', this._handleURLEvent);
-  }
+  };
 
   _handleURLEvent = (event) => {
     this._removeUrlListener(); // remove listener once we get first event.
     this._handleOpenURL(event.url);
-  }
+  };
 
   _handleOpenURL = (url) => {
     if (url) {
@@ -75,7 +75,7 @@ export default class COINiDTransport extends PureComponent {
       handleReturnData(data);
       this._cancel();
     }
-  }
+  };
 
   _getCOINiDUrl = (dataToTransport) => {
     const { type } = this.context;
@@ -90,7 +90,7 @@ export default class COINiDTransport extends PureComponent {
     };
 
     return `${getPrefix()}/${dataToTransport}`;
-  }
+  };
 
   _transportData = (dataToTransport, skipReturnData, skipPreferred) => {
     const { type } = this.context;
@@ -100,9 +100,10 @@ export default class COINiDTransport extends PureComponent {
     }
 
     return this._transportDataHot(dataToTransport, skipReturnData);
-  }
+  };
 
   _transportDataHot = (dataToTransport, skipReturnData) => {
+    const { onSent } = this.props;
     const url = this._getCOINiDUrl(dataToTransport);
 
     if (!skipReturnData) {
@@ -115,12 +116,16 @@ export default class COINiDTransport extends PureComponent {
     }
 
     Linking.openURL(url).catch(err => console.error('An error occured', err));
-  }
+    onSent();
+  };
 
   _transportDataCold = (dataToTransport, skipReturnData, skipPreferred) => {
     const url = this._getCOINiDUrl(dataToTransport);
     const {
-      settingHelper, settingHelper: { settings: { preferredColdTransport } },
+      settingHelper,
+      settingHelper: {
+        settings: { preferredColdTransport },
+      },
       modals: { coldTransportModal },
     } = this.context;
 
@@ -153,11 +158,14 @@ export default class COINiDTransport extends PureComponent {
         });
       });
     }
-  }
+  };
 
   _transportDataQR = (url, skipReturnData, successCb) => {
     const { onSent } = this.props;
-    const { modals: { qrDataSenderModal }, navigation } = this.context;
+    const {
+      modals: { qrDataSenderModal },
+      navigation,
+    } = this.context;
 
     qrDataSenderModal._open(url, () => {
       onSent();
@@ -169,7 +177,7 @@ export default class COINiDTransport extends PureComponent {
         });
       }
     });
-  }
+  };
 
   _transportDataBLE = (url, skipReturnData, successCb) => {
     const { onSent, onBLEInit, onBLEFail } = this.props;
@@ -224,9 +232,14 @@ export default class COINiDTransport extends PureComponent {
     };
 
     this.p2p = p2pServer(code, {
-      cbConnected, cbReceiveProgress, cbReceiveDone, cbSendProgress, cbSendDone,
+      cbConnected,
+      cbReceiveProgress,
+      cbReceiveDone,
+      cbSendProgress,
+      cbSendDone,
     });
-    this.p2p.connectAndSend(url)
+    this.p2p
+      .connectAndSend(url)
       .then((data) => {
         successCb(data);
       })
@@ -235,7 +248,7 @@ export default class COINiDTransport extends PureComponent {
         this._cancel();
         onBLEFail();
       });
-  }
+  };
 
   _stopWaiting = () => {
     const { type } = this.context;
@@ -250,11 +263,11 @@ export default class COINiDTransport extends PureComponent {
     } else if (this.p2p !== undefined) {
       this.p2p.stop();
     }
-  }
+  };
 
   _cancel = () => {
     this._stopWaiting();
-  }
+  };
 
   _submit = (submitArg, skipReturnData, skipPreferred) => {
     this._checkForCOINiD().then((hasCOINiD) => {
@@ -267,7 +280,7 @@ export default class COINiDTransport extends PureComponent {
         });
       }
     });
-  }
+  };
 
   render() {
     const {
@@ -277,15 +290,20 @@ export default class COINiDTransport extends PureComponent {
 
     const { children } = this.props;
 
-    return children({
-      isSigning,
-      signingText,
-      signingCode,
-      submit: this._submit,
-      cancel: this._cancel,
-      isBLESupported,
-      type,
-    });
+    return (
+      <React.Fragment>
+        {isSigning ? <KeepAwake /> : null}
+        {children({
+          isSigning,
+          signingText,
+          signingCode,
+          submit: this._submit,
+          cancel: this._cancel,
+          isBLESupported,
+          type,
+        })}
+      </React.Fragment>
+    );
   }
 }
 

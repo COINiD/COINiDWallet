@@ -23,8 +23,13 @@ class QRScan extends PureComponent {
 
   _onSuccess = (qrResults) => {
     const { navigation: { goBack, state: { params: { qrCodeResult } } } } = this.props;
-    qrCodeResult(qrResults.data);
-    goBack();
+    if (qrCodeResult(qrResults.data)) {
+      goBack();
+    } else {
+      // display error
+      console.log(qrResults.data);
+      goBack();
+    }
   };
 
   _onClose = () => {
@@ -106,6 +111,8 @@ class QRScan extends PureComponent {
           fadeIn={false}
           cameraStyle={styles.container}
           notAuthorizedView={this._renderNotAuthorized()}
+          reactivate
+          reactivateTimeout={2000}
         />
       </View>
     );

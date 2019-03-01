@@ -1,0 +1,49 @@
+{
+  "coin": "bitcoin",
+  "pubKeyData": {
+    "P2SHP2WPKH": "49-*0-*0-$xpub6CkbGcMGuz8YPkzfL9r3MrGjazWJYL8rFXKafGTdkFmeMHyLidvaFgWGvkwDTy9ze429K8AiEEoukhyJMw5AvwzwiBH9gjGEk636cnKKKGT",
+    "P2PKH": "44-*0-*0-$xpub6DP26N4oFK3btF9VGJmG4Dbco1hAu7hwg4TaMvdB3i7FptjZMJYad1iAEi6YTsE9au5CwoLXUwsurDoXeQS9TV6iLES7w74VCei4RpUsf44",
+    "P2WPKH": "84-*0-*0-$xpub6BwV1bP9VZZzMFPpzBx8vcC8QvQdbVjLarcgQxX68Bj5oVTThfecDm9LPQwxzjMqTrie53pmLP2Yaag8H7H5GzsqBJVZxEKZg4sPgAHzRQR"
+  },
+  "unspent": [
+    {
+      "unPublished": 0,
+      "hash": "4c103a492b65aaca41bb3b782c4f590e56d5b269d41ad48121ea2502d86463a0",
+      "index": 2,
+      "address": "3Go7JpcBu7XdYa93EUfvTD4hFbECWRr1Ew",
+      "value": 0.00369796,
+      "valueSat": 369796
+    },
+    {
+      "unPublished": 0,
+      "hash": "4c103a492b65aaca41bb3b782c4f590e56d5b269d41ad48121ea2502d86463a0",
+      "index": 1,
+      "address": "37yNswnZjKMRyqoazQYWLdaCAkayy6rwSb",
+      "value": 0.0043,
+      "valueSat": 430000
+    },
+    {
+      "unPublished": 0,
+      "hash": "4c103a492b65aaca41bb3b782c4f590e56d5b269d41ad48121ea2502d86463a0",
+      "index": 0,
+      "address": "3LP5QGb3oeb2jJNEecGKy8mLrLXsN9EVEV",
+      "value": 0.002,
+      "valueSat": 200000
+    }
+  ],
+  "balance": 0.00999796,
+  "correctPayments": [
+    { "amount": 0.002, "address": "3H4cAZ7qPd4HcgSQzad9oX4AbSVxs9hMS5", "note": "" },
+    { "amount": 0.0043, "address": "1CXFxAnFzeCa61ChFB7iHnFe2NekG74YZE", "note": "" },
+    { "amount": 0.0001, "address": "bc1q0e3904gfenwky062kv6pdut6gjs2taauu4hum2", "note": "" },
+    { "amount": 0.0003, "address": "3AcsPXgpehJ1y8zQfzU93yTF1gdDiYJHU6", "note": "" }
+  ],
+  "insufficientPayments": [
+    { "amount": 1.002, "address": "3H4cAZ7qPd4HcgSQzad9oX4AbSVxs9hMS5", "note": "" },
+    { "amount": 0.0043, "address": "1CXFxAnFzeCa61ChFB7iHnFe2NekG74YZE", "note": "" }
+  ],
+  "wrongAddressPayments": [
+    { "amount": 0.002, "address": "3H4cAGZ7qPd4HcgSQzad9oX4AbSVxs9hMS5", "note": "" },
+    { "amount": 0.0043, "address": "1CXFxAnFzeCa61ChFB7iHnFe2NekG74YZE", "note": "" }
+  ]
+}

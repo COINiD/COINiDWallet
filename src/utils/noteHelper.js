@@ -1,4 +1,4 @@
-"use strict"
+
 
 /**
  * Helper for storing and retrieving notes.
@@ -6,37 +6,36 @@
 
 import { EventEmitter } from 'events';
 import storageHelper from './storageHelper';
+
 const md5 = require('md5');
 
 class NoteHelper extends EventEmitter {
-
-  constructor(coin) {
+  constructor(baseKey) {
     super();
-    this.storage = storageHelper(coin+'-notes');
+    this.baseKey = baseKey;
+    this.storage = storageHelper(`${baseKey}-notes`);
     this.cache = {};
   }
 
-  getKey = (tx, address) => {
-    return md5(tx.uniqueHash+address);
-  }
+  getBaseKey = () => this.baseKey
+
+  getKey = (tx, address) => md5(tx.uniqueHash + address)
 
   saveNotes = (tx, batchedTransactions) => {
-    let p = batchedTransactions.map(({address, note}) => this.saveNote(tx, address, note));
+    const p = batchedTransactions.map(({ address, note }) => this.saveNote(tx, address, note));
     return Promise.all(p);
   }
 
   loadNotes = (tx) => {
-    let otherVouts = tx.vout;
-    let p = otherVouts.map(({addr}) => this.loadNote(tx, addr));
+    const otherVouts = tx.vout;
+    const p = otherVouts.map(({ addr }) => this.loadNote(tx, addr));
+    const promise = Promise.all(p)
+      .then(notesArr => new Map(notesArr.map((note, i) => [otherVouts[i].addr, note])));
 
-    return Promise.all(p).then((notesArr) => {
-      return new Map(notesArr.map((note, i) => [otherVouts[i].addr, note]));
-    });
+    return promise;
   }
 
-  saveNote = (tx, address, note) => {
-    note = note === undefined ? '' : note;
-
+  saveNote = (tx, address, note = '') => {
     const key = this.getKey(tx, address);
 
     this.cache[key] = note;
@@ -49,7 +48,7 @@ class NoteHelper extends EventEmitter {
   getCachedNote = (tx, address) => {
     const key = this.getKey(tx, address);
 
-    if(this.cache[key] !== undefined && this.cache[key] !== null) {
+    if (this.cache[key] !== undefined && this.cache[key] !== null) {
       return this.cache[key];
     }
     return '';
@@ -57,28 +56,28 @@ class NoteHelper extends EventEmitter {
 
   loadNote = (tx, address) => {
     const key = this.getKey(tx, address);
-    
-    return new Promise((resolve, reject) => {
-      if(this.cache[key] !== undefined && this.cache[key] !== null) {
+
+    return new Promise((resolve) => {
+      if (this.cache[key] !== undefined && this.cache[key] !== null) {
         return resolve(this.cache[key]);
       }
 
       return this.storage.get(key).then(note => resolve(note));
-    }).then(note => {
-      if(note !== undefined && note !== null) {
+    }).then((note) => {
+      if (note !== undefined && note !== null) {
         this.cache[key] = note;
-        return note;
       }
+      return note;
     });
   }
 }
 
-let NoteHelpersCache = {}; // for local caching so we dont create several for same coin.
+const NoteHelpersCache = {}; // for local caching so we dont create several for same baseKey.
 
-module.exports = function(coin) {
-  if(NoteHelpersCache[coin] === undefined) {
-    NoteHelpersCache[coin] = new NoteHelper(coin);
+module.exports = (baseKey) => {
+  if (NoteHelpersCache[baseKey] === undefined) {
+    NoteHelpersCache[baseKey] = new NoteHelper(baseKey);
   }
 
-  return NoteHelpersCache[coin];
-}
+  return NoteHelpersCache[baseKey];
+};

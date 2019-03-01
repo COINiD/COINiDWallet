@@ -12,7 +12,6 @@ export default class QRDataSender extends PureComponent {
     super(props);
 
     const { height } = Dimensions.get('window');
-    console.log({ height });
 
     this.state = {
       data: '',
@@ -40,20 +39,32 @@ export default class QRDataSender extends PureComponent {
     this._close();
   };
 
-  _onLayout = ({ nativeEvent: { layout: { width, height } } }) => {
+  _onLayout = ({
+    nativeEvent: {
+      layout: { width, height },
+    },
+  }) => {
     this.setState({
       dialogHeight: height,
       dialogWidth: width,
     });
   };
 
-  _onLayoutTop = ({ nativeEvent: { layout: { height } } }) => {
+  _onLayoutTop = ({
+    nativeEvent: {
+      layout: { height },
+    },
+  }) => {
     this.setState({
       topHeight: height,
     });
   };
 
-  _onLayoutBottom = ({ nativeEvent: { layout: { height } } }) => {
+  _onLayoutBottom = ({
+    nativeEvent: {
+      layout: { height },
+    },
+  }) => {
     this.setState({
       bottomHeight: height,
     });
@@ -64,10 +75,12 @@ export default class QRDataSender extends PureComponent {
       dialogWidth, dialogHeight, topHeight, bottomHeight,
     } = this.state;
 
-    if (dialogWidth === undefined
-         || dialogHeight === undefined
-         || topHeight === undefined
-         || bottomHeight === undefined) {
+    if (
+      dialogWidth === undefined
+      || dialogHeight === undefined
+      || topHeight === undefined
+      || bottomHeight === undefined
+    ) {
       if (dialogWidth) {
         return dialogWidth - 56 - 16;
       }
@@ -82,8 +95,12 @@ export default class QRDataSender extends PureComponent {
       qrWidth = availableHeight;
     }
 
+    if (qrWidth < 160) {
+      return 160;
+    }
+
     return qrWidth;
-  }
+  };
 
   render() {
     const { data } = this.state;
@@ -100,7 +117,7 @@ export default class QRDataSender extends PureComponent {
         blockStyle.push(styles.noBlockMargin);
       }
 
-      return (<View key={`box-${blockIndex}`} style={blockStyle} />);
+      return <View key={`box-${blockIndex}`} style={blockStyle} />;
     };
 
     const renderQr = () => {
@@ -130,7 +147,7 @@ export default class QRDataSender extends PureComponent {
 
     return (
       <DetailsModal
-        onLayout={this._onLayout}
+        onOuterLayout={this._onLayout}
         ref={(c) => {
           this.detailsModal = c;
         }}
@@ -142,9 +159,7 @@ export default class QRDataSender extends PureComponent {
               Scan the QR Code from the offline device.
             </Text>
           </View>
-          <View style={{ marginTop: 16, alignItems: 'center' }}>
-            { renderQr() }
-          </View>
+          <View style={{ marginTop: 16, alignItems: 'center' }}>{renderQr()}</View>
           <View onLayout={this._onLayoutBottom}>
             <Button style={{ marginTop: 24 }} onPress={this._done}>
               Done

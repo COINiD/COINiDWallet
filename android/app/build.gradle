@@ -111,8 +111,8 @@ android {
         applicationId "org.coinid.wallet.tbtc"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 179
-        versionName "1.4.1"
+        versionCode 190
+        versionName "1.4.5"
         renderscriptTargetApi 26
         renderscriptSupportModeEnabled true
         ndk {
@@ -160,6 +160,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-keep-awake')
     compile project(':react-native-measure-text')
     compile project(':react-native-vector-icons')
     compile project(':react-native-svg')

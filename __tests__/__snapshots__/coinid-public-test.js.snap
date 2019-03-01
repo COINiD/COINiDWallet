@@ -1,0 +1,286 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`bitcoin COINiDPublic can create transaction data 1`] = `"TX/BTC:49-*0-*0-*0*5+3GO7JP:49-*0-*0-*0*5+49-*0-*0-*1*2:0100000002A06364D80225EA2181D41AD469B2D5560E594F2C783BBB41CAAA652B493A104C020000000000000000A06364D80225EA2181D41AD469B2D5560E594F2C783BBB41CAAA652B493A104C01000000000000000005400D03000000000017A914A89F3493631D141E847A15CB3BA68234CC6ACC2E87B08F0600000000001976A9147E6257D509CCDD623F4AB33416F17A44A0A5F7BC88AC10270000000000001600147E6257D509CCDD623F4AB33416F17A44A0A5F7BC307500000000000017A91461F05801F6931D95CD0180917B6CACF84C767E818738FA01000000000017A914CD05CE4F0D4B88D2E00A9FE7CF3AA8FEEAF773628700000000:4:369796+430000"`;
+
+exports[`bitcoin COINiDPublic generates a correct P2PKH addresses 1`] = `
+Array [
+  "16FoVqrkVAAUWK7RVduXt1RKZRAuCXXoxi",
+  "1P5WvXEJaMRKydN7PQpURsnLR4CRr53rWi",
+  "1K4qi3oJuq4AW4Barq7wWWvAckrKQpiXYo",
+  "12nCe9c91DexnqgoqwdU52AGrKVRsWEaVk",
+  "1HptHHo1Cj5hSTceguWjbgRWLQrAWg5osh",
+  "15yQ96kWeCDd2uG9ASptiTdx4fXbUtXGkE",
+  "1So9gF2kozmt1PwKAsfAQghbFP99z2xi7",
+  "1PWwpR1frukxXyeHYji78zjbv7Wedsmn7F",
+  "1LMgHEwb7Kx8XQuLMGGcpanXV3hwbbMPnB",
+  "1NY9FTjmnNzuevJ3RnfXxzo31XvWpaQZjx",
+  "1ogAq2hVWJkZJgRLzKR9dJA6vPdeBL6Ja",
+  "1NmCL8ntFmfyZYpDjSXnMsqkEkjJEC3ViR",
+]
+`;
+
+exports[`bitcoin COINiDPublic generates a correct P2SHP2WPKH addresses 1`] = `
+Array [
+  "36EU72Bf3z3ziuT8bxspywdQHWhbxPY3Zs",
+  "39kdVjF4FNwYM2usdHEu3GXPrGw8EQWbPy",
+  "31uZbEJCc3aA73Th94P1fTFcsb3UwKXKtX",
+  "3FaHJmRVSywxZagaT1ihf93S94e3Cn4XeZ",
+  "3FtRwzSoxpiPyg5GWKqSKnanETTJGRdYPz",
+  "3Go7JpcBu7XdYa93EUfvTD4hFbECWRr1Ew",
+  "3F63ifgwfBbsWoTF4EkLCZ7trj95CKCRJC",
+  "3EPUmr54nVeCCffFZtV2Zj6E6h37udyHeX",
+  "37yNswnZjKMRyqoazQYWLdaCAkayy6rwSb",
+  "3QeXXW39cfbHDuLXZgxiRT6Kz1LYTHoEhP",
+  "3AF91EnFx1Jzn2sYjHvU85a1Hgt5coo4wx",
+  "3LP5QGb3oeb2jJNEecGKy8mLrLXsN9EVEV",
+]
+`;
+
+exports[`bitcoin COINiDPublic generates a correct P2WPKH addresses 1`] = `
+Array [
+  "bc1q9lg3vv9930qr6qke6lt8cnlwdzgwkdeq960tcy",
+  "bc1qqy74srxp5q9apg7la2ux3psgl4jxa3qeszudgt",
+  "bc1q26xc534ph3rdh7sgk6pvc4h7ufttm4kzc3hz8k",
+  "bc1qqk3suzqjcgs4u253635a84967y077778mzrax9",
+  "bc1q678dy8s3gn0rm3uc2gx3kpjleq6l770gx6e2hr",
+  "bc1q8ldjw7s563zzeklssgaj6lmx0ugk60f6h40d5c",
+  "bc1qdffwvx32k387dkhye9yrwy5qt4t22xmaj9cwuw",
+  "bc1qe00z5c9wz73teee2e0lnyny7n3vy8frfhfr34r",
+  "bc1qysmmvhx9k2eu28vnc3mhawvfgx5uh59sp73ect",
+  "bc1qfn0723lgygq9ramlt4v49fhrere6gjvccpujjx",
+  "bc1qsa66xduhhpg787cjfpr6luvpujvdfuqv97dkve",
+  "bc1qc3drczzewjradnw9apu8hlz88tt49z5g3uh8r2",
+]
+`;
+
+exports[`bitcoin COINiDPublic throws error when address not valid 1`] = `"3H4cAGZ7qPd4HcgSQzad9oX4AbSVxs9hMS5 has no matching Script"`;
+
+exports[`bitcoin COINiDPublic throws error when having insufficient funds 1`] = `undefined`;
+
+exports[`groestlcoin COINiDPublic can create transaction data 1`] = `"TX/GRS:49-*17-*0-*0*3+3HMJUS:49-*17-*0-*0*3+49-*17-*0-*1*1:0100000002A06364D80225EA2181D41AD469B2D5560E594F2C783BBB41CAAA652B493A104C020000000000000000A06364D80225EA2181D41AD469B2D5560E594F2C783BBB41CAAA652B493A104C01000000000000000005400D03000000000017A914C50D589AE0965FBB3484D51AF1271A6BC2851E8987B08F0600000000001976A914EF20271534095EA2A69064620164F248997D64CB88AC1027000000000000160014EF20271534095EA2A69064620164F248997D64CB307500000000000017A914609796DC6E5DFFB0948A3D268ACE1FCFE2B4A96B8738FA01000000000017A914263482828E92FF4510191F10A3FA2CDBC1D047118700000000:4:369796+430000"`;
+
+exports[`groestlcoin COINiDPublic generates a correct P2PKH addresses 1`] = `
+Array [
+  "FXKSZ871pjUFXdGX3Jo1usNkusbKQSr5Nk",
+  "FidsFmyXi8q9ABWUmcLLj5BDWmDcA3enYR",
+  "Fq56Z1S9tyxx6PT5AJdRDjiJYgYTCxZHkK",
+  "FdjjrZmRDdh4opykDZ1HphYLaPrCKZte6g",
+  "FZm6oNibEABy3DPoJQLuQx4P7fYM61cqPh",
+  "FrjAumbb4dVy7MHmhahSufxZoSbeFmeYiQ",
+  "FqE41ekwcgru6SwHg2swMwP26wV9xmrWja",
+  "FffA1fwf5gAGomGzZYZ2QUhVKebGw4gDiW",
+  "FrzUnxdkU28y4tYQgVUPhy8nNZnoftW8EE",
+  "FdnLNzwtCGvMpKr972a5JeLXPbdeDyw6AF",
+  "FkcdfT2hJLnve3Q1558F2yRgCg3Z8gJVsx",
+  "FnmtjETcdGuZiZ4nAUYS2aSzGpVgAP31bA",
+]
+`;
+
+exports[`groestlcoin COINiDPublic generates a correct P2SHP2WPKH addresses 1`] = `
+Array [
+  "37gYXpSdraphpFgCBMUfryiAcYhmGhMbTr",
+  "35x5KadQyPYNG2ViwCEpyysjUJcPxuJFof",
+  "3LPCpJLLDd77kgNdm38t4tQqcCJoimAzAB",
+  "3HmjusqAu6EtPPSpKW88w5tsjf2tx6236S",
+  "3DQLGAEUCBHsL4j51Rma5AdiKTyhvaGfZQ",
+  "3LXpYowXikyPUATLPCyYASzzomZUKfuKk4",
+  "32Wx7FWU72Qi8At1CPqz3nwDqzPdpQnqqQ",
+  "3CKE8pix4iEczW18HNYNQgQLK2fEd5jxp8",
+  "35Rp5mvovvhLk99AL1md1dP8iKo4kCj1Ft",
+  "3HSbYjEUAxEnnMcQpPpBvHUzj3k5Lu6Uft",
+  "3GzPpDN3Jv4ebPFyWuG9GpJqfQ5FbxMN2Y",
+  "35B2WH77uY2y27X7gfdWBjh6VbjtZoumNE",
+]
+`;
+
+exports[`groestlcoin COINiDPublic generates a correct P2WPKH addresses 1`] = `
+Array [
+  "grs1qh009qm84g5maa27lfpjwhkcxm8h3ltkzajyyg5",
+  "grs1qhwkx87cfg0vttad25q3gt2sperfz8m3tcnn9c0",
+  "grs1q8yp4jscqd4525gq9w9403m9c7jrzgahxc5vzgm",
+  "grs1qq9tfn3294xusq2qt8s7su3l7nm0s9l7gz5h0tv",
+  "grs1qhxg2d257wse50u739m7apj83wwe9gahpxvsmez",
+  "grs1qtxqrhfdfcqd0ey0ylulj2q8mezpat4lwsl0sgm",
+  "grs1qfmkawd6ncvrp0qhzy4tx7wr9f86feutxr0j34z",
+  "grs1qj0pqqasrfm03gtj3l57rruwg70wrdrxe8rahx3",
+  "grs1qrgrngeyh927chh7mx8ytnk84vl2jd8m02ljaah",
+  "grs1q935kutf6cp0mczcs0uamvqvaad8vnnya6708qf",
+  "grs1q73u8n29awae3zg56pfhr6xqlkkg62xyzmes67s",
+  "grs1qzspy4dtg48u00vccqfghu4w3aglxq984ndu76z",
+]
+`;
+
+exports[`groestlcoin COINiDPublic throws error when address not valid 1`] = `"3KKew2dzLeMDUMchRrVse1e1SVYW3odQM3w has no matching Script"`;
+
+exports[`groestlcoin COINiDPublic throws error when having insufficient funds 1`] = `undefined`;
+
+exports[`groestlcoin-testnet COINiDPublic can create transaction data 1`] = `"TX/TGRS:49-*1-*0-*0*2+2NA5BU:49-*1-*0-*0*2+49-*1-*0-*1*1:0100000002A06364D80225EA2181D41AD469B2D5560E594F2C783BBB41CAAA652B493A104C020000000000000000A06364D80225EA2181D41AD469B2D5560E594F2C783BBB41CAAA652B493A104C01000000000000000005400D03000000000017A914D7EF101DAA78E7656CA3C49B30B854E8C4D7A2BF87B08F0600000000001976A9147E8EB917EAB0DA74EE21769044B8E36562BF5D3288AC10270000000000001600147E8EB917EAB0DA74EE21769044B8E36562BF5D32307500000000000017A914E1BCEA2765A83B1D688CF113A93F78E2D119EA2A8738FA01000000000017A9142E95CFDD61B2F735E6BEDF5291B6F0873E4F1D008700000000:4:369796+430000"`;
+
+exports[`groestlcoin-testnet COINiDPublic generates a correct P2PKH addresses 1`] = `
+Array [
+  "mkwr5sX93GcwRDb38NXXcLb9j9YqpDycMz",
+  "mgzmiEA1ipAcV4a1xc5DdMst5WEz82Z61Z",
+  "n4AhH5QPtAC5voZkc14PzEkb3Fvgjhfnw1",
+  "mwEgoMB7Cf6mbuk2gZfK65ZEvvuBTRLQQ9",
+  "mwHRizrvSYKZbErBHRNfMYtmZHkZEjRc6G",
+  "mjSefsgVkZ3CdJTRHpHN7HmRa4rKWJ24jB",
+  "n3DQUm6J2mZLL8ofdB98qMCDTBdxNVM1f9",
+  "mmC31QX946EEmftkzM48WYo1KVJa2zYMX1",
+  "mm8rUdXpyAFkHTkTxXRBLSuwuavo2EZDyG",
+  "mtwvCesydRG2eapyi4FVsRSsd4aHUpvY9S",
+  "mshDfrCWX489jHXCkz8tHWH1BWPEKMhFzx",
+  "mpBW2s3r5nwHfhEs93hpuDnCNfjtoZJjuQ",
+]
+`;
+
+exports[`groestlcoin-testnet COINiDPublic generates a correct P2SHP2WPKH addresses 1`] = `
+Array [
+  "2NF5JNAnFEjW5XagJoEsND8kcNoSK355pag",
+  "2NE6Diqqtegnp7JLwEW7u6qjUEwV2LHydVm",
+  "2NA5bUXmS96csYzmVJJs828MJehYm2zgQBr",
+  "2NEDdc488zF5RmubM9HTK8E7PU2wMTVMdGE",
+  "2NAab2bnX2x4D4227buqFtvKLQEbKwfN8Cn",
+  "2N7UPz9tH9hkmAoKnR1VhkgBq9TyyDoc3xX",
+  "2MtRGW1E2E3jXe1rtaEw3VpCNsiDwewx3p4",
+  "2NCsr6tB8t7D33WcmEsdWG6RGXexbBtdJdJ",
+  "2MwTZNXDzTmvJCsBDKKaSa7ZSu69qWhevDM",
+  "2NDEYKLPCnq5uqCpLEkMmZakCM1bhwftyYJ",
+  "2N3Ufft2w4dxGTFJV2dWDTai8SXzzUBdDPM",
+  "2MwVYYE5yeb4UqYcoGHRzWHnuPPqLEZXG4b",
+]
+`;
+
+exports[`groestlcoin-testnet COINiDPublic generates a correct P2WPKH addresses 1`] = `
+Array [
+  "tgrs1qplqdgzty09s4vprz0adjw5g967ulr5yd7hpwmz",
+  "tgrs1qhhcfj927pts6n0x8g0j3ra94prfkpnpxh800rt",
+  "tgrs1q2lqcm6vcytqvpk3sx62xe35dx602kcsmqj0vtf",
+  "tgrs1qk7ekfmgsn0wrjnv8c09c6m4zhxfucchgau0ckf",
+  "tgrs1qgx6nhuq58qahsmee6qy9t4m9tsd7qpw90sate5",
+  "tgrs1q8cnlwczz5g6j78kw2yfg8wekhcyqwwkspffx0u",
+  "tgrs1qtug4j6xw0nuzvhmd9xvtv2cwuvlcgvql3sfw7c",
+  "tgrs1qxsysyya08qyxpqftqfzrtequvrucwwmgy22xup",
+  "tgrs1qfsqjm7vr3rtyx7mpewywzgsq3pq5499t80aa23",
+  "tgrs1qx0axvv38txkua7thd700ne9guus5y9wcds2ezs",
+  "tgrs1q0h5276r0q2n4pxfa2t823earlknym9r3nvems0",
+  "tgrs1qm9se074yf9gsfyt8flf00m6husjmq6cuzqrjf3",
+]
+`;
+
+exports[`groestlcoin-testnet COINiDPublic throws error when address not valid 1`] = `"2NCCvyeutPLBED5fVbPtydrvGX2dUjvaBvUP has no matching Script"`;
+
+exports[`groestlcoin-testnet COINiDPublic throws error when having insufficient funds 1`] = `undefined`;
+
+exports[`myriad COINiDPublic can create transaction data 1`] = `"TX/XMY:49-*90-*0-*0*2+4FY57D:49-*90-*0-*0*2:01000000010D4E4F1E87B9F1D14727A9472640F74F4A18BA448CB063ED3574D21FCF74673800000000000000000004400D0300000000001976A9149E9DCD04CF375691FDFA2D19A52AE404B9EF03DE88ACB08F06000000000017A914594F6D51146D61F84C7027A466069E47DE69712C871027000000000000160014293DBC2B6B7CED3D7F363496A4E00B332F209B94E9645E2C0100000017A914556AA879860E42C377B13639C27350469972A71B8700000000:3:5039991221"`;
+
+exports[`myriad COINiDPublic generates a correct P2PKH addresses 1`] = `
+Array [
+  "MBzgcG2PyPS3xk9FZcRoa6GcEHSW5MoobK",
+  "MKauFCxWsuVG2DG7kaHZ8WqzuM25QuKaDk",
+  "MG9xfG9CxWRRn7nXQ7fWq5c93HBPsWUco8",
+  "MTbYcP2Fi99d52K2As5x27j9t6FumNiF8Z",
+  "M7vtK4PMYRYFwhNXkBpq8b6FpDN82jWrVL",
+  "MTwWN7G5bp9pVyZFPvXBuUDarunFQ9S6p5",
+  "MDjNCH5mJw12kbn6B59eCPcxtSth91jgGz",
+  "MPEoAsBrMWm58KvoJxtrEdnxDPtZ8HT6UC",
+  "MRJmQFqHLZwCZJytg7P46SsPE7pKj4ceNQ",
+  "MSuREa4mtiuwh7PWBYtmErDkhkqMHLDbsj",
+  "MCSLVoFKGTuCeDJd98qqCzpvgJzANm24c5",
+  "MKyHNy9PmTGN4uSfe25EZ7Ni6q6szgcHm6",
+]
+`;
+
+exports[`myriad COINiDPublic generates a correct P2SHP2WPKH addresses 1`] = `
+Array [
+  "4huxY51Rq3K9Ms8Jahy7xiTbi4AfA4XMep",
+  "4kPYLy2BwdixZf7cCyVknbsdBCoVXwzNBx",
+  "4fy57d6G6L16DDJgUXPLEy2GBJ3DwmFpTT",
+  "4zD9ifZ8czpzRN9EJkscZZuh7tTu9YV6cC",
+  "4kmtUWowYuH6iLR3ufMKuQ2kdwMMb2yCCx",
+  "4oV111FHy1kR739yXdVv2fp9WhvrhfN4eT",
+  "4sKghuU97mazsmTk4nz6Wh9YUTKbXVQ8su",
+  "4stjn67BcekuCGRpH6konNwhuKebt6zhxg",
+  "4ncPbCoRAPGVj2A8Yxc8jd12FWfecFm1K2",
+  "51empuUtdZVnQEbVEAtSr1WMvxRbCqhdJo",
+  "4z9BA12o1sw5hB8F1utDa5eRNXP5RCgnU1",
+  "4kq55239JRFoZ9T2ZtdznVHmctygYcUm9F",
+]
+`;
+
+exports[`myriad COINiDPublic generates a correct P2WPKH addresses 1`] = `
+Array [
+  "my1qma5ap5n58ph7zqyv4yn5mf3r9czej2g0rd8x6a",
+  "my1qvyky8msl7zacjcwhgmwyk0pa7jl5mg37d5t5zc",
+  "my1qcj9v7gcda044ptgq7zye7c27m7fxxrf7edwes7",
+  "my1q40w9lx88mh0fjhkm4gd4juq6mkf82z9d5pcpp7",
+  "my1q5d68qce4vhg890ufeme9avjvhmfak99ja525lk",
+  "my1qg65d2yc7m8katt0d2se939rnghchr4wgaw5qjv",
+  "my1qh79hdr2p0r4440kz59vkj486smjk756sl3tph4",
+  "my1qk4su9n4pm9l6fddfd0sujzmslxr44hta0sesnz",
+  "my1qua83csms555ku30upu65g5wckwjaaq4phk0hwf",
+  "my1qn2anq8pj9552tqrzcf3qpq80ft9tlgu8g0mr2z",
+  "my1q4h70j3zammcludwhhf88l24745cy9llsmxm22x",
+  "my1qg89qyqkczkh6a3gmwj7xhrda82k3cjnjlrzaxw",
+]
+`;
+
+exports[`myriad COINiDPublic throws error when address not valid 1`] = `"MNMer2wBZNHXpqXJKfwqFzHxNhUNa3PFvPG has no matching Script"`;
+
+exports[`myriad COINiDPublic throws error when having insufficient funds 1`] = `undefined`;
+
+exports[`testnet COINiDPublic can create transaction data 1`] = `"TX/TBTC:49-*1-*0-*1*0+2MTRGW:49-*1-*0-*1*0+49-*1-*0-*0*5:0100000002A06364D80225EA2181D41AD469B2D5560E594F2C783BBB41CAAA652B493A104C020000000000000000A06364D80225EA2181D41AD469B2D5560E594F2C783BBB41CAAA652B493A104C01000000000000000005400D03000000000017A91466A8A442F12B2B8A9C45D3D4CB1CCBDCA952D9A387B08F06000000000017A914D170EE37EA45FBB9DC81598C8445237EC47E8A678710270000000000001976A914F12F2C6E408B3CDFF1991B8783D1EB428F57814B88AC307500000000000016001408C3E3704FC510BEE9F2F05686CBF2A9F541E23F38FA01000000000017A9142E95CFDD61B2F735E6BEDF5291B6F0873E4F1D008700000000:4:369796+430000"`;
+
+exports[`testnet COINiDPublic generates a correct P2PKH addresses 1`] = `
+Array [
+  "mkwr5sX93GcwRDb38NXXcLb9j9YqowH5DE",
+  "mgzmiEA1ipAcV4a1xc5DdMst5WEz65SMwm",
+  "n4AhH5QPtAC5voZkc14PzEkb3FvgkWM6U7",
+  "mwEgoMB7Cf6mbuk2gZfK65ZEvvuBSb5MQy",
+  "mwHRizrvSYKZbErBHRNfMYtmZHkZDQimiJ",
+  "mjSefsgVkZ3CdJTRHpHN7HmRa4rKWqh5w5",
+  "n3DQUm6J2mZLL8ofdB98qMCDTBdxMMpSmL",
+  "mmC31QX946EEmftkzM48WYo1KVJa4pE9SE",
+  "mm8rUdXpyAFkHTkTxXRBLSuwuavo3B8g4i",
+  "mtwvCesydRG2eapyi4FVsRSsd4aHUybcPB",
+  "mshDfrCWX489jHXCkz8tHWH1BWPELLe5na",
+  "mpBW2s3r5nwHfhEs93hpuDnCNfjtnY4TWk",
+]
+`;
+
+exports[`testnet COINiDPublic generates a correct P2SHP2WPKH addresses 1`] = `
+Array [
+  "2NF5JNAnFEjW5XagJoEsND8kcNoSJyEdRj6",
+  "2NE6Diqqtegnp7JLwEW7u6qjUEwV2JVzpn9",
+  "2NA5bUXmS96csYzmVJJs828MJehYm5j9K61",
+  "2NEDdc488zF5RmubM9HTK8E7PU2wMV7Vxhn",
+  "2NAab2bnX2x4D4227buqFtvKLQEbKyfBJ92",
+  "2N7UPz9tH9hkmAoKnR1VhkgBq9TyyHVL68t",
+  "2MtRGW1E2E3jXe1rtaEw3VpCNsiDwbVW1eQ",
+  "2NCsr6tB8t7D33WcmEsdWG6RGXexbDPyAvS",
+  "2MwTZNXDzTmvJCsBDKKaSa7ZSu69qWECmvq",
+  "2NDEYKLPCnq5uqCpLEkMmZakCM1bhzT3U5B",
+  "2N3Ufft2w4dxGTFJV2dWDTai8SXzzTx3e8K",
+  "2MwVYYE5yeb4UqYcoGHRzWHnuPPqLBAFJk8",
+]
+`;
+
+exports[`testnet COINiDPublic generates a correct P2WPKH addresses 1`] = `
+Array [
+  "tb1qplqdgzty09s4vprz0adjw5g967ulr5yd7j9426",
+  "tb1qhhcfj927pts6n0x8g0j3ra94prfkpnpxhzt5jn",
+  "tb1q2lqcm6vcytqvpk3sx62xe35dx602kcsmqhth63",
+  "tb1qk7ekfmgsn0wrjnv8c09c6m4zhxfucchgaetr83",
+  "tb1qgx6nhuq58qahsmee6qy9t4m9tsd7qpw904esgv",
+  "tb1q8cnlwczz5g6j78kw2yfg8wekhcyqwwkspvda7y",
+  "tb1qtug4j6xw0nuzvhmd9xvtv2cwuvlcgvql34d40q",
+  "tb1qxsysyya08qyxpqftqfzrtequvrucwwmgy0wade",
+  "tb1qfsqjm7vr3rtyx7mpewywzgsq3pq5499t82exmf",
+  "tb1qx0axvv38txkua7thd700ne9guus5y9wcd4wzng",
+  "tb1q0h5276r0q2n4pxfa2t823earlknym9r3nfaqph",
+  "tb1qm9se074yf9gsfyt8flf00m6husjmq6cuz98fcf",
+]
+`;
+
+exports[`testnet COINiDPublic throws error when address not valid 1`] = `"2N2c2wfH4LcxhRjGXxggzmDL2iXsVBQEjwsK has no matching Script"`;
+
+exports[`testnet COINiDPublic throws error when having insufficient funds 1`] = `undefined`;

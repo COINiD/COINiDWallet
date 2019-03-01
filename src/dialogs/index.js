@@ -4,6 +4,8 @@ export { default as Send } from './Send';
 export { default as SelectAddressType } from './SelectAddressType';
 export { default as MoreOptions } from './MoreOptions';
 export { default as ValidateAddress } from './ValidateAddress';
+export { default as SweepPrivateKey } from './SweepPrivateKey';
+export { default as SweepKeyDetails } from './SweepKeyDetails';
 export { default as TransactionDetails } from './TransactionDetails';
 export { default as COINiDNotFound } from './COINiDNotFound';
 export { default as SetupWallet } from './SetupWallet';
