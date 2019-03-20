@@ -2,7 +2,7 @@
  * Helper for storage
  */
 
-import AsyncStorage from '@react-native-community/async-storage';
+import { AsyncStorage } from 'react-native';
 
 const getStorageItem = (namespace, key) => AsyncStorage.getItem(`@${namespace}:${key}`).then(JSON.parse);
 

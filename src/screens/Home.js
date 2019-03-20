@@ -31,18 +31,20 @@ const styles = StyleSheet.create({
     marginTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   headerOuter: {
+    flex: 1,
     borderBottomWidth: 0,
     height: 40,
     marginTop: 0,
     backgroundColor: 'transparent',
     paddingVertical: 0,
-    paddingHorizontal: 10,
+    paddingHorizontal: 16,
   },
-  headerInner: {
-    alignItems: 'flex-start',
-  },
-  headerNav: {
+  headerInner: {},
+  headerSideContainer: {
     flexDirection: 'row',
+    height: '100%',
+    position: 'absolute',
+    top: -40,
   },
   title: {
     fontSize: 17,
@@ -59,12 +61,7 @@ const styles = StyleSheet.create({
     color: colors.white,
   },
   settingsBtnContainer: {
-    padding: 6,
-    zIndex: 10,
-    height: '100%',
-    position: 'absolute',
-    right: 0,
-    top: 0,
+    alignSelf: 'center',
   },
   dotStyle: {
     width: 8,
@@ -99,7 +96,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     ...fontWeight.book,
     marginLeft: 4,
-    alignSelf: 'flex-end',
+    alignSelf: 'center',
   },
 });
 
@@ -186,13 +183,13 @@ class Home extends PureComponent {
   }
 
   get _pagination() {
-    const { coldWalletMode, activeSlide } = this.state;
+    const { coldWalletMode, activeSlide, walletTitle } = this.state;
     const slides = this._getActiveSlides(coldWalletMode);
     const dotColorByIndex = slides.map(a => a.dotColor);
     return (
       <View style={{ height: '100%', justifyContent: 'center' }}>
         <Text style={styles.title} ref="walletTitle">
-          {this.state.walletTitle}
+          {walletTitle}
         </Text>
         <View style={styles.paginator}>
           <Pagination
@@ -314,7 +311,7 @@ class Home extends PureComponent {
   };
 
   _onSettingsUpdated = (settings) => {
-    let activeSlide = this.state.activeSlide;
+    let { activeSlide } = this.state;
 
     if (activeSlide - 1 > this._getActiveSlides(settings.coldWalletMode).length) {
       activeSlide = 0;
@@ -343,37 +340,33 @@ class Home extends PureComponent {
   _renderHeaderLeft = () => {
     const renderTestnet = () => {
       if (settings.isTestnet) {
-        return <Text style={styles.testnetText}>Testnet</Text>;
+        return <Text style={styles.testnetText}>Testnet version</Text>;
       }
 
       return null;
     };
 
     return (
-      <View
-        style={{
-          marginTop: 8,
-          marginLeft: 6,
-          position: 'absolute',
-          left: 0,
-          top: 0,
-          flexDirection: 'row',
-        }}
-      >
-        <LottieView style={{ width: 24, height: 24 }} source={lottieFiles.walletLogo} />
+      <View style={[styles.headerSideContainer]}>
+        <LottieView
+          style={{ width: 24, height: 24, alignSelf: 'center' }}
+          source={lottieFiles.walletLogo}
+        />
         {renderTestnet()}
       </View>
     );
   };
 
   _renderHeaderRight = () => (
-    <Icon
-      name="settings"
-      containerStyle={styles.settingsBtnContainer}
-      iconStyle={styles.settingsBtn}
-      underlayColor="transparent"
-      onPress={this._openSettings}
-    />
+    <View style={[styles.headerSideContainer, { alignSelf: 'flex-end' }]}>
+      <Icon
+        name="settings"
+        containerStyle={styles.settingsBtnContainer}
+        iconStyle={styles.settingsBtn}
+        underlayColor="transparent"
+        onPress={this._openSettings}
+      />
+    </View>
   );
 
   render() {

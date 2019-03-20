@@ -22,7 +22,8 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     position: 'absolute',
-    width: '100%',
+    left: 0,
+    right: 0,
   },
   headerIconContainer: {
     zIndex: 10,

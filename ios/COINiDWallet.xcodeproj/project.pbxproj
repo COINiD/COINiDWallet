@@ -53,6 +53,7 @@
 		710BCED494FB4462B53E0EA5 /* libRNViewShot.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BA503330A93A479BBE47CDB2 /* libRNViewShot.a */; };
 		776247EE19934F479B404018 /* Inter-UI-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 156E490BA4034BBD9AE8AEED /* Inter-UI-Regular.ttf */; };
 		7A6469D7CDA74C6B99FE8935 /* libRNRandomBytes-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7815995EEB31409382155BFB /* libRNRandomBytes-tvOS.a */; };
+		7C38F3312242E87B002D6152 /* Lottie.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7C38EDC922428BD2002D6152 /* Lottie.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7EA6790926D4444A82C3EEDD /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D91C04CB0AC84BE8870F1F1A /* Octicons.ttf */; };
 		820541FEE3B44FD98242B700 /* libRNSVG-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B58F90035E6A426696998BC6 /* libRNSVG-tvOS.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
@@ -76,7 +77,6 @@
 		ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
 		ED2971652150620600B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED2971642150620600B7C4FE /* JavaScriptCore.framework */; };
 		F25D262923CF4F8A87525051 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E3E449A82D114341A4DFA4F3 /* Entypo.ttf */; };
-		F97056DF250F4D90B4BB854E /* Lottie.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F24A7AFFB6984900AED1A30E /* Lottie.framework */; };
 		FC0A601388D7497F95296C58 /* libLottie.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA44723C2E864C269FECC10A /* libLottie.a */; };
 /* End PBXBuildFile section */
 
@@ -494,6 +494,13 @@
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RNCAsyncStorage;
 		};
+		7C38F3322242E87B002D6152 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C24586BD30D34EC8B89F4C7E /* Lottie.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 62CA59B71E3C173B002D7188;
+			remoteInfo = Lottie_iOS;
+		};
 		832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */;
@@ -509,6 +516,20 @@
 			remoteInfo = RCTBlob;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		7C38F36B2242E87B002D6152 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				7C38F3312242E87B002D6152 /* Lottie.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
@@ -632,7 +653,6 @@
 				33498CD805584A0FAE491DED /* libRNShare.a in Frameworks */,
 				4FFA78C9B59B418AA746893B /* libSplashScreen.a in Frameworks */,
 				710BCED494FB4462B53E0EA5 /* libRNViewShot.a in Frameworks */,
-				F97056DF250F4D90B4BB854E /* Lottie.framework in Frameworks */,
 				FC0A601388D7497F95296C58 /* libLottie.a in Frameworks */,
 				8E3E48727A6541EE8D7EE125 /* libLottieReactNative.a in Frameworks */,
 				5E4B1CAA3F9C4F0994D413A5 /* libRNVectorIcons.a in Frameworks */,
@@ -1113,10 +1133,12 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
+				7C38F36B2242E87B002D6152 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				7C38F3332242E87B002D6152 /* PBXTargetDependency */,
 			);
 			name = COINiDWallet;
 			productName = "Hello World";
@@ -1869,6 +1891,11 @@
 			target = 2D02E47A1E0B4A5D006451C7 /* COINiDWallet-tvOS */;
 			targetProxy = 2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */;
 		};
+		7C38F3332242E87B002D6152 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Lottie_iOS;
+			targetProxy = 7C38F3322242E87B002D6152 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -1923,8 +1950,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.coinid.wallet.tbtc";
+				PRODUCT_NAME = "tBTC COINiD";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/COINiDWallet.app/COINiDWallet";
 			};
 			name = Debug;
@@ -1965,8 +1992,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.coinid.wallet.tbtc";
+				PRODUCT_NAME = "tBTC COINiD";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/COINiDWallet.app/COINiDWallet";
 			};
 			name = Release;
@@ -2004,8 +2031,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = COINiDWallet;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.coinid.wallet.tbtc";
+				PRODUCT_NAME = "tBTC COINiD";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -2042,8 +2069,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = COINiDWallet;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.coinid.wallet.tbtc";
+				PRODUCT_NAME = "tBTC COINiD";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -2090,8 +2117,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.COINiDWallet-tvOS";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.coinid.wallet.tbtc";
+				PRODUCT_NAME = "tBTC COINiD";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
@@ -2140,8 +2167,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.COINiDWallet-tvOS";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.coinid.wallet.tbtc";
+				PRODUCT_NAME = "tBTC COINiD";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
@@ -2189,8 +2216,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.COINiDWallet-tvOSTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.coinid.wallet.tbtc";
+				PRODUCT_NAME = "tBTC COINiD";
 				SDKROOT = appletvos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/COINiDWallet-tvOS.app/COINiDWallet-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
@@ -2238,8 +2265,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.COINiDWallet-tvOSTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.coinid.wallet.tbtc";
+				PRODUCT_NAME = "tBTC COINiD";
 				SDKROOT = appletvos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/COINiDWallet-tvOS.app/COINiDWallet-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
