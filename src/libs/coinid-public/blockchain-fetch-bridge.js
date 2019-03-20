@@ -1,17 +1,15 @@
-"use strict";
-
 /**
-* Fetches blockchain bridge.
-*/
+ * Fetches blockchain bridge.
+ */
 
-var bridges = {
+const bridges = {
   insight: require('./blockchain-bridge-insight'),
   blockbook: require('./blockchain-bridge-blockbook'),
-}
+};
 
-var Blockchain = function(bridgeName, apiUrl, storage, network) {
-  var bridge = bridges[bridgeName];
+const Blockchain = function (bridgeName, apiUrl, storage, network) {
+  const bridge = bridges[bridgeName];
   return bridge(apiUrl, storage, network);
-}
+};
 
 module.exports = Blockchain;

@@ -167,201 +167,195 @@ export default class TransactionDetails extends PureComponent {
     });
   };
 
-  render() {
+  _renderToolBox = () => {
+    const { maxFeeIncrease } = this.state;
+
+    if (maxFeeIncrease <= 0) {
+      return null;
+    }
+
+    return (
+      <React.Fragment>
+        <View style={styles.separator} />
+        <COINiDTransport getData={this._getBumpFeeData} handleReturnData={this._handleReturnData}>
+          {({
+            isSigning, signingText, cancel, submit,
+          }) => (
+            <React.Fragment>
+              <Button
+                onPress={() => {
+                  const { oldFee, newFee, feeIncrease } = this._getNewFee();
+                  Alert.alert(
+                    'Bump fee?',
+                    `Previous fee: ${oldFee.toFixed(8)}\nIncrease: ${feeIncrease.toFixed(
+                      8,
+                    )}\n New fee: ${newFee.toFixed(8)}`,
+                    [
+                      {
+                        text: 'Cancel',
+                        onPress: () => console.log('Cancel Pressed'),
+                        style: 'cancel',
+                      },
+                      { text: 'Yes', onPress: () => submit() },
+                    ],
+                  );
+                }}
+                disabled={isSigning}
+                isLoading={isSigning}
+                loadingText={signingText}
+              >
+                Bump Fee
+              </Button>
+              <CancelButton show={isSigning} onPress={cancel} marginTop={16}>
+                Cancel
+              </CancelButton>
+            </React.Fragment>
+          )}
+        </COINiDTransport>
+      </React.Fragment>
+    );
+  };
+
+  _renderContent = () => {
     const { currency, info, blockHeight } = this.props;
 
-    const getContent = () => {
-      if (!info) return null;
+    if (!info) return null;
 
-      const { tx, address, balanceChanged } = info;
-      const {
-        fiatAmount,
-        fiatAmountOnDate,
-        note,
-        ticker,
-        recommendedConfirmations,
-        maxFeeIncrease,
-      } = this.state;
-      const { time, fees, size } = tx;
-      const date = !time ? '-' : moment.unix(time).format('H:mm:ss - MMM D, YYYY');
+    const { tx, address, balanceChanged } = info;
+    const {
+      fiatAmount, fiatAmountOnDate, note, ticker, recommendedConfirmations,
+    } = this.state;
+    const { time, fees, size } = tx;
+    const date = !time ? '-' : moment.unix(time).format('H:mm:ss - MMM D, YYYY');
 
-      const confirmations = getConfirmationsFromBlockHeight(tx, blockHeight);
+    const confirmations = getConfirmationsFromBlockHeight(tx, blockHeight);
 
-      const renderToolBox = () => {
-        if (maxFeeIncrease <= 0) {
-          return null;
-        }
-
-        return (
-          <React.Fragment>
-            <View style={styles.separator} />
-            <COINiDTransport
-              getData={this._getBumpFeeData}
-              handleReturnData={this._handleReturnData}
-            >
-              {({
-                isSigning, signingText, cancel, submit,
-              }) => (
-                <React.Fragment>
-                  <Button
-                    onPress={() => {
-                      const { oldFee, newFee, feeIncrease } = this._getNewFee();
-                      Alert.alert(
-                        'Bump fee?',
-                        `Previous fee: ${oldFee.toFixed(8)}\nIncrease: ${feeIncrease.toFixed(
-                          8,
-                        )}\n New fee: ${newFee.toFixed(8)}`,
-                        [
-                          {
-                            text: 'Cancel',
-                            onPress: () => console.log('Cancel Pressed'),
-                            style: 'cancel',
-                          },
-                          { text: 'Yes', onPress: () => submit() },
-                        ],
-                      );
-                    }}
-                    disabled={isSigning}
-                    isLoading={isSigning}
-                    loadingText={signingText}
-                  >
-                    Bump Fee
-                  </Button>
-                  <CancelButton show={isSigning} onPress={cancel} marginTop={16}>
-                    Cancel
-                  </CancelButton>
-                </React.Fragment>
-              )}
-            </COINiDTransport>
-          </React.Fragment>
-        );
-      };
-
-      return (
-        <View style={styles.modalContent}>
-          <View style={styles.header}>
+    return (
+      <View style={styles.modalContent}>
+        <View style={styles.header}>
+          <FontScale
+            fontSizeMax={fontSize.large}
+            fontSizeMin={fontSize.large / 3}
+            text={`${numFormat(balanceChanged, ticker)} ${ticker}`}
+            widthScale={0.95}
+          >
+            {({ fontSize: variableFontSize, text }) => (
+              <Text
+                style={[
+                  styles.amountText,
+                  styles[balanceChanged < 0 ? 'outgoing' : 'incoming'],
+                  { fontSize: variableFontSize },
+                ]}
+              >
+                {text}
+              </Text>
+            )}
+          </FontScale>
+          <FontScale
+            fontSizeMax={fontSize.h2}
+            fontSizeMin={fontSize.h2 / 3}
+            text={`${numFormat(fiatAmount, currency)} ${currency}`}
+            widthScale={0.65}
+          >
+            {({ fontSize: variableFontSize, text }) => (
+              <Text style={[styles.fiatText, { fontSize: variableFontSize }]}>{text}</Text>
+            )}
+          </FontScale>
+        </View>
+        <ScrollView
+          style={{
+            overflow: 'visible',
+            marginHorizontal: -16,
+            paddingHorizontal: 16,
+            marginBottom: -16,
+          }}
+          contentContainerStyle={{
+            paddingBottom: 16,
+          }}
+          onLayout={(e) => {
+            this.refContHeight = e.nativeEvent.layout.height;
+            this.refContScroll = 0;
+          }}
+          onScroll={(e) => {
+            this.refContScroll = e.nativeEvent.contentOffset.y;
+          }}
+          scrollEventThrottle={16}
+        >
+          <RowInfo title={balanceChanged < 0 ? 'Sent to' : 'Received on'} selectable multiLine>
             <FontScale
-              fontSizeMax={fontSize.large}
-              fontSizeMin={fontSize.large / 3}
-              text={`${numFormat(balanceChanged, ticker)} ${ticker}`}
-              widthScale={0.95}
+              fontSizeMax={fontSize.base}
+              fontSizeMin={fontSize.base / 3}
+              text={`${address}`}
+              widthScale={0.98}
             >
               {({ fontSize: variableFontSize, text }) => (
-                <Text
-                  style={[
-                    styles.amountText,
-                    styles[balanceChanged < 0 ? 'outgoing' : 'incoming'],
-                    { fontSize: variableFontSize },
-                  ]}
-                >
+                <Text selectable style={{ fontSize: variableFontSize, ...fontWeight.medium }}>
                   {text}
                 </Text>
               )}
             </FontScale>
-            <FontScale
-              fontSizeMax={fontSize.h2}
-              fontSizeMin={fontSize.h2 / 3}
-              text={`${numFormat(fiatAmount, currency)} ${currency}`}
-              widthScale={0.65}
-            >
-              {({ fontSize: variableFontSize, text }) => (
-                <Text style={[styles.fiatText, { fontSize: variableFontSize }]}>{text}</Text>
-              )}
-            </FontScale>
-          </View>
-          <ScrollView
-            style={{
-              overflow: 'visible',
-              marginHorizontal: -16,
-              paddingHorizontal: 16,
-              marginBottom: -16,
-            }}
-            contentContainerStyle={{
-              paddingBottom: 16,
-            }}
+          </RowInfo>
+          <View style={styles.separator} />
+          <RowInfo title="Date">{date}</RowInfo>
+          <RowInfo title="Status">
+            <TransactionState
+              confirmations={confirmations}
+              recommendedConfirmations={recommendedConfirmations}
+            />
+          </RowInfo>
+          <RowInfo title="Confirmations">{confirmations}</RowInfo>
+          <View style={styles.separator} />
+          <RowInfo
+            title="Note"
+            multiLine
             onLayout={(e) => {
-              this.refContHeight = e.nativeEvent.layout.height;
-              this.refContScroll = 0;
+              this.refNoteBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
             }}
-            onScroll={(e) => {
-              this.refContScroll = e.nativeEvent.contentOffset.y;
-            }}
-            scrollEventThrottle={16}
           >
-            <RowInfo title={balanceChanged < 0 ? 'Sent to' : 'Received on'} selectable multiLine>
-              <FontScale
-                fontSizeMax={fontSize.base}
-                fontSizeMin={fontSize.base / 3}
-                text={`${address}`}
-                widthScale={0.98}
-              >
-                {({ fontSize: variableFontSize, text }) => (
-                  <Text selectable style={{ fontSize: variableFontSize, ...fontWeight.medium }}>
-                    {text}
-                  </Text>
-                )}
-              </FontScale>
-            </RowInfo>
-            <View style={styles.separator} />
-            <RowInfo title="Date">{date}</RowInfo>
-            <RowInfo title="Status">
-              <TransactionState
-                confirmations={confirmations}
-                recommendedConfirmations={recommendedConfirmations}
-              />
-            </RowInfo>
-            <RowInfo title="Confirmations">{confirmations}</RowInfo>
-            <View style={styles.separator} />
-            <RowInfo
-              title="Note"
-              multiLine
-              onLayout={(e) => {
-                this.refNoteBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
+            <TextInput
+              value={note}
+              onChangeText={note => this.setState({ note })}
+              onBlur={() => {
+                this.noteHelper.saveNote(tx, address, note || '');
               }}
-            >
-              <TextInput
-                value={note}
-                onChangeText={note => this.setState({ note })}
-                onBlur={() => {
-                  this.noteHelper.saveNote(tx, address, note || '');
-                }}
-                placeholder="-"
-                maxLength={26}
-                style={{
-                  fontSize: 16,
-                  fontFamily: fontStack.primary,
-                  ...fontWeight.medium,
-                  paddingVertical: 0,
-                }}
-                underlineColorAndroid="transparent"
-                keyboardType={Platform.OS === 'ios' ? 'default' : 'visible-password'}
-                autoCorrect={false}
-                spellCheck={false}
-                textContentType={false}
-                onFocus={(e) => {
-                  this.elModal._setKeyboardOffset(
-                    this.refNoteBottom - this.refContHeight + 8 - this.refContScroll,
-                  );
-                }}
-              />
-            </RowInfo>
-            <View style={styles.separator} />
-            <RowInfo title="Fee">{`${numFormat(fees, ticker)} ${ticker}`}</RowInfo>
-            <RowInfo title="Size">{`${size} bytes`}</RowInfo>
-            <RowInfo title={`${currency} on completion`}>
-              {`${numFormat(fiatAmountOnDate, currency)} ${currency}`}
-            </RowInfo>
-            <View style={styles.separator} />
-            <RowInfo title="Included in TXID" multiLine selectable>
-              {tx.txid}
-            </RowInfo>
-            {renderToolBox()}
-          </ScrollView>
-          <View style={styles.footer} />
-        </View>
-      );
-    };
+              placeholder="-"
+              maxLength={26}
+              style={{
+                fontSize: 16,
+                fontFamily: fontStack.primary,
+                ...fontWeight.medium,
+                paddingVertical: 0,
+              }}
+              underlineColorAndroid="transparent"
+              keyboardType={Platform.OS === 'ios' ? 'default' : 'visible-password'}
+              autoCorrect={false}
+              spellCheck={false}
+              textContentType="none"
+              onFocus={(e) => {
+                this.elModal._setKeyboardOffset(
+                  this.refNoteBottom - this.refContHeight + 8 - this.refContScroll,
+                );
+              }}
+            />
+          </RowInfo>
+          <View style={styles.separator} />
+          <RowInfo title="Fee">{`${numFormat(fees, ticker)} ${ticker}`}</RowInfo>
+          <RowInfo title="Size">{`${size} bytes`}</RowInfo>
+          <RowInfo title={`${currency} on completion`}>
+            {`${numFormat(fiatAmountOnDate, currency)} ${currency}`}
+          </RowInfo>
+          <View style={styles.separator} />
+          <RowInfo title="Included in TXID" multiLine selectable>
+            {tx.txid}
+          </RowInfo>
+          {this._renderToolBox()}
+        </ScrollView>
+        <View style={styles.footer} />
+      </View>
+    );
+  };
 
+  render() {
     return (
       <DetailsModal
         ref={(c) => {
@@ -373,14 +367,14 @@ export default class TransactionDetails extends PureComponent {
         avoidKeyboard
         avoidKeyboardOffset={40}
       >
-        {getContent()}
+        {this._renderContent()}
       </DetailsModal>
     );
   }
 }
 
 TransactionDetails.contextTypes = {
-  coinid: PropTypes.object,
+  coinid: PropTypes.shape({}),
   type: PropTypes.string,
   theme: PropTypes.string,
 };

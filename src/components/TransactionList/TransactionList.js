@@ -844,9 +844,9 @@ export default class TransactionList extends PureComponent {
               layout: { height: layoutHeight },
             },
           }) => {
-            this.setState({
-              headerHeight: layoutHeight - filterHeight,
-            });
+            /* this.setState({
+              headerHeight: 0,
+            }); */
           }}
           style={[styles.listHeader, { paddingBottom: filterHeight }]}
         >
@@ -881,7 +881,7 @@ export default class TransactionList extends PureComponent {
   };
 
   render() {
-    const { toggleCurrency, toggleRange } = this.props;
+    const { toggleRange } = this.props;
 
     const styles = this._getStyle();
 
@@ -915,7 +915,7 @@ export default class TransactionList extends PureComponent {
               this.setState({ graphHeight });
             }}
           >
-            <Graph toggleCurrency={toggleCurrency} toggleRange={toggleRange} />
+            <Graph toggleRange={toggleRange} />
           </View>
 )}
         ListFooterComponent={this._renderListFooter}

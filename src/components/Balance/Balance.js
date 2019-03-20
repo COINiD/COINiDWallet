@@ -2,11 +2,9 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { View, TouchableOpacity, Text as DefaultText } from 'react-native';
 import { Text, FontScale } from '..';
-import Settings from '../../config/settings';
 import ExchangeHelper from '../../utils/exchangeHelper';
 import { numFormat } from '../../utils/numFormat';
 import themeableStyles from './styles';
-import { colors } from '../../config/styling';
 
 export default class Balance extends PureComponent {
   constructor(props, context) {
@@ -71,7 +69,7 @@ export default class Balance extends PureComponent {
   render() {
     const styles = this._getStyle();
     const { fiatBalance, currency, ticker } = this.state;
-    const { balance, style, toggleCurrency } = this.props;
+    const { balance, style } = this.props;
 
     if (currency === undefined) {
       return null;
@@ -109,14 +107,14 @@ export default class Balance extends PureComponent {
           widthScale={0.6}
         >
           {({ fontSize, lineHeight }) => (
-            <TouchableOpacity style={{ alignSelf: 'flex-start' }} onPress={() => toggleCurrency()}>
+            <View style={{ alignSelf: 'flex-start' }}>
               <Text
                 style={[styles.currencyText, { fontSize, lineHeight }]}
                 allowFontScaling={false}
               >
                 {currencyText}
               </Text>
-            </TouchableOpacity>
+            </View>
           )}
         </FontScale>
       </View>

@@ -12,7 +12,7 @@ import {
   Platform,
   Keyboard,
 } from 'react-native';
-import { getBottomSpace, getStatusBarHeight } from 'react-native-iphone-x-helper';
+import { getStatusBarHeight } from 'react-native-iphone-x-helper';
 import styles from './styles';
 
 const BackButton = BackHandler || BackAndroid;
@@ -21,9 +21,7 @@ export default class Modal extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      overlayOpacity: new Animated.Value(0),
-      scale: new Animated.Value(1),
-      top: new Animated.Value(Dimensions.get('window').height),
+      animate: new Animated.Value(0),
       isOpen: false,
     };
   }
@@ -43,52 +41,44 @@ export default class Modal extends PureComponent {
   }
 
   _open = () => {
+    const { onClose, onClosed } = this.props;
+
     if (Platform.OS === 'android') {
       BackButton.addEventListener('hardwareBackPress', this._onBackPress);
     }
 
     this.setState({ isOpen: true });
-    this.props.onOpen();
+    onClose();
 
-    Animated.parallel([
-      Animated.timing(this.state.overlayOpacity, {
-        toValue: 1,
-        duration: 100,
-        useNativeDriver: true,
-      }),
-      Animated.timing(this.state.top, {
-        toValue: 0,
-        duration: 300,
-        easing: Easing.elastic(0.8),
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
-      this.props.onOpened();
+    this._animate(1, () => {
+      onClosed();
     });
   };
 
   _close = () => {
+    const { onClose, onClosed } = this.props;
+
     if (Platform.OS === 'android') {
       BackButton.removeEventListener('hardwareBackPress', this._onBackPress);
     }
 
-    this.props.onClose();
+    onClose();
 
-    Animated.parallel([
-      Animated.timing(this.state.overlayOpacity, {
-        toValue: 0,
-        duration: 100,
-        useNativeDriver: true,
-      }),
-      Animated.timing(this.state.top, {
-        toValue: Dimensions.get('window').height,
-        duration: 250,
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
+    this._animate(0, () => {
       this.setState({ isOpen: false });
-      this.props.onClosed();
+      onClosed();
     });
+  };
+
+  _animate = (toValue, cb) => {
+    const { animate } = this.state;
+
+    Animated.timing(animate, {
+      toValue,
+      duration: 300,
+      easing: Easing.out(Easing.quad),
+      useNativeDriver: true,
+    }).start(cb);
   };
 
   _onBackPress = () => {
@@ -108,42 +98,53 @@ export default class Modal extends PureComponent {
     }
   };
 
+  _renderView = () => {
+    const { children, avoidKeyboard, avoidKeyboardOffset } = this.props;
+    const { keyboardOffset, animate } = this.state;
+
+    const animatedStyle = {
+      transform: [
+        {
+          translateY: animate.interpolate({
+            inputRange: [0, 1],
+            outputRange: [Dimensions.get('window').height, 0],
+          }),
+        },
+      ],
+    };
+
+    if (Platform.OS === 'ios') {
+      return (
+        <KeyboardAvoidingView
+          ref={(c) => {
+            this.keyboardAvoid = c;
+          }}
+          behavior="position"
+          enabled={avoidKeyboard}
+          keyboardVerticalOffset={avoidKeyboardOffset + keyboardOffset + getStatusBarHeight(true)}
+          style={{ width: '100%' }}
+        >
+          <Animated.View style={[styles.dialog, animatedStyle]}>{children}</Animated.View>
+        </KeyboardAvoidingView>
+      );
+    }
+
+    return <Animated.View style={[styles.dialog, animatedStyle]}>{children}</Animated.View>;
+  };
+
   render() {
-    const {
-      verticalPosition, children, avoidKeyboard, avoidKeyboardOffset, onLayout,
-    } = this.props;
-    const {
-      isOpen, overlayOpacity, scale, top, keyboardOffset,
-    } = this.state;
+    const { verticalPosition, onLayout } = this.props;
+    const { isOpen, animate } = this.state;
 
     if (!isOpen) {
       return null;
     }
 
-    const renderView = () => {
-      if (Platform.OS === 'ios') {
-        return (
-          <KeyboardAvoidingView
-            ref={(c) => {
-              this.keyboardAvoid = c;
-            }}
-            behavior="position"
-            enabled={avoidKeyboard}
-            keyboardVerticalOffset={avoidKeyboardOffset + keyboardOffset + getStatusBarHeight(true)}
-            style={{ width: '100%' }}
-          >
-            <Animated.View style={[styles.dialog, { transform: [{ scale }, { translateY: top }] }]}>
-              {children}
-            </Animated.View>
-          </KeyboardAvoidingView>
-        );
-      }
-
-      return (
-        <Animated.View style={[styles.dialog, { transform: [{ scale }, { translateY: top }] }]}>
-          {children}
-        </Animated.View>
-      );
+    const animatedStyle = {
+      opacity: animate.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, 1],
+      }),
     };
 
     return (
@@ -156,10 +157,10 @@ export default class Modal extends PureComponent {
         onLayout={onLayout}
       >
         <TouchableWithoutFeedback onPress={this._close}>
-          <Animated.View style={[styles.overlay, { opacity: overlayOpacity }]} />
+          <Animated.View style={[styles.overlay, animatedStyle]} />
         </TouchableWithoutFeedback>
 
-        {renderView()}
+        {this._renderView()}
       </View>
     );
   }

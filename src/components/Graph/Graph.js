@@ -1,15 +1,15 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
-import { LineChart } from 'react-native-svg-charts';
-import * as shape from 'd3-shape';
+import React, { PureComponent } from "react";
+import PropTypes from "prop-types";
+import { ActivityIndicator, TouchableOpacity, View } from "react-native";
+import { LineChart } from "react-native-svg-charts";
+import * as shape from "d3-shape";
 
-import { Text, FontScale } from '..';
-import Settings from '../../config/settings';
-import ExchangeHelper from '../../utils/exchangeHelper';
-import { numFormat } from '../../utils/numFormat';
-import themeableStyles from './styles';
-import { fontSize, colors } from '../../config/styling';
+import { Text, FontScale } from "..";
+import Settings from "../../config/settings";
+import ExchangeHelper from "../../utils/exchangeHelper";
+import { numFormat } from "../../utils/numFormat";
+import themeableStyles from "./styles";
+import { fontSize, colors } from "../../config/styling";
 
 export default class Graph extends PureComponent {
   constructor(props) {
@@ -22,8 +22,8 @@ export default class Graph extends PureComponent {
       range: undefined,
       currency: undefined,
       currentPrice: 0.0,
-      diffType: 'percent',
-      graphHeight: 128,
+      diffType: "percent",
+      graphHeight: 128
     };
   }
 
@@ -36,30 +36,33 @@ export default class Graph extends PureComponent {
 
     this._onSettingsUpdated(this.settingHelper.getAll());
 
-    this.settingHelper.on('updated', this._onSettingsUpdated);
-    this.exchangeHelper.on('syncedexchange', this._refreshFiatData);
+    this.settingHelper.on("updated", this._onSettingsUpdated);
+    this.exchangeHelper.on("syncedexchange", this._refreshFiatData);
   }
 
   componentWillUnmount() {
-    this.settingHelper.removeListener('updated', this._onSettingsUpdated);
+    this.settingHelper.removeListener("updated", this._onSettingsUpdated);
   }
 
   _refreshFiatData = () => {
-    const dataPoints = this.exchangeHelper.getDataPoints(this.currentCurrency, this.currentRange);
+    const dataPoints = this.exchangeHelper.getDataPoints(
+      this.currentCurrency,
+      this.currentRange
+    );
 
-
-    const currentPrice = this.exchangeHelper.getCurrentPrice(this.currentCurrency);
+    const currentPrice = this.exchangeHelper.getCurrentPrice(
+      this.currentCurrency
+    );
 
     this.setState({
       isLoading: false,
       dataPoints,
-      currentPrice,
+      currentPrice
     });
   };
 
-  _onSettingsUpdated = (settings) => {
+  _onSettingsUpdated = settings => {
     const { currency, range: rangeIndex } = settings;
-
 
     const range = Settings.ranges[rangeIndex];
 
@@ -82,17 +85,19 @@ export default class Graph extends PureComponent {
     const diff = Math.round(this._diffRaw() * 1000) / 1000;
 
     if (diff === 0) {
-      return '< 0,001';
+      return "< 0,001";
     }
 
     return numFormat(diff, this.state.currency, 3);
   };
 
-  _diffPercent = () => numFormat(Math.round((this._diffRaw() / this.state.dataPoints[0]) * 100 * 100) / 100)
-  ;
+  _diffPercent = () =>
+    numFormat(
+      Math.round((this._diffRaw() / this.state.dataPoints[0]) * 100 * 100) / 100
+    );
 
   _diffValue = () => {
-    if (this.state.diffType == 'percent') {
+    if (this.state.diffType == "percent") {
       return `${this._diffPercent()}%`;
     }
     return `${this._diffRound()} ${this.state.currency}`;
@@ -119,7 +124,8 @@ export default class Graph extends PureComponent {
       this.props.toggleRange();
     };
 
-    const diffColor = () => (this._diffRaw() < 0.0 ? styles.negative : styles.positive);
+    const diffColor = () =>
+      this._diffRaw() < 0.0 ? styles.negative : styles.positive;
 
     if (this.state.isLoading) {
       return <ActivityIndicator animating size="small" style={styles.loader} />;
@@ -131,22 +137,35 @@ export default class Graph extends PureComponent {
           <FontScale
             fontSizeMax={fontSize.h2}
             fontSizeMin={fontSize.h4}
-            text={`${coinTitle} ${ticker}/${this.state.currency}     ${this._diffValue()}`}
+            text={`${coinTitle} ${ticker}/${
+              this.state.currency
+            }     ${this._diffValue()}`}
             widthScale={0.96}
           >
             {({ fontSize }) => (
               <View style={[styles.textContainer]}>
                 <View style={styles.textContainer}>
-                  <Text style={[styles.coinText, styles.coinTitle, { fontSize }]}>{coinTitle}</Text>
-                  <TouchableOpacity onPress={() => this.props.toggleCurrency()}>
-                    <Text style={[styles.coinText, styles.coinTicker, { fontSize }]}>
-                      {ticker}/{this.state.currency}
-                    </Text>
-                  </TouchableOpacity>
+                  <Text
+                    style={[styles.coinText, styles.coinTitle, { fontSize }]}
+                  >
+                    {coinTitle}
+                  </Text>
+                  <Text
+                    style={[styles.coinText, styles.coinTicker, { fontSize }]}
+                  >
+                    {ticker}/{this.state.currency}
+                  </Text>
                 </View>
 
                 <View style={styles.coinDiffContainer}>
-                  <Text style={[styles.coinText, styles.coinDiff, diffColor(), { fontSize }]}>
+                  <Text
+                    style={[
+                      styles.coinText,
+                      styles.coinDiff,
+                      diffColor(),
+                      { fontSize }
+                    ]}
+                  >
                     {this._diffValue()}
                   </Text>
                 </View>
@@ -157,8 +176,19 @@ export default class Graph extends PureComponent {
             <TouchableOpacity onPress={() => toggleRange()}>
               <Text style={styles.currencyText}>Past {this.state.range}</Text>
             </TouchableOpacity>
-            <Text style={[styles.currencyText, styles.coinDiffContainer, styles.coinDiff]}>
-              {numFormat(this.state.currentPrice, this.state.currency, undefined, 1)}{' '}
+            <Text
+              style={[
+                styles.currencyText,
+                styles.coinDiffContainer,
+                styles.coinDiff
+              ]}
+            >
+              {numFormat(
+                this.state.currentPrice,
+                this.state.currency,
+                undefined,
+                1
+              )}{" "}
               {this.state.currency}
             </Text>
           </View>
@@ -166,7 +196,7 @@ export default class Graph extends PureComponent {
 
         <View
           style={{ height: this.state.graphHeight, marginBottom: 8 }}
-          onLayout={(e) => {
+          onLayout={e => {
             const ratio = 128 / 343; // ratio according to design.
             const graphHeight = ratio * e.nativeEvent.layout.width;
             this.setState({ graphHeight });
@@ -174,19 +204,19 @@ export default class Graph extends PureComponent {
         >
           <LineChart
             style={{ height: this.state.graphHeight }}
-            dataPoints={this.state.dataPoints}
+            dataPoints={this.state.dataPoints || []}
             curve={shape.curveLinear}
             showGrid
             numberOfTicks={1}
             animationDuration={300}
             svg={{
               style: styles.line,
-              strokeWidth: 2,
+              strokeWidth: 2
             }}
             breakpointGradient={{
               breakpoint: this.state.dataPoints[0],
               colorBelow: colors.orange,
-              colorAbove: colors.green,
+              colorAbove: colors.green
             }}
           />
         </View>
@@ -199,15 +229,15 @@ Graph.contextTypes = {
   type: PropTypes.string,
   theme: PropTypes.string,
   coinid: PropTypes.object,
-  settingHelper: PropTypes.object,
+  settingHelper: PropTypes.object
 };
 
 Graph.propTypes = {
   currency: PropTypes.string,
-  range: PropTypes.number,
+  range: PropTypes.number
 };
 
 Graph.defaultProps = {
   currency: Settings.currency,
-  range: 0,
+  range: 0
 };

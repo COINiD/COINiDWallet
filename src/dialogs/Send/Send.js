@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Platform, TextInput, View, TouchableOpacity,
+  Platform, TextInput, View, TouchableOpacity, StyleSheet,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import Big from 'big.js';
@@ -31,7 +31,7 @@ export default class Send extends PureComponent {
       exchangeRate: 0,
       currency: '',
       ticker,
-      address: undefined,
+      address: '',
       amount: '',
       note: undefined,
       editAddress: '',
@@ -311,27 +311,51 @@ export default class Send extends PureComponent {
               <Text style={styles.formLabel}>To</Text>
               <View style={styles.formItemRow}>
                 <FontScale
-                  style={{ flex: 1, flexDirection: 'column', alignItems: 'flex-start' }}
+                  style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    alignItems: 'flex-start',
+                  }}
                   fontSizeMax={fontSize.base}
                   fontSizeMin={6}
-                  text={address}
+                  text={address.trim()}
                   widthScale={0.9}
+                  ref={(c) => {
+                    this.toScaleRef = c;
+                  }}
+                  extraData={this.state.scaleBlurred}
                 >
-                  {({ fontSize }) => (
+                  {({ fontSize: scaledFontSize }) => (
                     <TextInput
                       keyboardType={Platform.OS === 'ios' ? 'default' : 'visible-password'}
-                      style={[styles.formItemInput, { flex: 0, width: '100%', fontSize }]}
+                      style={[
+                        styles.formItemInput,
+                        { flex: 0, width: '100%', fontSize: scaledFontSize },
+                      ]}
                       value={address}
                       autoCorrect={false}
                       spellCheck={false}
-                      textContentType={false}
-                      onChangeText={address => this.setState({ address: address.trim() })}
+                      textContentType="none"
+                      onChangeText={(changedAddress) => {
+                        console.log({ changedAddress });
+                        this.setState({ address: changedAddress.trim() });
+                      }}
+                      onBlur={() => {
+                        const orgAddress = address;
+
+                        this.setState({ address: `${orgAddress} ` }, () => {
+                          setTimeout(() => {
+                            this.setState({ address: `${orgAddress}` });
+                          }, 100);
+                        });
+                      }}
                       ref={(c) => {
                         this.toRef = c;
                       }}
                       returnKeyType="done"
                       onSubmitEditing={() => this.amountRef.focus()}
                       underlineColorAndroid="transparent"
+                      allowFontScaling={false}
                     />
                   )}
                 </FontScale>
@@ -403,7 +427,7 @@ export default class Send extends PureComponent {
                   keyboardType={Platform.OS === 'ios' ? 'default' : 'visible-password'}
                   autoCorrect={false}
                   spellCheck={false}
-                  textContentType={false}
+                  textContentType="none"
                   style={styles.formItemInput}
                   value={note}
                   maxLength={26}

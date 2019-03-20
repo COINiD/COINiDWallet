@@ -2,10 +2,7 @@ import React, { PureComponent } from 'react';
 import { TextInput } from 'react-native';
 import PropTypes from 'prop-types';
 import Big from 'big.js';
-import {
-  isCryptoCurrency,
-} from '../../utils/numFormat';
-
+import { isCryptoCurrency } from '../../utils/numFormat';
 
 class AmountInput extends PureComponent {
   constructor(props) {
@@ -26,7 +23,7 @@ class AmountInput extends PureComponent {
 
   _updateAmount = (amount) => {
     this._onChangeAmountText(`${amount}`);
-  }
+  };
 
   _isValidInput = (text, currency) => {
     if (isCryptoCurrency(currency)) {
@@ -72,7 +69,7 @@ class AmountInput extends PureComponent {
     amount = amount.replace(/\.$/, '');
 
     return amount;
-  }
+  };
 
   _onChangeFiatText = (inputFiat) => {
     const { exchangeRate, exchangeTo, exchangeFrom } = this.props;
@@ -89,7 +86,6 @@ class AmountInput extends PureComponent {
 
     this.setState({ fiatAmount });
 
-
     let amount = Big(fiatAmount);
     if (exchangeRate) {
       amount = amount.div(exchangeRate);
@@ -101,13 +97,13 @@ class AmountInput extends PureComponent {
     amount = this._convertNumberToFixed(amount, exchangeFrom);
 
     this._onChangeAmountText(`${amount}`, true);
-  }
+  };
 
   _onSubmitEditing = () => {
     const { onSubmitEditing } = this.props;
 
     onSubmitEditing();
-  }
+  };
 
   _getAmountMaxLength = (amount) => {
     const maxLength1 = `${amount}`.replace(/\.[0-9]*$/, '').length + 8 + 1;
@@ -130,7 +126,7 @@ class AmountInput extends PureComponent {
       .replace(/^\./, '0.')
       .replace(/^[0]{2,}/, '0')
       .replace(/([.]\d{2,2})(.*$)/, '$1');
-  }
+  };
 
   focus() {
     const { inputInFiat } = this.props;
@@ -149,7 +145,9 @@ class AmountInput extends PureComponent {
     if (inputInFiat) {
       return (
         <TextInput
-          ref={(c) => { this.fiatRef = c; }}
+          ref={(c) => {
+            this.fiatRef = c;
+          }}
           style={style}
           value={`${fiatAmount}`}
           maxLength={this._getAmountMaxLength(fiatAmount)}
@@ -157,6 +155,7 @@ class AmountInput extends PureComponent {
           onSubmitEditing={this._onSubmitEditing}
           keyboardType="numeric"
           returnKeyType="done"
+          textContentType="none"
           underlineColorAndroid="transparent"
           autoCapitalize="words"
         />
@@ -165,7 +164,9 @@ class AmountInput extends PureComponent {
 
     return (
       <TextInput
-        ref={(c) => { this.amountRef = c; }}
+        ref={(c) => {
+          this.amountRef = c;
+        }}
         style={style}
         value={`${amount}`}
         onChangeText={this._onChangeAmountText}
@@ -173,6 +174,7 @@ class AmountInput extends PureComponent {
         onSubmitEditing={this._onSubmitEditing}
         keyboardType="numeric"
         returnKeyType="done"
+        textContentType="none"
         underlineColorAndroid="transparent"
         autoCapitalize="words"
       />

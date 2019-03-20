@@ -1,22 +1,27 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { View, Clipboard, TouchableOpacity } from 'react-native';
+import {
+  View, Clipboard, TouchableOpacity, PixelRatio, Platform,
+} from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
+import Share from 'react-native-share';
+import ViewShot from 'react-native-view-shot';
 import {
   DetailsModal, Text, FontScale, AmountInput,
 } from '../../components';
-import { MoreOptions, ValidateAddress, SweepPrivateKey } from '..';
+import { ValidateAddress, SweepPrivateKey } from '..';
 import styles from './styles';
 import { fontSize } from '../../config/styling';
 import ExchangeHelper from '../../utils/exchangeHelper';
+import ReceiveActionMenu from '../../actionmenus/ReceiveActionMenu';
 
-export default class Receive extends PureComponent {
+class Receive extends PureComponent {
   constructor(props, context) {
     super(props);
 
     const { address } = props;
     const { coinid, settingHelper } = context;
-    const { ticker } = coinid;
+    const { ticker, coinTitle } = coinid;
 
     this.settingHelper = settingHelper;
     this.exchangeHelper = ExchangeHelper(ticker);
@@ -28,6 +33,7 @@ export default class Receive extends PureComponent {
       exchangeRate: 0,
       currency: '',
       amount: 0,
+      coinTitle,
     };
   }
 
@@ -124,12 +130,10 @@ export default class Receive extends PureComponent {
   _copyAddress = () => {
     const { address } = this.state;
     Clipboard.setString(address);
-    this.refMoreOptions._close();
   };
 
   _validateAddress = () => {
     const { address } = this.state;
-    this.refMoreOptions._close();
     setTimeout(() => {
       this.refValidateAddress._open(address);
     }, 100);
@@ -138,35 +142,56 @@ export default class Receive extends PureComponent {
   _sweepPrivateKey = () => {
     const { address } = this.state;
     this._close();
-    this.refMoreOptions._close();
     setTimeout(() => {
       this.refSweepPrivateKey._open(address);
     }, 100);
   };
 
+  _share = async () => {
+    const {
+      address, amount, coinTitle, ticker,
+    } = this.state;
+
+    const getShareMessage = () => {
+      let message = `My ${coinTitle} Address: ${address}`;
+
+      if (amount) {
+        message += `\nRequested Amount: ${amount} ${ticker}`;
+      }
+
+      return message;
+    };
+
+    const getQRUri = () => new Promise((resolve) => {
+      this.viewShot.capture().then((uri) => {
+        resolve(uri);
+      });
+    });
+
+    const url = await getQRUri();
+
+    const options = {
+      title: 'Share via',
+      message: getShareMessage(),
+      url,
+      type: 'image/png',
+    };
+
+    Share.open(options);
+  };
+
   _showMoreOptions = () => {
-    this.refMoreOptions._open([
-      [
-        {
-          title: 'Copy Address',
-          onPress: this._copyAddress,
-        },
-        {
-          title: 'Validate Address',
-          onPress: this._validateAddress,
-        },
-        {
-          title: 'Sweep Private Key',
-          onPress: this._sweepPrivateKey,
-        },
-      ],
-      [
-        {
-          title: 'Cancel',
-          onPress: this.refMoreOptions._close,
-        },
-      ],
-    ]);
+    const { showActionSheetWithOptions } = this.props;
+
+    const receiveActionMenu = new ReceiveActionMenu({
+      showActionSheetWithOptions,
+      onSweepPrivateKey: this._sweepPrivateKey,
+      onValidateAddress: this._validateAddress,
+      onCopyAddress: this._copyAddress,
+      onShare: this._share,
+    });
+
+    receiveActionMenu.show();
   };
 
   _toggleInputFiat = () => {
@@ -177,6 +202,7 @@ export default class Receive extends PureComponent {
     }
 
     this.setState({ inputInFiat: !inputInFiat });
+    return true;
   };
 
   render() {
@@ -213,16 +239,24 @@ export default class Receive extends PureComponent {
         >
           <View style={styles.container}>
             <View style={styles.modalContent}>
-              <View style={styles.qrCode}>
-                <QRCode
-                  value={qrAddress}
-                  size={160}
-                  ecl="Q"
-                  logo={require('../../assets/images/qr_logo_full.png')}
-                  logoSize={80}
-                  logoBackgroundColor="transparent"
-                />
+              <View style={styles.qrCodeWrapper}>
+                <ViewShot
+                  ref={(c) => {
+                    this.viewShot = c;
+                  }}
+                  options={{
+                    format: 'png',
+                    result: Platform.OS === 'ios' ? 'tmpfile' : 'data-uri',
+                    width: parseInt(320 / PixelRatio.get(), 10),
+                    height: parseInt(320 / PixelRatio.get(), 10),
+                  }}
+                >
+                  <View style={styles.qrCode}>
+                    <QRCode value={qrAddress} size={160} ecl="Q" />
+                  </View>
+                </ViewShot>
               </View>
+
               <FontScale
                 fontSizeMax={fontSize.small}
                 fontSizeMin={8}
@@ -268,11 +302,6 @@ export default class Receive extends PureComponent {
             </View>
           </View>
         </DetailsModal>
-        <MoreOptions
-          ref={(c) => {
-            this.refMoreOptions = c;
-          }}
-        />
         <ValidateAddress
           ref={(c) => {
             this.refValidateAddress = c;
@@ -310,3 +339,5 @@ Receive.defaultProps = {
   address: undefined,
   theme: 'light',
 };
+
+export default Receive;

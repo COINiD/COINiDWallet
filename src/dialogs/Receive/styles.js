@@ -6,11 +6,17 @@ import parentStyles from '../dialogStyles';
 export default styleMerge(
   parentStyles('light'),
   StyleSheet.create({
-    // Custom Modal style
     qrCode: {
-      marginTop: 12,
-      marginBottom: 24,
+      padding: 8,
+      backgroundColor: colors.white,
+    },
+    qrCodeWrapper: {
+      marginTop: 4,
+      marginBottom: 16,
+      height: 160,
       alignItems: 'center',
+      flexDirection: 'row',
+      justifyContent: 'center',
     },
     addressText: {
       fontSize: fontSize.small,

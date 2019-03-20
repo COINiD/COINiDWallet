@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { View } from 'react-native';
-import Settings from '../../config/settings';
 import {
   Button, CancelButton, DetailsModal, Text, COINiDTransport,
 } from '../../components';
@@ -9,6 +8,16 @@ import { SweepKeyDetails } from '..';
 import styles from './styles';
 
 export default class SweepPrivateKey extends PureComponent {
+  constructor(props, context) {
+    super(props);
+    const { coinid } = context;
+    const { coinTitle } = coinid;
+
+    this.state = {
+      coinTitle,
+    };
+  }
+
   getChildContext() {
     const { theme: propsTheme } = this.props;
     const { theme: contextTheme } = this.context;
@@ -57,6 +66,7 @@ export default class SweepPrivateKey extends PureComponent {
 
   render() {
     const { onOpened, onClosed } = this.props;
+    const { coinTitle } = this.state;
 
     const renderTransportContent = ({
       isSigning, signingText, cancel, submit,
@@ -69,7 +79,7 @@ export default class SweepPrivateKey extends PureComponent {
       return (
         <View style={styles.container}>
           <Text style={{ marginBottom: 24, textAlign: 'center' }}>
-            You can scan and sweep any {Settings.coin} private key in WIF, WIFC or BIP38 format.
+            You can scan and sweep any {coinTitle} private key in WIF, WIFC or BIP38 format.
           </Text>
           <Text style={{ marginBottom: 24, textAlign: 'center', fontWeight: 'bold' }}>
             The private key will be scanned and stored in your COINiD Vault.

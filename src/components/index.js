@@ -23,3 +23,4 @@ export { default as COINiDTransport } from './COINiDTransport';
 export { default as AmountInput } from './AmountInput';
 export { default as FontScale } from './FontScale';
 export { default as ExpandableView } from './ExpandableView';
+export { default as SettingsHeader } from './SettingsHeader';

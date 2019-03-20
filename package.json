@@ -1,12 +1,11 @@
 {
   "name": "COINiDWallet",
-  "version": "0.1.3",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
-    "postversion": "react-native-version",
-    "postinstall": "babel node_modules/lottie-react-native/src/js --out-dir node_modules/lottie-react-native/lib; node node_modules/rn-nodeify/cmd.js --install stream,buffer,events,assert,crypto,vm --hack"
+    "postinstall": "node node_modules/rn-nodeify/cmd.js --install stream,buffer,events,assert,crypto,vm --hack"
   },
   "rnpm": {
     "assets": [
@@ -14,6 +13,8 @@
     ]
   },
   "dependencies": {
+    "@expo/react-native-action-sheet": "^2.1.0",
+    "@react-native-community/async-storage": "^1.2.1",
     "assert": "^1.4.1",
     "big.js": "^5.0.3",
     "bip21": "^2.0.2",
@@ -29,11 +30,11 @@
     "md5": "^2.2.1",
     "moment": "^2.21.0",
     "numbro": "^2.1.0",
-    "prop-types": "^15.6.1",
-    "react": "16.3.1",
-    "react-native": "0.55.4",
+    "prop-types": "^15.7.2",
+    "react": "16.8.3",
+    "react-native": "0.59.1",
     "react-native-blur": "^3.2.2",
-    "react-native-camera": "^1.1.4",
+    "react-native-camera": "^1.0.2",
     "react-native-crypto": "^2.1.1",
     "react-native-elements": "^0.18.4",
     "react-native-exit-app": "^1.0.0",
@@ -44,45 +45,35 @@
     "react-native-p2p-transfer-ble-central": "https://github.com/COINiD/react-native-p2p-transfer-ble-central.git",
     "react-native-qr-data-transfer-receiver": "https://github.com/COINiD/react-native-qr-data-transfer-receiver",
     "react-native-qr-data-transfer-sender": "https://github.com/COINiD/react-native-qr-data-transfer-sender",
-    "react-native-qrcode-scanner": "^1.0.1",
+    "react-native-qrcode-scanner": "^1.1.2",
     "react-native-qrcode-svg": "^5.0.6",
     "react-native-randombytes": "^3.0.0",
+    "react-native-share": "^1.1.3",
     "react-native-snap-carousel": "https://github.com/wlc-/react-native-snap-carousel.git",
     "react-native-splash-screen": "^3.1.1",
-    "react-native-svg": "^6.2.2",
-    "react-native-svg-charts": "git+https://github.com/mundiallover/react-native-svg-charts.git",
+    "react-native-svg": "^9.3.5",
+    "react-native-svg-charts": "https://github.com/mundiallover/react-native-svg-charts",
     "react-native-vector-icons": "^4.4.2",
+    "react-native-view-shot": "^2.5.0",
     "react-navigation": "^2.12.1",
     "readable-stream": "^1.0.33",
-    "socket.io-client": "^2.1.1",
+    "socket.io-client": "^2.2.0",
     "stream-browserify": "^1.0.0",
     "vm-browserify": "0.0.4"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-eslint": "^8.2.3",
-    "babel-plugin-module-resolver": "^3.1.1",
-    "enzyme": "^3.8.0",
-    "enzyme-adapter-react-16": "^1.7.1",
-    "eslint": "^5.3.0",
+    "@babel/core": "^7.4.0",
+    "@babel/runtime": "^7.4.0",
+    "babel-jest": "^24.5.0",
+    "eslint": "^5.15.3",
     "eslint-config-airbnb": "^17.1.0",
-    "eslint-plugin-import": "^2.11.0",
-    "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-react": "^7.11.0",
-    "jest": "^23.6.0",
-    "jest-fetch-mock": "^2.1.0",
-    "mock-async-storage": "^2.0.4",
-    "mock-socket": "^8.0.5",
-    "react-dom": "^16.7.0",
-    "react-native-version": "^2.4.1",
-    "react-test-renderer": "16.3.1",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-react": "^7.12.4",
+    "jest": "^24.5.0",
+    "metro-react-native-babel-preset": "^0.53.1",
+    "react-test-renderer": "16.8.3",
     "rn-nodeify": "^10.0.0"
-  },
-  "jest": {
-    "preset": "react-native",
-    "transformIgnorePatterns": [
-      "node_modules/(?!(react-native|react-navigation|coinid-address-functions|coinid-address-types))"
-    ]
   },
   "react-native": {
     "crypto": "react-native-crypto",

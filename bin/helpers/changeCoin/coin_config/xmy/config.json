@@ -1,10 +1,10 @@
 {
-	"coinTicker": "xmy",
-	"coinName": "myriad",
-	"appReturnScheme": "coinid-xmy",
-	"iosIdentifier": "org.coinid.wallet.xmy",
-	"androidPackageName": "org.coinid.wallet.xmy",
-	"displayName": "XMY COINiD",
-	"availableCurrencies": "['BTC', 'USD', 'EUR']",
-	"isTestnet": "false"
+  "coinTicker": "xmy",
+  "coinName": "myriad",
+  "appReturnScheme": "coinid-xmy",
+  "iosIdentifier": "org.coinid.wallet.xmy",
+  "androidPackageName": "org.coinid.wallet.xmy",
+  "displayName": "XMY COINiD",
+  "availableCurrencies": "['BTC','USD','EUR','JPY','GBP','CAD','CHF','KRW','NZD','SEK','NOK','DKK']",
+  "isTestnet": "false"
 }

@@ -1,5 +1,3 @@
-
-
 /**
  * Helper for retrieving fees.
  * All fees are displayed as fee-per-byte (in satoshis)
@@ -13,32 +11,31 @@ const apiUrl = 'https://min-api.cryptocompare.com/data';
 
 const fetchFromHistoryApi = (range, ticker, currency, duration, aggregate) => {
   const url = `${apiUrl}/`
-    + `histo${range
-    }?fsym=${ticker.toUpperCase()
-    }&tsym=${currency.toUpperCase()
-    }&limit=${parseInt(duration / aggregate)
-    }&aggregate=${aggregate}`;
+    + `histo${range}?fsym=${ticker.toUpperCase()}&tsym=${currency.toUpperCase()}&limit=${parseInt(
+      duration / aggregate,
+    )}&aggregate=${aggregate}`;
 
-  return fetch(url).then(r => r.json()).then(j => j.Data);
+  return fetch(url)
+    .then(r => r.json())
+    .then(j => j.Data);
 };
 
 const fetchFromPriceApi = (ticker, currency) => {
-  const url = `${apiUrl}/`
-    + 'price'
-    + `?fsym=${ticker.toUpperCase()
-    }&tsyms=${currency.toUpperCase()}`;
+  const url = `${apiUrl}/` + 'price' + `?fsym=${ticker.toUpperCase()}&tsyms=${currency.toUpperCase()}`;
 
-  return fetch(url).then(r => r.json()).then(j => j[currency]);
+  return fetch(url)
+    .then(r => r.json())
+    .then(j => j[currency]);
 };
 
 const fetchFromHistoricPriceApi = (ticker, currency, timestamp) => {
   const url = `${apiUrl}/`
     + 'pricehistorical'
-    + `?fsym=${ticker
-    }&tsyms=${currency
-    }&ts=${parseInt(timestamp, 10)}`;
+    + `?fsym=${ticker}&tsyms=${currency}&ts=${parseInt(timestamp, 10)}`;
 
-  return fetch(url).then(r => r.json()).then(j => j[ticker][currency]);
+  return fetch(url)
+    .then(r => r.json())
+    .then(j => j[ticker][currency]);
 };
 
 class ExchangeHelper extends EventEmitter {
@@ -76,37 +73,38 @@ class ExchangeHelper extends EventEmitter {
       clearTimeout(this.syncTimer);
     }
 
-    this.fetchExchangeData().then((exchangeInfo) => {
-      this.exchangeInfo = exchangeInfo;
-      this.exchangeInfo.lastUpdated = Date.now();
+    this.fetchExchangeData()
+      .then((exchangeInfo) => {
+        this.exchangeInfo = exchangeInfo;
+        this.exchangeInfo.lastUpdated = Date.now();
 
-      this.storage.set('exchangeInfo', this.exchangeInfo);
-      this.emit('syncedexchange');
+        this.storage.set('exchangeInfo', this.exchangeInfo);
+        this.emit('syncedexchange');
 
-      this.syncTimer = setTimeout(this.sync, this.syncEveryMs);
-    }).catch((err) => {
-      this.syncTimer = setTimeout(this.sync, this.syncEveryMs);
-    });
-  }
+        this.syncTimer = setTimeout(this.sync, this.syncEveryMs);
+      })
+      .catch((err) => {
+        this.syncTimer = setTimeout(this.sync, this.syncEveryMs);
+      });
+  };
 
   fetchExchangeData = () => {
     const pArr = this.currencyArr.map(c => this.fetchExchangeDataForCurrency(c));
 
-    return Promise.all(pArr)
-      .then((ret) => {
+    return Promise.all(pArr).then((ret) => {
       // update exchangeInfo
-        for (let i = 0; i < this.currencyArr.length; i += 1) {
-          if (ret[i]) {
-            this.exchangeInfo[this.currencyArr[i]] = {
-              ...this.exchangeInfo[this.currencyArr[i]],
-              ...ret[i],
-            };
-          }
+      for (let i = 0; i < this.currencyArr.length; i += 1) {
+        if (ret[i]) {
+          this.exchangeInfo[this.currencyArr[i]] = {
+            ...this.exchangeInfo[this.currencyArr[i]],
+            ...ret[i],
+          };
         }
+      }
 
-        return this.exchangeInfo;
-      });
-  }
+      return this.exchangeInfo;
+    });
+  };
 
   fetchExchangeDataForCurrency = (currency) => {
     const apiSettings = [
@@ -119,38 +117,37 @@ class ExchangeHelper extends EventEmitter {
     const pArr = apiSettings.map(s => fetchFromHistoryApi(s.range, this.ticker, currency, s.duration, s.aggregate));
     pArr.push(this.fetchCurrentPrice(currency));
 
-    return Promise.all(pArr)
-      .then(([day, week, month, year, current]) => ({
-        lastUpdated: Date.now(),
-        day,
-        week,
-        month,
-        year,
-        current,
-      }));
-  }
+    return Promise.all(pArr).then(([day, week, month, year, current]) => ({
+      lastUpdated: Date.now(),
+      day,
+      week,
+      month,
+      year,
+      current,
+    }));
+  };
 
-  fetchCurrentPrice = currency => fetchFromPriceApi(this.ticker, currency)
+  fetchCurrentPrice = currency => fetchFromPriceApi(this.ticker, currency);
 
-  fetchHistoricPrice = (currency, timestamp) => fetchFromHistoricPriceApi(this.ticker, currency, timestamp)
-    .then((historicPrice) => {
-      if (this.exchangeInfo[currency] === undefined) {
-        this.exchangeInfo[currency] = {};
-      }
+  fetchHistoricPrice = (currency, timestamp) => fetchFromHistoricPriceApi(this.ticker, currency, timestamp).then((historicPrice) => {
+    if (this.exchangeInfo[currency] === undefined) {
+      this.exchangeInfo[currency] = {};
+    }
 
-      if (this.exchangeInfo[currency].historicPrices === undefined) {
-        this.exchangeInfo[currency].historicPrices = {};
-      }
+    if (this.exchangeInfo[currency].historicPrices === undefined) {
+      this.exchangeInfo[currency].historicPrices = {};
+    }
 
-      this.exchangeInfo[currency].historicPrices[timestamp] = historicPrice;
+    this.exchangeInfo[currency].historicPrices[timestamp] = historicPrice;
 
-      this.storage.set('exchangeInfo', this.exchangeInfo);
+    this.storage.set('exchangeInfo', this.exchangeInfo);
 
-      return historicPrice;
-    })
+    return historicPrice;
+  });
 
   getCurrencyData = (currency) => {
-    if (this.currencyArr.indexOf(currency) === -1) { // add if missing from currencyArr
+    if (this.currencyArr.indexOf(currency) === -1) {
+      // add if missing from currencyArr
       this.currencyArr.push(currency);
       this.sync();
     }
@@ -160,19 +157,19 @@ class ExchangeHelper extends EventEmitter {
     }
 
     return this.exchangeInfo[currency];
-  }
+  };
 
   getCurrencyRangeData = (currency, range) => {
     const currencyData = this.getCurrencyData(currency);
 
-    if (!currencyData.hasOwnProperty(range)) {
+    if (!currencyData.hasOwnProperty(range) || !Array.isArray(currencyData[range])) {
       return [];
     }
 
     return currencyData[range];
-  }
+  };
 
-  getDataPoints = (currency, range) => this.getCurrencyRangeData(currency, range).map(e => e.close)
+  getDataPoints = (currency, range) => this.getCurrencyRangeData(currency, range).map(e => e.close);
 
   getCurrentPrice = (currency) => {
     const currencyData = this.getCurrencyData(currency);
@@ -182,7 +179,7 @@ class ExchangeHelper extends EventEmitter {
     }
 
     return currencyData.current;
-  }
+  };
 
   getHistoricPrice = (currency, timestamp) => {
     const currencyData = this.getCurrencyData(currency);
@@ -196,9 +193,9 @@ class ExchangeHelper extends EventEmitter {
     }
 
     return currencyData.historicPrices[timestamp];
-  }
+  };
 
-  getExchangeInfo = () => this.exchangeInfo
+  getExchangeInfo = () => this.exchangeInfo;
 
   convert = (amount, currency) => {
     const price = this.getCurrentPrice(currency);
@@ -211,9 +208,8 @@ class ExchangeHelper extends EventEmitter {
       return Promise.resolve(price * amount);
     }
 
-    return this.fetchCurrentPrice(currency)
-      .then(price => price * amount);
-  }
+    return this.fetchCurrentPrice(currency).then(price => price * amount);
+  };
 
   convertOnTime = (amount, currency, timestamp) => {
     const price = this.getHistoricPrice(currency, timestamp);
@@ -222,14 +218,13 @@ class ExchangeHelper extends EventEmitter {
       return Promise.resolve(price * amount);
     }
 
-    return this.fetchHistoricPrice(currency, timestamp)
-      .then(price => price * amount);
-  }
+    return this.fetchHistoricPrice(currency, timestamp).then(price => price * amount);
+  };
 }
 
 const exchangeHelperCache = {}; // for local caching so we dont create several for same coin.
 
-module.exports = (coin)  => {
+module.exports = (coin) => {
   if (exchangeHelperCache[coin] === undefined) {
     exchangeHelperCache[coin] = new ExchangeHelper(coin);
   }

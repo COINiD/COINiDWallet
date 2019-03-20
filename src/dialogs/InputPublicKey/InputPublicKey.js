@@ -87,7 +87,7 @@ export default class InputPublicKey extends PureComponent {
               value={publicKey}
               autoCorrect={false}
               spellCheck={false}
-              textContentType={false}
+              textContentType="none"
               returnKeyType="done"
               onChangeText={this._onChangePublicKey}
               underlineColorAndroid="transparent"

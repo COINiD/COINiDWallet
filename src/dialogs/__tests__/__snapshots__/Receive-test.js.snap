@@ -4,6 +4,7 @@ exports[`Receive gets matches snapshot 1`] = `
 Object {
   "address": "msvEw9nCEtDtayUe9Mthh657yaDaqNN5A7",
   "amount": 0,
+  "coinTitle": "Testnet",
   "currency": "USD",
   "exchangeRate": 0,
   "qrAddress": "bitcoin:msvEw9nCEtDtayUe9Mthh657yaDaqNN5A7",
