@@ -1,16 +1,29 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { View } from 'react-native';
-import { fontWeight } from '../../config/styling';
+import { StyleSheet, View } from 'react-native';
+import { fontWeight } from '../config/styling';
 import {
   Button, CancelButton, DetailsModal, Text, COINiDTransport,
-} from '../../components';
-import styles from './styles';
+} from '../components';
+
+const styles = StyleSheet.create({
+  container: {
+    marginBottom: 11,
+    marginHorizontal: 10,
+  },
+  textContainer: {
+    marginBottom: 24,
+    textAlign: 'center',
+  },
+});
 
 export default class ValidateAddress extends PureComponent {
   getChildContext() {
+    const { theme: propsTheme } = this.props;
+    const { theme: contextTheme } = this.context;
+
     return {
-      theme: this.props.theme ? this.props.theme : this.context.theme,
+      theme: propsTheme || contextTheme,
     };
   }
 
@@ -88,7 +101,7 @@ export default class ValidateAddress extends PureComponent {
 }
 
 ValidateAddress.contextTypes = {
-  coinid: PropTypes.object,
+  coinid: PropTypes.shape({}),
   type: PropTypes.string,
   theme: PropTypes.string,
 };

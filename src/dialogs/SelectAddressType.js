@@ -1,15 +1,19 @@
-
-
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { getAddressTypeInfo } from 'coinid-address-types';
 import {
   DetailsModal, Text, Button, CheckBoxSelect,
-} from '../../components';
-import { fontWeight } from '../../config/styling';
-import styles from './styles';
+} from '../components';
+import { fontWeight } from '../config/styling';
 
+const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+    paddingTop: 0,
+    maxHeight: 400,
+  },
+});
 
 export default class SelectAddressType extends PureComponent {
   constructor(props) {

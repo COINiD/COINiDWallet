@@ -2,10 +2,6 @@ import { StyleSheet } from 'react-native';
 import { colors, fontSize, fontWeight } from '../config/styling';
 
 export default theme => StyleSheet.create({
-  overlay: {
-    backgroundColor: 'transparent',
-    height: null,
-  },
   modalContent: {
     flexDirection: 'column',
     padding: 16,
@@ -24,32 +20,6 @@ export default theme => StyleSheet.create({
     paddingLeft: 16,
     paddingRight: 16,
   },
-  title: {
-    fontSize: fontSize.h3,
-    textAlign: 'center',
-    ...fontWeight.bold,
-  },
-  closeIconContainer: {
-    position: 'absolute',
-    zIndex: 200,
-    right: 19,
-    top: 19,
-    margin: 0,
-  },
-  closeIconFont: {
-    fontSize: 24,
-  },
-  headerContainer: {
-    height: 56 + 8,
-    justifyContent: 'center',
-    marginTop: -16,
-    zIndex: 100,
-    position: 'relative',
-    backgroundColor: colors.getTheme('light').seeThrough,
-    width: '100%',
-    paddingBottom: 8,
-  },
-
   formItem: {
     width: '100%',
     padding: 0,
@@ -64,9 +34,6 @@ export default theme => StyleSheet.create({
     fontSize: fontSize.small,
     ...fontWeight.normal,
     paddingTop: 8,
-  },
-  negativeBalance: {
-    color: colors.red,
   },
   formItemRow: {
     flexDirection: 'row',
@@ -93,5 +60,8 @@ export default theme => StyleSheet.create({
     color: colors.getTheme('light').highlight,
     fontSize: 24,
     marginLeft: 8,
+  },
+  negativeBalance: {
+    color: colors.red,
   },
 });

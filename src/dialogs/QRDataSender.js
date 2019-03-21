@@ -1,17 +1,38 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { View, Dimensions } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import QRDataTransferSender from 'react-native-qr-data-transfer-sender';
 
-import { DetailsModal, Text, Button } from '../../components';
-import { fontWeight } from '../../config/styling';
-import styles from './styles';
+import { DetailsModal, Text, Button } from '../components';
+import { fontWeight } from '../config/styling';
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+    paddingTop: 0,
+  },
+  blockContainer: {
+    marginLeft: -3,
+    flexDirection: 'row',
+  },
+  block: {
+    backgroundColor: '#DADADA',
+    height: 6,
+    flex: 1,
+    marginLeft: 3,
+    marginTop: 19,
+  },
+  activeBlock: {
+    backgroundColor: '#617AF7',
+  },
+  noBlockMargin: {
+    marginLeft: 0,
+  },
+});
 
 export default class QRDataSender extends PureComponent {
   constructor(props) {
     super(props);
-
-    const { height } = Dimensions.get('window');
 
     this.state = {
       data: '',

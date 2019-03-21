@@ -1,11 +1,20 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import {
   Button, CancelButton, DetailsModal, Text, COINiDTransport,
-} from '../../components';
-import { SweepKeyDetails } from '..';
-import styles from './styles';
+} from '../components';
+import { SweepKeyDetails } from '.';
+
+const styles = StyleSheet.create({
+  container: {
+    marginBottom: 11,
+    marginHorizontal: 10,
+  },
+  cancelButton: {
+    backgroundColor: '#FA503C',
+  },
+});
 
 export default class SweepPrivateKey extends PureComponent {
   constructor(props, context) {

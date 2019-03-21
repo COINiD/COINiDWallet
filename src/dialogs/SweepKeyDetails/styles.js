@@ -70,10 +70,6 @@ export default styleMerge(
       marginHorizontal: -gridMultiplier * 2,
       backgroundColor: colors.lightGray,
     },
-    overlay: {
-      backgroundColor: 'transparent',
-      height: null,
-    },
     container: {
       marginBottom: gridMultiplier * 2,
       marginHorizontal: gridMultiplier * 2,

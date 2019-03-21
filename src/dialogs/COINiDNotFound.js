@@ -1,29 +1,40 @@
-
-
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import {
-  View,
-  Image,
-  Platform,
-  Linking,
+  View, Image, Platform, Linking, StyleSheet,
 } from 'react-native';
-import {
-  DetailsModal,
-  Text,
-  Button,
-} from '../../components';
-import styles from './styles';
+import { DetailsModal, Text, Button } from '../components';
 
+import { fontWeight } from '../config/styling';
 
 const imageFiles = {
-  coinid_icon: require('../../assets/images/coinid_icon.png'),
+  coinid_icon: require('../assets/images/coinid_icon.png'),
 };
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+    paddingTop: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  coinidIcon: {
+    width: 60,
+    height: 60,
+    marginBottom: 16,
+  },
+  text: {
+    marginBottom: 24,
+    fontSize: 16,
+    color: '#000',
+    ...fontWeight.normal,
+  },
+});
 
 export default class COINiDNotFound extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { };
+    this.state = {};
   }
 
   getChildContext() {
@@ -37,11 +48,11 @@ export default class COINiDNotFound extends PureComponent {
 
   _open = () => {
     this.detailsModal._open();
-  }
+  };
 
   _close = () => {
     this.detailsModal._close();
-  }
+  };
 
   _download = () => {
     let url = 'itms-apps://itunes.apple.com/us/app/apple-store/1362831898?mt=8';
@@ -54,12 +65,14 @@ export default class COINiDNotFound extends PureComponent {
         Linking.openURL(url);
       }
     });
-  }
+  };
 
   render() {
     return (
       <DetailsModal
-        ref={(c) => { this.detailsModal = c; }}
+        ref={(c) => {
+          this.detailsModal = c;
+        }}
         title="COINiD Vault not installed"
       >
         <View style={styles.container}>

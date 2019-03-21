@@ -1,9 +1,29 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { DetailsModal, Text, Button } from '../components';
+import { colors, fontWeight } from '../config/styling';
 
-import { DetailsModal, Text, Button } from '../../components';
-import styles from './styles';
+const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+    paddingTop: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  manualPublic: {
+    marginBottom: -16,
+  },
+  manualPublicText: {
+    color: colors.gray,
+  },
+  text: {
+    marginBottom: 24,
+    fontSize: 16,
+    color: '#000',
+    ...fontWeight.normal,
+  },
+});
 
 export default class SetupWallet extends PureComponent {
   getChildContext() {
