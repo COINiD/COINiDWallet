@@ -14,13 +14,19 @@ import styles from './styles';
 import { fontSize } from '../../config/styling';
 import ExchangeHelper from '../../utils/exchangeHelper';
 import ReceiveActionMenu from '../../actionmenus/ReceiveActionMenu';
+import WalletContext from '../../contexts/WalletContext';
 
 class Receive extends PureComponent {
+  static contextType = WalletContext;
+
   constructor(props, context) {
     super(props);
 
     const { address } = props;
-    const { coinid, settingHelper } = context;
+    const {
+      coinid,
+      globalContext: { settingHelper, showActionSheetWithOptions },
+    } = context;
     const { ticker, coinTitle } = coinid;
 
     this.settingHelper = settingHelper;
@@ -34,6 +40,7 @@ class Receive extends PureComponent {
       currency: '',
       amount: 0,
       coinTitle,
+      showActionSheetWithOptions,
     };
   }
 
@@ -181,7 +188,7 @@ class Receive extends PureComponent {
   };
 
   _showMoreOptions = () => {
-    const { showActionSheetWithOptions } = this.props;
+    const { showActionSheetWithOptions } = this.state;
 
     const receiveActionMenu = new ReceiveActionMenu({
       showActionSheetWithOptions,
@@ -318,13 +325,6 @@ class Receive extends PureComponent {
     );
   }
 }
-
-Receive.contextTypes = {
-  coinid: PropTypes.shape({}),
-  type: PropTypes.string,
-  theme: PropTypes.string,
-  settingHelper: PropTypes.shape({}),
-};
 
 Receive.childContextTypes = {
   theme: PropTypes.string,

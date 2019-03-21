@@ -309,7 +309,6 @@ class Setup extends PureComponent {
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContainer}>
           <View style={styles.coldLottieWrapper}>
             <LottieView
-              style={{}}
               ref={(c) => {
                 this.lottieAnim = c;
               }}
@@ -377,7 +376,6 @@ class Setup extends PureComponent {
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContainer}>
           <View style={styles.hotLottieWrapper}>
             <LottieView
-              style={{}}
               ref={(c) => {
                 this.lottieAnim = c;
               }}

@@ -3,11 +3,11 @@ package org.coinid.wallet.tbtc;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.airbnb.android.react.lottie.LottiePackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import org.reactnative.camera.RNCameraPackage;
 import com.horcrux.svg.SvgPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
-import com.airbnb.android.react.lottie.LottiePackage;
 import fr.greweb.reactnativeviewshot.RNViewShotPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import cl.json.RNSharePackage;
@@ -38,11 +38,11 @@ public class MainApplication extends Application implements ReactApplication, Sh
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new LottiePackage(),
             new AsyncStoragePackage(),
             new RNCameraPackage(),
             new SvgPackage(),
             new VectorIconsPackage(),
-            new LottiePackage(),
             new RNViewShotPackage(),
             new SplashScreenReactPackage(),
             new RNSharePackage(),

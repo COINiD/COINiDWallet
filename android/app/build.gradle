@@ -101,6 +101,17 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    signingConfigs {
+        release {
+            if (project.hasProperty('COINID_RELEASE_STORE_FILE')) {
+                storeFile file(COINID_RELEASE_STORE_FILE)
+                storePassword COINID_RELEASE_STORE_PASSWORD
+                keyAlias COINID_RELEASE_KEY_ALIAS
+                keyPassword COINID_RELEASE_KEY_PASSWORD
+            }
+        }
+    }
+
     defaultConfig {
         applicationId "org.coinid.wallet.tbtc"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -130,6 +141,7 @@ android {
             ]
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
         }
     }
     // applicationVariants are e.g. debug, release
@@ -148,11 +160,11 @@ android {
 }
 
 dependencies {
+    implementation project(':lottie-react-native')
     implementation project(':@react-native-community_async-storage')
     implementation project(':react-native-camera')
     implementation project(':react-native-svg')
     implementation project(':react-native-vector-icons')
-    implementation project(':lottie-react-native')
     implementation project(':react-native-view-shot')
     implementation project(':react-native-splash-screen')
     implementation project(':react-native-share')

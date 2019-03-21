@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import {
-  View, ActivityIndicator, Animated, StyleSheet, Platform,
+  View, ActivityIndicator, Animated, StyleSheet,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import Big from 'big.js';
@@ -16,6 +16,8 @@ import {
 
 import Settings from '../config/settings';
 import { colors } from '../config/styling';
+
+import WalletContext from '../contexts/WalletContext';
 
 const themedStyleGenerator = theme => StyleSheet.create({
   container: {
@@ -59,10 +61,16 @@ const themedStyleGenerator = theme => StyleSheet.create({
 });
 
 class InstalledWallet extends PureComponent {
+  static contextType = WalletContext;
+
   constructor(props, context) {
     super(props);
 
-    const { theme, coinid, settingHelper } = context;
+    const {
+      theme,
+      coinid,
+      globalContext: { settingHelper },
+    } = context;
 
     this.coinid = coinid;
     this.settingHelper = settingHelper;
@@ -77,7 +85,6 @@ class InstalledWallet extends PureComponent {
       paymentsInBatch: [],
       balanceReserved: 0,
       realBalance: 0,
-      blurOpacity: new Animated.Value(0),
       antiBlurOpacity: new Animated.Value(1),
       styles: themedStyleGenerator(theme),
     };
@@ -296,9 +303,8 @@ class InstalledWallet extends PureComponent {
   };
 
   render() {
-    const {
-      navigation, showActionSheetWithOptions, onBuild, onReady,
-    } = this.props;
+    const { navigation, onBuild, onReady } = this.props;
+
     const { navigate } = navigation;
     const {
       isConnected,
@@ -366,7 +372,6 @@ class InstalledWallet extends PureComponent {
           ref={(c) => {
             this.receiveModal = c;
           }}
-          showActionSheetWithOptions={showActionSheetWithOptions}
           address={receiveAddress}
           onOpened={onBuild}
           onClosed={onReady}
@@ -418,13 +423,6 @@ class InstalledWallet extends PureComponent {
   }
 }
 
-InstalledWallet.contextTypes = {
-  coinid: PropTypes.object,
-  settingHelper: PropTypes.object,
-  type: PropTypes.string,
-  theme: PropTypes.string,
-};
-
 InstalledWallet.propTypes = {
   navigation: PropTypes.shape({}),
   hideSensitive: PropTypes.bool,
@@ -438,4 +436,4 @@ InstalledWallet.defaultProps = {
   hideSensitive: false,
 };
 
-export default connectActionSheet(InstalledWallet);
+export default InstalledWallet;

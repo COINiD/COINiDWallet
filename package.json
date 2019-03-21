@@ -26,7 +26,7 @@
     "coinid-address-functions": "https://github.com/wlc-/coinid-address-functions.git",
     "coinid-address-types": "https://github.com/wlc-/coinid-address-types.git",
     "events": "^1.1.1",
-    "lottie-react-native": "^2.5.10",
+    "lottie-react-native": "^2.6.0",
     "md5": "^2.2.1",
     "moment": "^2.21.0",
     "numbro": "^2.1.0",

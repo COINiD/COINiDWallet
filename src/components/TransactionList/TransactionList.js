@@ -221,7 +221,6 @@ class TransactionListItem extends Component {
           <View style={{ justifyContent: 'center', marginRight: 2, width: 16 }}>
             <View style={{ width: 16, height: 16 }}>
               <LottieView
-                style={{}}
                 ref={(c) => {
                   this.progressAnim = c;
                 }}
@@ -756,7 +755,7 @@ export default class TransactionList extends PureComponent {
             marginBottom: 18,
           }}
         >
-          <LottieView style={{}} source={lottieFiles[`emptytrans_${type}`]} autoSize />
+          <LottieView source={lottieFiles[`emptytrans_${type}`]} autoSize />
         </View>
         <Text style={{ fontSize: 18 }}>No transactions</Text>
         <Text

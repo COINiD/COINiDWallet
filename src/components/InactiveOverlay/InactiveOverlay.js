@@ -474,7 +474,6 @@ export default class InactiveOverlay extends PureComponent {
       <AnimatedBlurView style={[styles.container, { opacity }]} blurType="light" blurAmount={6}>
         <Animated.View style={[styles.gradient, { opacity: gradientOpacity }]}>
           <LottieView
-            style={{}}
             source={lottieFiles.gradient}
             ref={c => (this.gradientAnim = c)}
             resizeMode="cover"
@@ -490,7 +489,7 @@ export default class InactiveOverlay extends PureComponent {
             style={{ transform: [{ translateY: logoYOffset }], marginBottom: 0 - 4 - 1 }}
           >
             <View style={[styles.walletLogo]}>
-              <LottieView style={{}} source={lottieFiles.walletLogo} />
+              <LottieView source={lottieFiles.walletLogo} />
             </View>
             {renderTestnet()}
           </Animated.View>
@@ -532,19 +531,14 @@ export default class InactiveOverlay extends PureComponent {
               ]}
             >
               <View style={{ width: 80, height: 80 }}>
-                <LottieView
-                  style={{}}
-                  source={lottieFiles.lock}
-                  ref={c => (this.lockAnim = c)}
-                  loop={false}
-                />
+                <LottieView source={lottieFiles.lock} ref={c => (this.lockAnim = c)} loop={false} />
               </View>
             </Animated.View>
           </TouchableOpacity>
         </Animated.View>
 
         <View style={[styles.logoWrapper]}>
-          <LottieView style={{}} source={lottieFiles.coinidLogo} />
+          <LottieView source={lottieFiles.coinidLogo} />
         </View>
       </AnimatedBlurView>
     );
