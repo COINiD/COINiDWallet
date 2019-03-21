@@ -1,13 +1,9 @@
-
-
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { FlatList, TouchableOpacity, View } from 'react-native';
-import { DirectionIcon, Text, FontScale } from '..';
+import { Text, FontScale } from '..';
 import styles from './styles';
-import Settings from '../../config/settings';
 import { numFormat } from '../../utils/numFormat';
-import { trimStrLength } from '../../utils/generic';
 import { fontSize } from '../../config/styling';
 
 class BatchListItem extends PureComponent {

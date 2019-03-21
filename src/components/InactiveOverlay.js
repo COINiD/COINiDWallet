@@ -9,6 +9,7 @@ import {
   Easing,
   TouchableOpacity,
   Platform,
+  StyleSheet,
 } from 'react-native';
 
 import LottieView from 'lottie-react-native';
@@ -17,20 +18,99 @@ import { BlurView } from 'react-native-blur';
 import { addressFunctionP2PKH } from 'coinid-address-functions';
 
 import SplashScreen from 'react-native-splash-screen';
-import Settings from '../../config/settings';
-import settingHelper from '../../utils/settingHelper';
-import styles from './styles';
-import { Text } from '..';
+
+import { ifIphoneX } from 'react-native-iphone-x-helper';
+import { colors, fontSize, fontWeight } from '../config/styling';
+import Settings from '../config/settings';
+import settingHelper from '../utils/settingHelper';
+import { Text } from '.';
 
 const bitcoinMessage = require('bitcoinjs-message');
 const randomBytes = require('randombytes');
 
 const lottieFiles = {
-  coinidLogo: require('../../animations/coinid_logo_white.json'),
-  gradient: require('../../animations/gradient.json'),
-  walletLogo: require('../../animations/wallet_logo.json'),
-  lock: require('../../animations/lock.json'),
+  coinidLogo: require('../animations/coinid_logo_white.json'),
+  gradient: require('../animations/gradient.json'),
+  walletLogo: require('../animations/wallet_logo.json'),
+  lock: require('../animations/lock.json'),
 };
+
+const styles = StyleSheet.create({
+  container: {
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? ifIphoneX(-44, -20) : 0, // statusbar compensation...
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 10000,
+  },
+  logoWrapper: {
+    position: 'absolute',
+    bottom: 27,
+    width: 113,
+    height: 37,
+    alignSelf: 'center',
+  },
+  gradient: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+  },
+  walletLogoWrapper: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  walletLogo: {
+    width: 212,
+    height: 212,
+    marginLeft: 1,
+    marginBottom: Settings.isTestnet ? 0 : 32,
+  },
+  unlockButtonWrapper: {
+    position: 'absolute',
+    width: '100%',
+    bottom: '16.34182909%',
+    overflow: 'visible',
+    alignItems: 'center',
+  },
+  unlockButton: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: colors.getTheme('light').button,
+    shadowRadius: 20,
+    shadowColor: colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.15,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  lockTextWrapper: {
+    position: 'absolute',
+    top: 16,
+    alignItems: 'center',
+    width: '100%',
+  },
+  lockText: {
+    color: colors.white,
+    fontSize: fontSize.smaller,
+    ...fontWeight.medium,
+  },
+  testnetText: {
+    color: colors.white,
+    fontSize: fontSize.small,
+    ...fontWeight.medium,
+    alignSelf: 'center',
+    marginTop: 16,
+    lineHeight: 16,
+  },
+});
 
 const AnimatedBlurView = Platform.OS === 'ios'
   ? Animated.createAnimatedComponent(BlurView)
@@ -475,7 +555,9 @@ export default class InactiveOverlay extends PureComponent {
         <Animated.View style={[styles.gradient, { opacity: gradientOpacity }]}>
           <LottieView
             source={lottieFiles.gradient}
-            ref={c => (this.gradientAnim = c)}
+            ref={(c) => {
+              this.gradientAnim = c;
+            }}
             resizeMode="cover"
             onLayout={() => {
               this.gradientAnim.play();
