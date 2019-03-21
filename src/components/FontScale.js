@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { View, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import MeasureText from 'react-native-measure-text';
-import { fontStack } from '../../config/styling';
+import { fontStack } from '../config/styling';
 
 export default class FontScale extends PureComponent {
   constructor(props) {

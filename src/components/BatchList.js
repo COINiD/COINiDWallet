@@ -1,17 +1,44 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { FlatList, TouchableOpacity, View } from 'react-native';
-import { Text, FontScale } from '..';
-import styles from './styles';
-import { numFormat } from '../../utils/numFormat';
-import { fontSize } from '../../config/styling';
+import {
+  StyleSheet, FlatList, TouchableOpacity, View,
+} from 'react-native';
+import { Text, FontScale } from '.';
+import { numFormat } from '../utils/numFormat';
+import { colors, fontWeight, fontSize } from '../config/styling';
+
+const styles = StyleSheet.create({
+  container: {
+    marginHorizontal: -16,
+    overflow: 'visible',
+    borderBottomWidth: 1,
+    borderBottomColor: colors.lightGray,
+  },
+  itemContainer: {
+    padding: 6,
+    paddingHorizontal: 16,
+  },
+  firstItem: {
+    paddingTop: 0,
+  },
+  line: {
+    marginTop: 7,
+  },
+  infoContainer: {},
+  amountText: {
+    ...fontWeight.medium,
+  },
+  addressText: {
+    fontSize: fontSize.small,
+  },
+  noteText: {
+    fontSize: fontSize.small,
+    color: colors.getTheme('light').fadedText,
+    marginBottom: 6,
+  },
+});
 
 class BatchListItem extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
   componentDidMount() {
     const { ticker } = this.context.coinid;
     this.setState({ ticker });

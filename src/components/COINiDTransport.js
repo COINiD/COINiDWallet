@@ -1,12 +1,12 @@
-import React, { PureComponent } from "react";
-import PropTypes from "prop-types";
-import { Linking, Alert } from "react-native";
-import bleCentral from "react-native-p2p-transfer-ble-central";
-import KeepAwake from "react-native-keep-awake";
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import { Linking, Alert } from 'react-native';
+import bleCentral from 'react-native-p2p-transfer-ble-central';
+import KeepAwake from 'react-native-keep-awake';
 
-import Settings from "../../config/settings";
-import { p2pServer } from "../../utils/p2p-ble-central";
-import { getP2PCode } from "../../utils/p2p-ble-common";
+import Settings from '../config/settings';
+import { p2pServer } from '../utils/p2p-ble-central';
+import { getP2PCode } from '../utils/p2p-ble-common';
 
 export default class COINiDTransport extends PureComponent {
   constructor(props) {
@@ -14,18 +14,18 @@ export default class COINiDTransport extends PureComponent {
 
     this.state = {
       isSigning: false,
-      signingText: "",
-      isBLESupported: false
+      signingText: '',
+      isBLESupported: false,
     };
   }
 
   componentDidMount() {
     const { type } = this.context;
 
-    if (type === "cold") {
-      bleCentral.isSupported().then(isBLESupported => {
+    if (type === 'cold') {
+      bleCentral.isSupported().then((isBLESupported) => {
         this.setState({
-          isBLESupported
+          isBLESupported,
         });
       });
     }
@@ -37,7 +37,7 @@ export default class COINiDTransport extends PureComponent {
 
   _openNotFoundModal = () => {
     const {
-      modals: { notFoundModal }
+      modals: { notFoundModal },
     } = this.context;
     notFoundModal._open();
   };
@@ -45,33 +45,31 @@ export default class COINiDTransport extends PureComponent {
   _checkForCOINiD = () => {
     const { type } = this.context;
 
-    if (type === "cold") {
+    if (type === 'cold') {
       return Promise.resolve(true); // always resolve cold to true;
     }
 
-    return Linking.canOpenURL("coinid://");
+    return Linking.canOpenURL('coinid://');
   };
 
   _addUrlListener = () => {
     global.disableInactiveOverlay();
-    Linking.addEventListener("url", this._handleURLEvent);
-    console.log("woot");
+    Linking.addEventListener('url', this._handleURLEvent);
   };
 
   _removeUrlListener = () => {
     global.enableInactiveOverlay();
-    Linking.removeEventListener("url", this._handleURLEvent);
+    Linking.removeEventListener('url', this._handleURLEvent);
   };
 
-  _handleURLEvent = event => {
-    console.log("woot2");
+  _handleURLEvent = (event) => {
     this._removeUrlListener(); // remove listener once we get first event.
     this._handleOpenURL(event.url);
   };
 
-  _handleOpenURL = url => {
+  _handleOpenURL = (url) => {
     if (url) {
-      const data = url.split("://")[1];
+      const data = url.split('://')[1];
       const { handleReturnData } = this.props;
 
       handleReturnData(data);
@@ -79,12 +77,12 @@ export default class COINiDTransport extends PureComponent {
     }
   };
 
-  _getCOINiDUrl = dataToTransport => {
+  _getCOINiDUrl = (dataToTransport) => {
     const { type } = this.context;
     const { appReturnScheme } = Settings;
 
     const getPrefix = () => {
-      if (type === "cold") {
+      if (type === 'cold') {
         return `coinid://${appReturnScheme}:p2p`.toUpperCase();
       }
 
@@ -97,12 +95,8 @@ export default class COINiDTransport extends PureComponent {
   _transportData = (dataToTransport, skipReturnData, skipPreferred) => {
     const { type } = this.context;
 
-    if (type === "cold") {
-      return this._transportDataCold(
-        dataToTransport,
-        skipReturnData,
-        skipPreferred
-      );
+    if (type === 'cold') {
+      return this._transportDataCold(dataToTransport, skipReturnData, skipPreferred);
     }
 
     return this._transportDataHot(dataToTransport, skipReturnData);
@@ -117,11 +111,11 @@ export default class COINiDTransport extends PureComponent {
 
       this.setState({
         isSigning: true,
-        signingText: "Waiting for COINiD Vault"
+        signingText: 'Waiting for COINiD Vault',
       });
     }
 
-    Linking.openURL(url).catch(err => console.error("An error occured", err));
+    Linking.openURL(url).catch(err => console.error('An error occured', err));
     onSent();
   };
 
@@ -130,17 +124,17 @@ export default class COINiDTransport extends PureComponent {
     const {
       settingHelper,
       settingHelper: {
-        settings: { preferredColdTransport }
+        settings: { preferredColdTransport },
       },
-      modals: { coldTransportModal }
+      modals: { coldTransportModal },
     } = this.context;
 
     const doTransportDataCold = (transportType, successCb) => {
-      if (transportType === "ble") {
+      if (transportType === 'ble') {
         this._transportDataBLE(url, skipReturnData, successCb);
       }
 
-      if (transportType === "qr") {
+      if (transportType === 'qr') {
         this._transportDataQR(url, skipReturnData, successCb);
       }
     };
@@ -149,17 +143,17 @@ export default class COINiDTransport extends PureComponent {
       this._handleOpenURL(data);
 
       if (skipPreferred) {
-        settingHelper.update("preferredColdTransport", transportType);
+        settingHelper.update('preferredColdTransport', transportType);
       }
     };
 
     if (!skipPreferred && preferredColdTransport) {
-      doTransportDataCold(preferredColdTransport, data => {
+      doTransportDataCold(preferredColdTransport, (data) => {
         onTransportData(data, preferredColdTransport);
       });
     } else {
-      coldTransportModal._open(transportType => {
-        doTransportDataCold(transportType, data => {
+      coldTransportModal._open((transportType) => {
+        doTransportDataCold(transportType, (data) => {
           onTransportData(data, transportType);
         });
       });
@@ -170,16 +164,16 @@ export default class COINiDTransport extends PureComponent {
     const { onSent } = this.props;
     const {
       modals: { qrDataSenderModal },
-      navigation
+      navigation,
     } = this.context;
 
     qrDataSenderModal._open(url, () => {
       onSent();
       if (!skipReturnData) {
-        navigation.navigate("QRDataReceiver", {
-          onComplete: data => {
+        navigation.navigate('QRDataReceiver', {
+          onComplete: (data) => {
             successCb(data);
-          }
+          },
         });
       }
     });
@@ -193,49 +187,47 @@ export default class COINiDTransport extends PureComponent {
     this.setState({
       isSigning: true,
       signingText: `Connect with ${code}`,
-      signingCode: code
+      signingCode: code,
     });
 
     const cbConnected = () => {
       this.setState({
-        signingText: "Connected",
+        signingText: 'Connected',
         isSigning: true,
-        signingCode: ""
+        signingCode: '',
       });
     };
 
-    const cbSendProgress = data => {
-      const progress =
-        100 * (parseFloat(data.receivedBytes) / parseFloat(data.finalBytes));
+    const cbSendProgress = (data) => {
+      const progress = 100 * (parseFloat(data.receivedBytes) / parseFloat(data.finalBytes));
 
       this.setState({
         signingText: `Sending Data ${progress.toFixed(0)}%`,
-        isSigning: true
+        isSigning: true,
       });
     };
 
     const cbSendDone = () => {
       this.setState({
-        signingText: "Waiting for return data",
-        isSigning: true
+        signingText: 'Waiting for return data',
+        isSigning: true,
       });
 
       onSent();
     };
 
-    const cbReceiveProgress = data => {
-      const progress =
-        100 * (parseFloat(data.receivedBytes) / parseFloat(data.finalBytes));
+    const cbReceiveProgress = (data) => {
+      const progress = 100 * (parseFloat(data.receivedBytes) / parseFloat(data.finalBytes));
       this.setState({
         signingText: `Receiving Data ${progress.toFixed(0)}%`,
-        isSigning: true
+        isSigning: true,
       });
     };
 
     const cbReceiveDone = () => {
       this.setState({
-        signingText: "Finished",
-        isSigning: true
+        signingText: 'Finished',
+        isSigning: true,
       });
     };
 
@@ -244,14 +236,14 @@ export default class COINiDTransport extends PureComponent {
       cbReceiveProgress,
       cbReceiveDone,
       cbSendProgress,
-      cbSendDone
+      cbSendDone,
     });
     this.p2p
       .connectAndSend(url)
-      .then(data => {
+      .then((data) => {
         successCb(data);
       })
-      .catch(error => {
+      .catch((error) => {
         Alert.alert(error);
         this._cancel();
         onBLEFail();
@@ -263,10 +255,10 @@ export default class COINiDTransport extends PureComponent {
 
     this.setState({
       isSigning: false,
-      signingText: ""
+      signingText: '',
     });
 
-    if (type === "hot") {
+    if (type === 'hot') {
       this._removeUrlListener();
     } else if (this.p2p !== undefined) {
       this.p2p.stop();
@@ -278,12 +270,12 @@ export default class COINiDTransport extends PureComponent {
   };
 
   _submit = (submitArg, skipReturnData, skipPreferred) => {
-    this._checkForCOINiD().then(hasCOINiD => {
+    this._checkForCOINiD().then((hasCOINiD) => {
       if (!hasCOINiD) {
         this._openNotFoundModal();
       } else {
         const { getData } = this.props;
-        getData(submitArg).then(data => {
+        getData(submitArg).then((data) => {
           this._transportData(data, skipReturnData, skipPreferred);
         });
       }
@@ -291,7 +283,9 @@ export default class COINiDTransport extends PureComponent {
   };
 
   render() {
-    const { isSigning, signingText, isBLESupported, signingCode } = this.state;
+    const {
+      isSigning, signingText, isBLESupported, signingCode,
+    } = this.state;
     const { type } = this.context;
 
     const { children } = this.props;
@@ -306,7 +300,7 @@ export default class COINiDTransport extends PureComponent {
           submit: this._submit,
           cancel: this._cancel,
           isBLESupported,
-          type
+          type,
         })}
       </React.Fragment>
     );
@@ -317,7 +311,7 @@ COINiDTransport.contextTypes = {
   type: PropTypes.string,
   modals: PropTypes.object,
   navigation: PropTypes.object,
-  settingHelper: PropTypes.object
+  settingHelper: PropTypes.object,
 };
 
 COINiDTransport.propTypes = {
@@ -326,14 +320,14 @@ COINiDTransport.propTypes = {
   children: PropTypes.func,
   onSent: PropTypes.func,
   onBLEInit: PropTypes.func,
-  onBLEFail: PropTypes.func
+  onBLEFail: PropTypes.func,
 };
 
 COINiDTransport.defaultProps = {
-  getData: () => Promise.resolve(""),
-  handleReturnData: () => "",
+  getData: () => Promise.resolve(''),
+  handleReturnData: () => '',
   children: () => {},
   onSent: () => {},
   onBLEInit: () => {},
-  onBLEFail: () => {}
+  onBLEFail: () => {},
 };

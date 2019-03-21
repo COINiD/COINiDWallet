@@ -1,9 +1,37 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Platform, View, TouchableHighlight } from 'react-native';
+import {
+  StyleSheet, Platform, View, TouchableHighlight,
+} from 'react-native';
 import LottieView from 'lottie-react-native';
-import { Text } from '../../components';
-import styles from './styles';
+import { Text } from '.';
+
+const styles = StyleSheet.create({
+  container: {
+    marginBottom: -16,
+  },
+  box: {
+    height: 48,
+    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+    borderRadius: 8,
+    paddingLeft: 16,
+    paddingRight: 18,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  boxSelected: {
+    backgroundColor: 'rgba(97, 122, 247, 0.1)',
+  },
+  title: {
+    fontSize: 18,
+  },
+  checkbox: {
+    width: 24,
+    height: 24,
+  },
+});
 
 export default class CheckBoxSelect extends PureComponent {
   static propTypes = {
@@ -18,6 +46,8 @@ export default class CheckBoxSelect extends PureComponent {
 
   state = {};
 
+  tickAnims = [];
+
   componentDidUpdate(prevProps) {
     const { selectedIndex } = this.props;
     if (prevProps.selectedIndex !== selectedIndex) {
@@ -31,8 +61,6 @@ export default class CheckBoxSelect extends PureComponent {
       this.tickAnims[this.props.selectedIndex].play(0, 65);
     }
   }
-
-  tickAnims = [];
 
   render() {
     const { data, onIndexChange, selectedIndex } = this.props;
@@ -56,7 +84,7 @@ export default class CheckBoxSelect extends PureComponent {
                 this.tickAnims[index] = c;
               }}
               onLayout={() => (isSelected ? this.tickAnims[index].play() : null)}
-              source={require('../../animations/tick.json')}
+              source={require('../animations/tick.json')}
               autoSize
               loop={false}
             />

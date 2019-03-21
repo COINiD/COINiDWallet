@@ -1,8 +1,24 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { AppState, Animated } from 'react-native';
-import { Button } from '..';
-import themeableStyles from './styles';
+import { StyleSheet, AppState, Animated } from 'react-native';
+import { Button } from '.';
+
+import { colors } from '../config/styling';
+
+const themedStyleGenerator = theme => StyleSheet.create({
+  altButton: {
+    backgroundColor: colors.getTheme(theme).altCancelButton,
+  },
+  altButtonText: {
+    color: colors.getTheme(theme).altCancelButtonText,
+  },
+  button: {
+    backgroundColor: colors.getTheme(theme).cancelButton,
+  },
+  buttonText: {
+    color: colors.getTheme(theme).cancelButtonText,
+  },
+});
 
 class CancelButton extends PureComponent {
   constructor(props) {
@@ -80,7 +96,7 @@ class CancelButton extends PureComponent {
 
   _getStyle = () => {
     const { theme } = this.context;
-    return themeableStyles(theme);
+    return themedStyleGenerator(theme);
   };
 
   render() {

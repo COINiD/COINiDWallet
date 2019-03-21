@@ -1,32 +1,65 @@
-
-
 import React, { PureComponent } from 'react';
-import { Text } from 'react-native';
+import { StyleSheet, Text as ReactText } from 'react-native';
 import PropTypes from 'prop-types';
-import themeableStyles from './styles';
+import {
+  colors, fontStack, fontWeight, fontSize,
+} from '../config/styling';
 
-class AppText extends PureComponent {
-  constructor(props) {
-    super(props);
-  }
+const themedStyleGenerator = theme => StyleSheet.create({
+  text: {
+    color: colors.getTheme(theme).text,
+    fontFamily: fontStack.primary,
+    fontSize: fontSize.base,
+    backgroundColor: 'transparent',
+    ...fontWeight.normal,
+  },
+  p: {
+    lineHeight: 22,
+  },
+  h1: {
+    fontSize: fontSize.h1,
+    lineHeight: 48,
+    ...fontWeight.black,
+  },
+  h2: {
+    fontSize: fontSize.h2,
+    lineHeight: 26,
+  },
+  h3: {
+    fontSize: fontSize.h3,
+  },
+  h4: {
+    fontSize: fontSize.h4,
+  },
+  small: {
+    fontSize: fontSize.small,
+  },
+  smaller: {
+    fontSize: fontSize.smaller,
+  },
+  margin: {
+    marginBottom: 16,
+  },
+  center: {
+    textAlign: 'center',
+  },
+});
 
+class Text extends PureComponent {
   refresh = () => {
     this.forceUpdate();
   };
 
   _updateStyle = () => {
-    const props = this.props;
-
+    const { props } = this;
 
     const {
       h1, h2, h3, h4, small, smaller, faded, center, margin, p,
     } = props;
 
-
     const { theme } = this.context;
 
-
-    const styles = themeableStyles(theme);
+    const styles = themedStyleGenerator(theme);
 
     this.style = [styles.text];
 
@@ -70,15 +103,15 @@ class AppText extends PureComponent {
     this._updateStyle();
 
     return (
-      <Text {...this.props} style={this.style} allowFontScaling={false}>
+      <ReactText {...this.props} style={this.style} allowFontScaling={false}>
         {this.props.children}
-      </Text>
+      </ReactText>
     );
   }
 }
 
-AppText.contextTypes = {
+Text.contextTypes = {
   theme: PropTypes.string,
 };
 
-export default AppText;
+export default Text;

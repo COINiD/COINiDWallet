@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { TextInput } from 'react-native';
 import PropTypes from 'prop-types';
 import Big from 'big.js';
-import { isCryptoCurrency } from '../../utils/numFormat';
+import { isCryptoCurrency } from '../utils/numFormat';
 
 class AmountInput extends PureComponent {
   constructor(props) {

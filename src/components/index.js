@@ -8,7 +8,7 @@ export { default as Graph } from './Graph';
 export { default as Loading } from './Loading';
 export { default as TransactionList } from './TransactionList';
 export { default as TransactionState } from './TransactionState';
-export { default as Text } from './AppText';
+export { default as Text } from './Text';
 export { default as BatchSummary } from './BatchSummary';
 export { default as BatchList } from './BatchList';
 export { default as RowInfo } from './RowInfo';
