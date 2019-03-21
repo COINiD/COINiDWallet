@@ -1,19 +1,52 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Platform, TextInput, View, TouchableOpacity, StyleSheet,
+  StyleSheet, Platform, TextInput, View, TouchableOpacity,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import Big from 'big.js';
 
 import {
   Button, Text, DetailsModal, AmountInput, FontScale,
-} from '../../components';
-import styles from './styles';
-import { numFormat } from '../../utils/numFormat';
-import ExchangeHelper from '../../utils/exchangeHelper';
-import { fontSize } from '../../config/styling';
-import { decodeQrRequest } from '../../utils/addressHelper';
+} from '../components';
+import { numFormat } from '../utils/numFormat';
+import ExchangeHelper from '../utils/exchangeHelper';
+import { fontSize, colors, fontWeight } from '../config/styling';
+import { decodeQrRequest } from '../utils/addressHelper';
+
+import styleMerge from '../utils/styleMerge';
+import parentStyles from './styles/common';
+
+const styles = styleMerge(
+  parentStyles('light'),
+  StyleSheet.create({
+    container: {
+      paddingTop: 8,
+    },
+    deleteIcon: {
+      color: '#FFFFFF',
+      fontSize: 21,
+    },
+    deleteIconContainer: {},
+    currencyButton: {
+      position: 'absolute',
+      right: 0,
+      bottom: 0,
+      borderWidth: 1,
+      borderColor: colors.purple,
+      borderRadius: 8,
+      paddingTop: 6,
+      paddingBottom: 5,
+      paddingHorizontal: 7,
+      marginBottom: 8,
+    },
+    currencyButtonText: {
+      color: '#617AF7',
+      ...fontWeight.medium,
+      letterSpacing: 0.1,
+    },
+  }),
+);
 
 export default class Send extends PureComponent {
   constructor(props, context) {

@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { colors, fontSize, fontWeight } from '../config/styling';
+import { colors, fontSize, fontWeight } from '../../config/styling';
 
 export default theme => StyleSheet.create({
   modalContent: {

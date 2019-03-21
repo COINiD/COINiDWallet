@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import {
-  ScrollView, View, Platform, TextInput, Alert, Text as DefaultText,
+  StyleSheet, ScrollView, View, Platform, TextInput, Alert,
 } from 'react-native';
 import moment from 'moment';
 import Big from 'big.js';
@@ -15,16 +15,56 @@ import {
   COINiDTransport,
   CancelButton,
   FontScale,
-} from '../../components';
-import Settings from '../../config/settings';
-import ExchangeHelper from '../../utils/exchangeHelper';
-import { numFormat } from '../../utils/numFormat';
-import styles from './styles';
+} from '../components';
+import Settings from '../config/settings';
+import ExchangeHelper from '../utils/exchangeHelper';
+import { numFormat } from '../utils/numFormat';
+import { getConfirmationsFromBlockHeight } from '../libs/coinid-public/transactionHelper';
 import {
-  getConfirmationsFromBlockHeight,
-  getMaxFeeIncrease,
-} from '../../libs/coinid-public/transactionHelper';
-import { fontStack, fontWeight, fontSize } from '../../config/styling';
+  fontStack, colors, fontSize, fontWeight,
+} from '../config/styling';
+
+import styleMerge from '../utils/styleMerge';
+import parentStyles from './styles/common';
+
+const styles = styleMerge(
+  parentStyles('light'),
+  StyleSheet.create({
+    amountText: {
+      fontSize: fontSize.large,
+      marginBottom: 4,
+      textAlign: 'center',
+      ...fontWeight.bold,
+    },
+    fiatText: {
+      color: colors.gray,
+      fontSize: fontSize.h2,
+      marginBottom: 16,
+      textAlign: 'center',
+    },
+    outgoing: {
+      color: colors.orange,
+    },
+    incoming: {
+      color: colors.green,
+    },
+    header: {
+      marginTop: 0,
+      paddingTop: 8,
+      backgroundColor: 'rgba(255,255,255,0.95)',
+      zIndex: 10,
+    },
+    footer: {
+      height: 0,
+      backgroundColor: 'rgba(255,255,255,0.95)',
+    },
+    separator: {
+      height: 1,
+      backgroundColor: '#D8D8D8',
+      marginVertical: 16,
+    },
+  }),
+);
 
 export default class TransactionDetails extends PureComponent {
   constructor(props, context) {
@@ -49,8 +89,11 @@ export default class TransactionDetails extends PureComponent {
   }
 
   getChildContext() {
+    const { theme: propsTheme } = this.props;
+    const { theme: contextTheme } = this.context;
+
     return {
-      theme: this.props.theme ? this.props.theme : this.context.theme,
+      theme: propsTheme || contextTheme,
     };
   }
 

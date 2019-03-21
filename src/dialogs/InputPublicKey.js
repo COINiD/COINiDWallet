@@ -1,8 +1,30 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { View, TextInput, Alert } from 'react-native';
-import { DetailsModal, Text, Button } from '../../components';
-import styles from './styles';
+import {
+  StyleSheet, View, TextInput, Alert,
+} from 'react-native';
+import { DetailsModal, Text, Button } from '../components';
+import { fontWeight } from '../config/styling';
+import parentStyles from './styles/common';
+import styleMerge from '../utils/styleMerge';
+
+const styles = styleMerge(
+  parentStyles('light'),
+  StyleSheet.create({
+    container: {
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+      padding: 16,
+      paddingTop: 0,
+    },
+    text: {
+      marginBottom: 24,
+      fontSize: 16,
+      color: '#000',
+      ...fontWeight.normal,
+    },
+  }),
+);
 
 export default class InputPublicKey extends PureComponent {
   constructor(props, context) {

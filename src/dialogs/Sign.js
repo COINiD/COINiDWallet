@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Alert, View } from 'react-native';
+import { StyleSheet, Alert, View } from 'react-native';
 import Big from 'big.js';
 
 import {
@@ -12,10 +12,40 @@ import {
   COINiDTransport,
   Button,
   CancelButton,
-} from '../../components';
+} from '../components';
 
-import styles from './styles';
-import { numFormat } from '../../utils/numFormat';
+import { numFormat } from '../utils/numFormat';
+
+import { colors, fontWeight } from '../config/styling';
+import styleMerge from '../utils/styleMerge';
+import parentStyles from './styles/common';
+
+const styles = styleMerge(
+  parentStyles('light'),
+  StyleSheet.create({
+    summaryContainer: {
+      width: '100%',
+      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+      zIndex: 100,
+      position: 'relative',
+      marginBottom: -16,
+      paddingBottom: 16,
+    },
+    batchedHeaderContainer: {
+      marginTop: -16,
+      paddingTop: 16,
+      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+      width: '100%',
+      zIndex: 100,
+      position: 'relative',
+    },
+    batchedHeader: {
+      color: colors.getTheme('light').fadedText,
+      marginBottom: 8,
+      ...fontWeight.medium,
+    },
+  }),
+);
 
 export default class Sign extends Component {
   constructor(props, context) {
