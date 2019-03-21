@@ -41,17 +41,17 @@ export default class Modal extends PureComponent {
   }
 
   _open = () => {
-    const { onClose, onClosed } = this.props;
+    const { onOpen, onOpened } = this.props;
 
     if (Platform.OS === 'android') {
       BackButton.addEventListener('hardwareBackPress', this._onBackPress);
     }
 
     this.setState({ isOpen: true });
-    onClose();
+    onOpen();
 
     this._animate(1, () => {
-      onClosed();
+      onOpened();
     });
   };
 

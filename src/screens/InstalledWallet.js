@@ -282,33 +282,23 @@ class InstalledWallet extends PureComponent {
 
     this._activeBlur = value ? key : undefined;
 
-    const { blurOpacity, antiBlurOpacity } = this.state;
+    const { antiBlurOpacity } = this.state;
 
     if (animated) {
-      // only blur whole screen if blur comes from receive dialog..
-      if (key === 'receive') {
-        Animated.timing(blurOpacity, {
-          toValue: value,
-          duration: 300,
-          useNativeDriver: true,
-        }).start();
-      }
-
       Animated.timing(antiBlurOpacity, {
         toValue: 1 - value,
         duration: 300,
         useNativeDriver: true,
       }).start();
     } else {
-      if (key === 'receive') {
-        blurOpacity.setValue(value);
-      }
       antiBlurOpacity.setValue(1 - value);
     }
   };
 
   render() {
-    const { navigation, showActionSheetWithOptions } = this.props;
+    const {
+      navigation, showActionSheetWithOptions, onBuild, onReady,
+    } = this.props;
     const { navigate } = navigation;
     const {
       isConnected,
@@ -378,14 +368,14 @@ class InstalledWallet extends PureComponent {
           }}
           showActionSheetWithOptions={showActionSheetWithOptions}
           address={receiveAddress}
-          onOpened={() => {
-            this.props.onBuild();
+          onOpened={onBuild}
+          onClosed={onReady}
+          onOpen={() => {
+            this._blurScreen(1, true, 'receive');
           }}
-          onClosed={() => {
-            this.props.onReady();
+          onClose={() => {
+            this._blurScreen(0, true, 'receive');
           }}
-          onOpen={() => this._blurScreen(1, true, 'receive')}
-          onClose={() => this._blurScreen(0, true, 'receive')}
         />
 
         <Sign
@@ -395,8 +385,8 @@ class InstalledWallet extends PureComponent {
           payments={this.state.paymentsInBatch}
           balance={this.state.realBalance}
           onQueuedTx={this._onQueuedTx}
-          onOpened={this.props.onBuild}
-          onClosed={this.props.onReady}
+          onOpened={onBuild}
+          onClosed={onReady}
           sendModal={this.sendModal}
         />
 
@@ -408,8 +398,8 @@ class InstalledWallet extends PureComponent {
           onRemoveFromBatch={this._onRemoveFromBatch}
           balance={this.state.balance}
           navigation={navigate}
-          onOpened={this.props.onBuild}
-          onClosed={this.props.onReady}
+          onOpened={onBuild}
+          onClosed={onReady}
           signModal={this.signModal}
         />
 
@@ -420,8 +410,8 @@ class InstalledWallet extends PureComponent {
           info={this.state.txDetailsInfo}
           currency={this.state.settings.currency}
           blockHeight={this.state.blockHeight}
-          onOpened={this.props.onBuild}
-          onClosed={this.props.onReady}
+          onOpened={onBuild}
+          onClosed={onReady}
         />
       </View>
     );
