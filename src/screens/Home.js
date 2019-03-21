@@ -8,7 +8,7 @@ import { Header, Icon } from 'react-native-elements';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import LottieView from 'lottie-react-native';
 import { colors, fontWeight } from '../config/styling';
-import settings from '../config/settings';
+import projectSettings from '../config/settings';
 
 import { Text } from '../components';
 import { Wallet } from '.';
@@ -29,6 +29,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.black,
     marginTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+  },
+  overlay: {
+    ...StyleSheet.absoluteFill,
+    backgroundColor: colors.black,
+    zIndex: 1000,
+    opacity: 0,
   },
   headerOuter: {
     flex: 1,
@@ -82,15 +88,6 @@ const styles = StyleSheet.create({
   paginator: {
     marginBottom: 3,
   },
-  overlay: {
-    backgroundColor: '#000',
-    opacity: 0,
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-  },
   testnetText: {
     color: colors.white,
     fontSize: 11,
@@ -105,95 +102,86 @@ class Home extends PureComponent {
     super(props);
 
     this.walletComponents = [];
-    this.settingHelper = settingHelper(settings.coin);
+    this.settingHelper = settingHelper(projectSettings.coin);
 
     const { navigation } = this.props;
     navigation.setParams({ setScreenAnimator: this._setScreenAnimator });
 
     this.hotCOINiD = COINiDPublic(
-      settings.coin,
-      storageHelper(`${settings.coin}-hot`),
-      `${settings.coin}-hot`,
+      projectSettings.coin,
+      storageHelper(`${projectSettings.coin}-hot`),
+      `${projectSettings.coin}-hot`,
     );
 
     this.coldCOINiD = COINiDPublic(
-      settings.coin,
-      storageHelper(`${settings.coin}-cold`),
-      `${settings.coin}-cold`,
+      projectSettings.coin,
+      storageHelper(`${projectSettings.coin}-cold`),
+      `${projectSettings.coin}-cold`,
     );
 
     global.unlockCOINiD = this.hotCOINiD;
     global._hideSensitive = this._hideSensitive;
     global._showSensitive = this._showSensitive;
 
+    const slides = [
+      {
+        coinid: this.hotCOINiD,
+        type: 'hot',
+        title: 'Hot',
+        theme: 'light',
+        dotColor: colors.getHot(),
+        settingHelper: this.settingHelper,
+      },
+      {
+        coinid: this.coldCOINiD,
+        type: 'cold',
+        title: 'Cold',
+        theme: 'dark',
+        dotColor: colors.getCold(),
+        settingHelper: this.settingHelper,
+      },
+    ];
+
     this.state = {
-      coldWalletMode: true,
       activeSlide: 0,
-      slides: [
-        {
-          coinid: this.hotCOINiD,
-          type: 'hot',
-          title: 'Hot',
-          theme: 'light',
-          dotColor: colors.getHot(),
-          settingHelper: this.settingHelper,
-        },
-        {
-          coinid: this.coldCOINiD,
-          type: 'cold',
-          title: 'Cold',
-          theme: 'dark',
-          dotColor: colors.getCold(),
-          settingHelper: this.settingHelper,
-        },
-      ],
+      slides,
       hideSensitive: false,
+      walletTitle: `${slides[0].title} Wallet`,
     };
   }
 
-  componentDidMount() {
-    this.settingHelper.on('updated', this._onSettingsUpdated);
-    this.settingHelper.load();
-    this._updateActiveTitle(0);
-
-    this.didBlurSubscription = this.props.navigation.addListener('didBlur', (payload) => {
-      console.debug('didBlur', payload);
-    });
-  }
-
-  componentWillUnmount() {
-    this.settingHelper.removeListener('updated', this._onSettingsUpdated);
-  }
-
   get _carousel() {
+    const { slides, activeSlide } = this.state;
+
     return (
       <Carousel
-        ref="carousel"
+        ref={(c) => {
+          this.carusel = c;
+        }}
         layout="default"
-        data={this._getActiveSlides(this.state.coldWalletMode)}
+        data={slides}
         renderItem={this._renderItem}
         sliderWidth={sliderWidth}
         itemWidth={sliderWidth}
         onSnapToItem={this._onSnapToItem}
         inactiveSlideOpacity={Platform.OS === 'ios' ? 0.7 : 1}
-        firstItem={this.state.activeSlide}
+        firstItem={activeSlide}
         containerCustomStyle={{ overflow: 'visible' }}
       />
     );
   }
 
   get _pagination() {
-    const { coldWalletMode, activeSlide, walletTitle } = this.state;
-    const slides = this._getActiveSlides(coldWalletMode);
+    const { activeSlide, walletTitle, slides } = this.state;
     const dotColorByIndex = slides.map(a => a.dotColor);
     return (
       <View style={{ height: '100%', justifyContent: 'center' }}>
-        <Text style={styles.title} ref="walletTitle">
-          {walletTitle}
-        </Text>
+        <Text style={styles.title}>{walletTitle}</Text>
         <View style={styles.paginator}>
           <Pagination
-            ref="pagination"
+            ref={(c) => {
+              this.pagination = c;
+            }}
             dotsLength={slides.length}
             activeDotIndex={activeSlide}
             containerStyle={styles.paginationContainerStyle}
@@ -226,6 +214,15 @@ class Home extends PureComponent {
         }),
       };
     }
+
+    if (!this.overlayAnimStyle) {
+      this.overlayAnimStyle = {
+        opacity: position.interpolate({
+          inputRange: [-1, 0, 1],
+          outputRange: [0, 0, 0.4],
+        }),
+      };
+    }
   };
 
   _updateActiveTitle = (index) => {
@@ -233,25 +230,18 @@ class Home extends PureComponent {
     this.setState({ walletTitle: `${slides[index].title} Wallet` });
   };
 
-  _getActiveSlides = (coldWalletMode) => {
-    const slides = [this.state.slides[0]];
-
-    if (coldWalletMode) {
-      slides.push(this.state.slides[1]);
-    }
-
-    return slides;
-  };
-
   _renderItem = ({ item, index }) => {
+    const { navigation } = this.props;
     const { hideSensitive } = this.state;
 
     return (
       <View style={{ flex: 1, width: sliderWidth }}>
         <Wallet
-          ref={c => (this.walletComponents[index] = c)}
+          ref={(c) => {
+            this.walletComponents[index] = c;
+          }}
           {...item}
-          navigation={this.props.navigation}
+          navigation={navigation}
           onBuild={() => this._onWalletBuild(index)}
           onBuildReady={() => this._onWalletBuildReady(index)}
           hideSensitive={hideSensitive}
@@ -273,7 +263,7 @@ class Home extends PureComponent {
   };
 
   _onSnapToItem = (index) => {
-    this.refs.pagination.setActiveDotIndex(index);
+    this.pagination.setActiveDotIndex(index);
     this._updateActiveTitle(index);
 
     if (index !== this.prevIndex) {
@@ -295,32 +285,19 @@ class Home extends PureComponent {
 
   _onWalletReset = (index) => {
     this.walletComponents[index]._checkAccount();
-    this.refs.carousel.snapToItem(index);
+    this.carusel.snapToItem(index);
   };
 
   _onWalletBuild = (index) => {
     global.disableInactiveOverlay();
-    this.refs.carousel._setScrollEnabled(false);
-    this.refs.carousel.snapToItem(index);
+    this.carusel._setScrollEnabled(false);
+    this.carusel.snapToItem(index);
   };
 
   _onWalletBuildReady = (index) => {
     global.enableInactiveOverlay();
-    this.refs.carousel._setScrollEnabled(true);
-    this.refs.carousel.snapToItem(index);
-  };
-
-  _onSettingsUpdated = (settings) => {
-    let { activeSlide } = this.state;
-
-    if (activeSlide - 1 > this._getActiveSlides(settings.coldWalletMode).length) {
-      activeSlide = 0;
-    }
-
-    this.setState({
-      coldWalletMode: settings.coldWalletMode,
-      activeSlide,
-    });
+    this.carusel._setScrollEnabled(true);
+    this.carusel.snapToItem(index);
   };
 
   _openSettings = () => {
@@ -330,8 +307,7 @@ class Home extends PureComponent {
 
     navigate('Settings', {
       slides,
-      onWalletReset: this._onWalletReset.bind(this),
-      settingHelper: this.settingHelper,
+      onWalletReset: this._onWalletReset,
       screenAnimator: this.screenAnimator,
       screenLayout: this.screenLayout,
     });
@@ -339,7 +315,7 @@ class Home extends PureComponent {
 
   _renderHeaderLeft = () => {
     const renderTestnet = () => {
-      if (settings.isTestnet) {
+      if (projectSettings.isTestnet) {
         return <Text style={styles.testnetText}>Testnet version</Text>;
       }
 
@@ -384,6 +360,7 @@ class Home extends PureComponent {
           </Animated.View>
           {this._carousel}
         </View>
+        <Animated.View pointerEvents="none" style={[styles.overlay, this.overlayAnimStyle]} />
       </View>
     );
   }

@@ -1,8 +1,18 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { View } from 'react-native';
-import { DialogTitle, Modal } from '..';
-import styles from './styles';
+import { StyleSheet, View } from 'react-native';
+import { DialogTitle, Modal } from '.';
+
+const styles = StyleSheet.create({
+  dialog: {
+    borderRadius: 10,
+    backgroundColor: '#FFF',
+    width: '100%',
+    maxHeight: '100%',
+    overflow: 'hidden',
+    alignSelf: 'center',
+  },
+});
 
 export default class DetailsModal extends PureComponent {
   _open = () => {
@@ -19,14 +29,20 @@ export default class DetailsModal extends PureComponent {
 
   render() {
     const {
-      showMoreOptions, onMoreOptions, onLayout, onOuterLayout,
+      showMoreOptions, onMoreOptions, onLayout, onOuterLayout, children, title,
     } = this.props;
 
     return (
-      <Modal {...this.props} ref={c => (this.elModal = c)} onLayout={onOuterLayout}>
+      <Modal
+        {...this.props}
+        ref={(c) => {
+          this.elModal = c;
+        }}
+        onLayout={onOuterLayout}
+      >
         <View style={styles.dialog} onLayout={onLayout}>
           <DialogTitle
-            title={this.props.title}
+            title={title}
             closeFunc={this._close}
             showMoreOptions={showMoreOptions}
             onMoreOptions={onMoreOptions}
@@ -38,7 +54,7 @@ export default class DetailsModal extends PureComponent {
               maxHeight: '100%',
             }}
           >
-            {this.props.children}
+            {children}
           </View>
         </View>
       </Modal>
@@ -49,6 +65,13 @@ export default class DetailsModal extends PureComponent {
 DetailsModal.propTypes = {
   title: PropTypes.string,
   verticalPosition: PropTypes.string,
+  showMoreOptions: PropTypes.bool,
+  onMoreOptions: PropTypes.func,
+  onClosed: PropTypes.func,
+  onOpened: PropTypes.func,
+  onLayout: PropTypes.func,
+  onOuterLayout: PropTypes.func,
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };
 
 DetailsModal.defaultProps = {
@@ -60,4 +83,5 @@ DetailsModal.defaultProps = {
   onOpened: () => {},
   onLayout: () => {},
   onOuterLayout: () => {},
+  children: null,
 };

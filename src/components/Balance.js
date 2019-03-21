@@ -1,17 +1,48 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { View, TouchableOpacity, Text as DefaultText } from 'react-native';
-import { Text, FontScale } from '..';
-import ExchangeHelper from '../../utils/exchangeHelper';
-import { numFormat } from '../../utils/numFormat';
-import themeableStyles from './styles';
+import { StyleSheet, View, Text as DefaultText } from 'react-native';
+import { Text, FontScale } from '.';
+import ExchangeHelper from '../utils/exchangeHelper';
+import { numFormat } from '../utils/numFormat';
+
+import { colors, fontWeight, fontSize } from '../config/styling';
+
+const themedStyleGenerator = theme => StyleSheet.create({
+  container: {
+    margin: 0,
+  },
+  coinText: {
+    fontSize: fontSize.h1,
+    padding: 0,
+    margin: 0,
+    ...fontWeight.black,
+  },
+  ticker: {
+    fontWeight: '400',
+    ...fontWeight.normal,
+  },
+  currencyText: {
+    color: colors.getTheme(theme).fadedText,
+    fontSize: 28,
+    lineHeight: 33,
+    margin: 0,
+  },
+  positive: {
+    color: colors.green,
+  },
+  negative: {
+    color: colors.orange,
+  },
+});
 
 export default class Balance extends PureComponent {
   constructor(props, context) {
     super(props);
 
-    const { coinid, settingHelper } = context;
+    const { coinid, settingHelper, theme } = context;
     const { ticker } = coinid;
+
+    const styles = themedStyleGenerator(theme);
 
     this.settingHelper = settingHelper;
     this.exchangeHelper = ExchangeHelper(ticker);
@@ -20,6 +51,7 @@ export default class Balance extends PureComponent {
       fiatBalance: 0.0,
       currency: undefined,
       ticker,
+      styles,
     };
   }
 
@@ -61,14 +93,10 @@ export default class Balance extends PureComponent {
     this._refreshFiatBalance(this.props.balance);
   };
 
-  _getStyle = () => {
-    const { theme } = this.context;
-    return themeableStyles(theme);
-  };
-
   render() {
-    const styles = this._getStyle();
-    const { fiatBalance, currency, ticker } = this.state;
+    const {
+      fiatBalance, currency, ticker, styles,
+    } = this.state;
     const { balance, style } = this.props;
 
     if (currency === undefined) {

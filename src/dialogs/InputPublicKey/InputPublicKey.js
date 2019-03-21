@@ -68,8 +68,6 @@ export default class InputPublicKey extends PureComponent {
   };
 
   render() {
-    const { publicKey } = this.state;
-
     return (
       <DetailsModal
         ref={(c) => {
@@ -79,12 +77,24 @@ export default class InputPublicKey extends PureComponent {
         avoidKeyboard
         avoidKeyboardOffset={40}
       >
-        <View style={styles.container}>
+        <View
+          style={styles.container}
+          onLayout={(e) => {
+            this.refContHeight = e.nativeEvent.layout.height;
+          }}
+        >
           <Text style={styles.formLabel}>Public key data</Text>
-          <View style={styles.formItemRow}>
+          <View
+            style={styles.formItemRow}
+            onFocus={(e) => {
+              this.detailsModal._setKeyboardOffset(this.refAmountBottom - this.refContHeight + 8);
+            }}
+            onLayout={(e) => {
+              this.refAmountBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
+            }}
+          >
             <TextInput
               style={[styles.formItemInput]}
-              value={publicKey}
               autoCorrect={false}
               spellCheck={false}
               textContentType="none"

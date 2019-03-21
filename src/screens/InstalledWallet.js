@@ -1,11 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import {
-  View, ActivityIndicator, Animated, StyleSheet,
+  Alert, View, ActivityIndicator, Animated, StyleSheet,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import Big from 'big.js';
-import { connectActionSheet } from '@expo/react-native-action-sheet';
 import { getBottomSpace } from 'react-native-iphone-x-helper';
 import {
   BatchSummary, ConnectionStatus, Balance, TransactionList, Text,
@@ -14,7 +13,7 @@ import {
   Sign, Receive, Send, TransactionDetails,
 } from '../dialogs';
 
-import Settings from '../config/settings';
+import projectSettings from '../config/settings';
 import { colors } from '../config/styling';
 
 import WalletContext from '../contexts/WalletContext';
@@ -79,7 +78,6 @@ class InstalledWallet extends PureComponent {
       isLoading: true,
       transactions: [],
       isLoadingTxs: true,
-      settings: this.settingHelper.getAll(),
       balance: 0,
       blockHeight: 0,
       paymentsInBatch: [],
@@ -133,12 +131,6 @@ class InstalledWallet extends PureComponent {
       this.setState({ blockHeight });
     });
 
-    this.settingHelper.on('updated', (settings) => {
-      this.setState({ settings });
-    });
-
-    this.settingHelper.load();
-
     this.setState({
       isLoading: false,
     });
@@ -158,7 +150,7 @@ class InstalledWallet extends PureComponent {
 
   _onFirstUnlock = () => {
     if (this.hasUnlocked === true) {
-      return false;
+      return;
     }
     this.hasUnlocked = true;
 
@@ -204,8 +196,10 @@ class InstalledWallet extends PureComponent {
       return false;
     }
 
+    const { realBalance } = this.state;
+
     const balanceReserved = Number(paymentsInBatch.reduce((a, c) => a.plus(c.amount), Big(0)));
-    const balance = Number(Big(this.state.realBalance).minus(balanceReserved));
+    const balance = Number(Big(realBalance).minus(balanceReserved));
     this.setState({ paymentsInBatch, balanceReserved, balance });
 
     const storage = this.coinid.getStorage();
@@ -218,7 +212,7 @@ class InstalledWallet extends PureComponent {
     if (editAddress) {
       const { paymentsInBatch } = this.state;
 
-      newPayments = paymentsInBatch.filter(e => e.address !== editAddress);
+      const newPayments = paymentsInBatch.filter(e => e.address !== editAddress);
 
       this._updatePayments(newPayments);
 
@@ -239,12 +233,12 @@ class InstalledWallet extends PureComponent {
     );
 
     if (paymentWithSameAddress.length && paymentWithSameAddress[0].address !== editAddress) {
-      alert('A payment with this address have already been batched...');
+      Alert.alert('A payment with this address have already been batched...');
     } else if (editAddress) {
-      paymentToUpdate = paymentsInBatch.filter(e => e.address === editAddress);
+      const paymentToUpdate = paymentsInBatch.filter(e => e.address === editAddress);
 
       if (!paymentToUpdate.length) {
-        alert('Could not find payment to update...');
+        Alert.alert('Could not find payment to update...');
       } else {
         paymentToUpdate[0].address = paymentToBatch.address;
         paymentToUpdate[0].amount = paymentToBatch.amount;
@@ -273,9 +267,13 @@ class InstalledWallet extends PureComponent {
   };
 
   _toggleRange = () => {
-    let range = ++this.state.settings.range;
+    const {
+      globalContext: { settings },
+    } = this.context;
 
-    if (range > Settings.ranges.length - 1) {
+    let range = settings.range + 1;
+
+    if (range > projectSettings.ranges.length - 1) {
       range = 0;
     }
 
@@ -314,7 +312,14 @@ class InstalledWallet extends PureComponent {
       paymentsInBatch,
       receiveAddress,
       styles,
+      txDetailsInfo,
+      blockHeight,
+      balance,
     } = this.state;
+
+    const {
+      globalContext: { settings },
+    } = this.context;
 
     const { transactions, isLoadingTxs } = this.state;
 
@@ -338,7 +343,7 @@ class InstalledWallet extends PureComponent {
           </View>
 
           <TransactionList
-            range={this.state.settings.range}
+            range={settings.range}
             toggleRange={this._toggleRange}
             transactions={transactions}
             isLoadingTxs={isLoadingTxs}
@@ -387,8 +392,8 @@ class InstalledWallet extends PureComponent {
           ref={(c) => {
             this.signModal = c;
           }}
-          payments={this.state.paymentsInBatch}
-          balance={this.state.realBalance}
+          payments={paymentsInBatch}
+          balance={realBalance}
           onQueuedTx={this._onQueuedTx}
           onOpened={onBuild}
           onClosed={onReady}
@@ -401,7 +406,7 @@ class InstalledWallet extends PureComponent {
           }}
           onAddToBatch={this._onAddToBatch}
           onRemoveFromBatch={this._onRemoveFromBatch}
-          balance={this.state.balance}
+          balance={balance}
           navigation={navigate}
           onOpened={onBuild}
           onClosed={onReady}
@@ -412,9 +417,9 @@ class InstalledWallet extends PureComponent {
           ref={(c) => {
             this.detailsModal = c;
           }}
-          info={this.state.txDetailsInfo}
-          currency={this.state.settings.currency}
-          blockHeight={this.state.blockHeight}
+          info={txDetailsInfo}
+          currency={settings.currency}
+          blockHeight={blockHeight}
           onOpened={onBuild}
           onClosed={onReady}
         />
@@ -424,16 +429,18 @@ class InstalledWallet extends PureComponent {
 }
 
 InstalledWallet.propTypes = {
-  navigation: PropTypes.shape({}),
+  navigation: PropTypes.shape({}).isRequired,
   hideSensitive: PropTypes.bool,
-  settings: PropTypes.shape({}),
+  onBuild: PropTypes.func,
+  onReady: PropTypes.func,
+  hasBeenSetup: PropTypes.bool,
 };
 
 InstalledWallet.defaultProps = {
-  settings: {
-    range: 0,
-  },
   hideSensitive: false,
+  hasBeenSetup: false,
+  onReady: () => {},
+  onBuild: () => {},
 };
 
 export default InstalledWallet;

@@ -13,11 +13,6 @@ const rootScreenInterpolator = (props) => {
     outputRange: ([height, 0, -28]: Array<number>),
   });
 
-  const opacity = position.interpolate({
-    inputRange: [index - 1, index, index + 1],
-    outputRange: [1, 1, 0.6],
-  });
-
   const scale = position.interpolate({
     inputRange: [index - 1, index, index + 1],
     outputRange: [1, 1, 0.91],
@@ -33,7 +28,7 @@ const rootScreenInterpolator = (props) => {
 
   return {
     transform: [{ translateY }, { scale }],
-    opacity,
+    //  opacity,
   };
 };
 

@@ -4,7 +4,7 @@
 
 import { EventEmitter } from 'events';
 import storageHelper from './storageHelper';
-import Settings from '../config/settings';
+import projectSettings from '../config/settings';
 
 class SettingHelper extends EventEmitter {
   constructor(coin) {
@@ -16,13 +16,14 @@ class SettingHelper extends EventEmitter {
     this.storage = storageHelper(this.storageNS);
     this.defaultSettings = {
       coldWalletMode: true,
-      currency: Settings.currency,
+      currency: projectSettings.currency,
       range: 0,
       usePasscode: true,
       lockAfterDuration: 60000,
       preferredColdTransport: '',
     };
     this.settings = { ...this.defaultSettings };
+    this.load();
   }
 
   load = () => {

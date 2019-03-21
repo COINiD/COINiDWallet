@@ -15,7 +15,7 @@ import {
   Button, Text, CancelButton, COINiDTransport,
 } from '../components';
 import { SelectAddressType, SetupWallet, InputPublicKey } from '../dialogs';
-import Settings from '../config/settings';
+import projectSettings from '../config/settings';
 import { Build } from '.';
 import { colors, fontWeight } from '../config/styling';
 
@@ -131,6 +131,8 @@ class Setup extends PureComponent {
   };
 
   _buildWallet = (data) => {
+    const { onReady } = this.props;
+
     const createAccount = (pubKeyArray) => {
       let usedCount = 0;
       let derivedCount = 0;
@@ -172,10 +174,10 @@ class Setup extends PureComponent {
         return this.coinid.saveAll();
       };
 
-      const onReady = () => {
+      const onWalletReady = () => {
         this.setState({ buildStatus: 'Your wallet is ready!' }, () => {
           setTimeout(() => {
-            this.props.onReady();
+            onReady();
             global.enableInactiveOverlay();
           }, 400);
         });
@@ -185,10 +187,10 @@ class Setup extends PureComponent {
         .then(() => discoverChain(0))
         .then(() => discoverChain(1))
         .then(save)
-        .then(onReady)
+        .then(onWalletReady)
         .catch((err) => {
           this.coinid.account = undefined;
-          this.props.onReady(true);
+          onReady(true);
           global.enableInactiveOverlay();
 
           Alert.alert('Error creating wallet', `${err}`);
@@ -225,7 +227,7 @@ class Setup extends PureComponent {
     this._checkForCOINiD().then((hasCOINiD) => {
       if (!hasCOINiD) {
         this._openNotFoundModal();
-        return false;
+        return;
       }
 
       const { supportedAddressTypes } = this.coinid.network;
@@ -265,11 +267,13 @@ class Setup extends PureComponent {
   };
 
   _openAbout = () => {
-    Linking.openURL(Settings.aboutUrl);
+    Linking.openURL(projectSettings.aboutUrl);
   };
 
   _openOfflineGuide = () => {
-    const url = Platform.OS === 'ios' ? Settings.offlineGuideUrl.ios : Settings.offlineGuideUrl.android;
+    const url = Platform.OS === 'ios'
+      ? projectSettings.offlineGuideUrl.ios
+      : projectSettings.offlineGuideUrl.android;
     Linking.openURL(url);
   };
 
@@ -469,11 +473,15 @@ class Setup extends PureComponent {
   }
 }
 
+Setup.propTypes = {
+  onReady: PropTypes.func.isRequired,
+};
+
 Setup.contextTypes = {
-  coinid: PropTypes.object,
+  coinid: PropTypes.shape({}),
   type: PropTypes.string,
   theme: PropTypes.string,
-  modals: PropTypes.object,
+  modals: PropTypes.shape({}),
 };
 
 export default Setup;

@@ -62,7 +62,7 @@ class Wallet extends PureComponent {
   get _content() {
     const { isLoading, isInstalled, hasBeenSetup } = this.state;
     const {
-      hideSensitive, onBuild, onBuildReady, navigation, blurScreen,
+      hideSensitive, onBuild, onBuildReady, navigation,
     } = this.props;
 
     if (isLoading) {
@@ -87,7 +87,6 @@ class Wallet extends PureComponent {
         onBuild={onBuild}
         onReady={onBuildReady}
         navigation={navigation}
-        blurScreen={blurScreen}
         hideSensitive={hideSensitive}
         hasBeenSetup={hasBeenSetup}
       />
@@ -109,7 +108,7 @@ class Wallet extends PureComponent {
   _checkAccount = (hasBeenSetup) => {
     this.coinid
       .getAccount()
-      .then((account) => {
+      .then(() => {
         this.setState({
           isLoading: false,
           isInstalled: true,
@@ -130,7 +129,7 @@ class Wallet extends PureComponent {
     onBuildReady();
 
     if (skipCheck) {
-      return true;
+      return;
     }
 
     this.setState({
@@ -193,20 +192,23 @@ class Wallet extends PureComponent {
 }
 
 Wallet.childContextTypes = {
-  coinid: PropTypes.object,
-  settingHelper: PropTypes.object,
+  coinid: PropTypes.shape({}),
+  settingHelper: PropTypes.shape({}),
   type: PropTypes.string,
   theme: PropTypes.string,
-  modals: PropTypes.object,
-  navigation: PropTypes.object,
+  modals: PropTypes.shape({}),
+  navigation: PropTypes.shape({}),
 };
 
 Wallet.propTypes = {
-  navigation: PropTypes.object,
-  coinid: PropTypes.object,
-  settingHelper: PropTypes.object,
+  navigation: PropTypes.shape({}).isRequired,
+  coinid: PropTypes.shape({}).isRequired,
+  settingHelper: PropTypes.shape({}).isRequired,
   type: PropTypes.string,
   theme: PropTypes.string,
+  hideSensitive: PropTypes.bool,
+  onBuild: PropTypes.func.isRequired,
+  onBuildReady: PropTypes.func.isRequired,
 };
 
 Wallet.defaultProps = {

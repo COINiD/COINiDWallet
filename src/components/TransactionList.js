@@ -1,6 +1,7 @@
 import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import {
+  StyleSheet,
   ActivityIndicator,
   TouchableOpacity,
   SectionList,
@@ -12,21 +13,118 @@ import moment from 'moment';
 import { Icon } from 'react-native-elements';
 import LottieView from 'lottie-react-native';
 import Big from 'big.js';
-import { Graph, Text, TransactionFilter } from '..';
-import themeableStyles from './styles';
-import { numFormat } from '../../utils/numFormat';
+import { Graph, Text, TransactionFilter } from '.';
+import { numFormat } from '../utils/numFormat';
 
-import { getTxBalanceChange } from '../../libs/coinid-public/transactionHelper';
+import { getTxBalanceChange } from '../libs/coinid-public/transactionHelper';
 
-import { colors, fontWeight } from '../../config/styling';
+import { colors, fontWeight, fontSize } from '../config/styling';
 
 const lottieFiles = {
-  emptytrans_hot: require('../../animations/emptytrans_hot.json'),
-  emptytrans_cold: require('../../animations/emptytrans_cold.json'),
-  feather_cold: require('../../animations/feather_cold.json'),
-  feather_hot: require('../../animations/feather_hot.json'),
-  hourglass: require('../../animations/hourglass.json'),
+  emptytrans_hot: require('../animations/emptytrans_hot.json'),
+  emptytrans_cold: require('../animations/emptytrans_cold.json'),
+  feather_cold: require('../animations/feather_cold.json'),
+  feather_hot: require('../animations/feather_hot.json'),
+  hourglass: require('../animations/hourglass.json'),
 };
+
+const themedStyleGenerator = theme => StyleSheet.create({
+  batchedRowsContainer: {},
+  batchedLine: {
+    width: 2,
+    backgroundColor: colors.getTheme(theme).fadedText,
+    height: 10,
+    left: 0,
+    top: -4,
+    borderRadius: 2,
+    position: 'absolute',
+  },
+  container: {
+    marginLeft: -16,
+    marginRight: -16,
+    paddingLeft: 16,
+    paddingRight: 16,
+    overflow: 'visible',
+  },
+  listHeader: {
+    marginBottom: -3,
+    overflow: 'visible',
+    position: 'relative',
+  },
+  listHeaderTop: {
+    paddingTop: 16,
+    paddingBottom: 10,
+    flexDirection: 'row',
+    overflow: 'visible',
+    backgroundColor: colors.getTheme(theme).seeThrough,
+  },
+  subHeader: {
+    flex: 3,
+    fontSize: fontSize.h2,
+    ...fontWeight.bold,
+  },
+  subLink: {
+    color: colors.getTheme(theme).highlight,
+    flex: 2,
+    textAlign: 'right',
+  },
+
+  itemWrapper: {},
+  itemContainer: {
+    paddingHorizontal: 3,
+    marginBottom: 3,
+    height: 56,
+    flexDirection: 'row',
+    flex: 1,
+  },
+  infoContainer: {
+    flex: 4,
+    justifyContent: 'center',
+  },
+  topContainer: {
+    flexDirection: 'row',
+    marginBottom: 7,
+  },
+  icon: {
+    marginRight: 16,
+    width: 24,
+    justifyContent: 'center',
+  },
+
+  amountText: {
+    flex: 5,
+    lineHeight: 19,
+    ...fontWeight.medium,
+  },
+  positiveAmount: {
+    color: colors.getTheme(theme).altPositive,
+  },
+  negativeAmount: {},
+  dateText: {
+    flex: 1,
+    textAlign: 'right',
+  },
+  smallText: {
+    color: colors.getTheme(theme).fadedText,
+    fontSize: fontSize.small,
+    lineHeight: 19,
+  },
+  unconfirmedText: {
+    color: colors.red,
+  },
+  pendingText: {
+    color: colors.lightOrange,
+  },
+  filterIndicator: {
+    position: 'absolute',
+    right: 24,
+    top: 8,
+    height: 8,
+    width: 8,
+    backgroundColor: colors.getTheme(theme).button,
+    borderRadius: 4,
+  },
+});
 
 const activeItems = {};
 
@@ -34,7 +132,10 @@ class TransactionListItem extends Component {
   constructor(props, context) {
     super(props);
 
-    this.noteHelper = context.coinid.noteHelper;
+    const { coinid, theme } = context;
+    const styles = themedStyleGenerator(theme);
+
+    this.noteHelper = coinid.noteHelper;
 
     const { txData, style, confirmations } = this.props;
     const [tx, address, balanceChanged, key] = txData;
@@ -51,6 +152,7 @@ class TransactionListItem extends Component {
       confirmations,
       pendingProgress: new Animated.Value(0),
       confirmationOpacity: new Animated.Value(1),
+      styles,
     };
 
     activeItems[itemKey] = this;
@@ -170,17 +272,11 @@ class TransactionListItem extends Component {
     });
   };
 
-  _getStyle = () => {
-    const { theme } = this.context;
-    return themeableStyles(theme);
-  };
-
   render() {
     const {
-      note, tx, address, balanceChanged, key, confirmations,
+      note, tx, address, balanceChanged, key, confirmations, styles,
     } = this.state;
 
-    const styles = this._getStyle();
     const {
       type,
       coinid: { ticker, network },
@@ -300,8 +396,8 @@ class TransactionListItem extends Component {
 TransactionListItem.contextTypes = {
   type: PropTypes.string,
   theme: PropTypes.string,
-  coinid: PropTypes.object,
-  settingHelper: PropTypes.object,
+  coinid: PropTypes.shape({}),
+  settingHelper: PropTypes.shape({}),
 };
 
 export default class TransactionList extends PureComponent {
@@ -309,7 +405,8 @@ export default class TransactionList extends PureComponent {
     super(props);
 
     const { transactions } = props;
-    const { coinid } = context;
+    const { coinid, theme } = context;
+    const styles = themedStyleGenerator(theme);
 
     this.state = {
       listHeight: 0,
@@ -318,6 +415,7 @@ export default class TransactionList extends PureComponent {
       isFiltersOpen: false,
       txItemsOffset: new Animated.Value(0),
       filterHeight: 0,
+      styles,
     };
 
     this.filters = {
@@ -623,11 +721,6 @@ export default class TransactionList extends PureComponent {
     clearTimeout(this.scrollTime);
   };
 
-  _getStyle = () => {
-    const { theme } = this.context;
-    return themeableStyles(theme);
-  };
-
   _renderItemWrapper = (props) => {
     const { txItemsOffset, filterHeight } = this.state;
 
@@ -664,10 +757,8 @@ export default class TransactionList extends PureComponent {
     const txItemsCount = this.filteredData.length;
 
     const dailiesCount = Object.keys(this.dailySummary).length;
-    const {
-      filterHeight, listHeight, headerHeight, txItemsOffset,
-    } = this.state;
-    const maxScroll = listHeight - headerHeight;
+    const { filterHeight, listHeight, txItemsOffset } = this.state;
+    const maxScroll = listHeight - 56;
 
     const itemsHeight = txItemsCount * (56 + 6) + dailiesCount * 36;
 
@@ -827,8 +918,9 @@ export default class TransactionList extends PureComponent {
   };
 
   _renderSectionHeader = ({ section }) => {
-    const { filterHeight, txItemsOffset, isFiltersOpen } = this.state;
-    const styles = this._getStyle();
+    const {
+      filterHeight, txItemsOffset, isFiltersOpen, styles,
+    } = this.state;
     const hasFilters = this.filters.type !== 'all' || this.filters.text;
 
     const showFilterIndicator = () => {
@@ -886,8 +978,7 @@ export default class TransactionList extends PureComponent {
 
   render() {
     const { toggleRange } = this.props;
-
-    const styles = this._getStyle();
+    const { styles } = this.state;
 
     return (
       <SectionList

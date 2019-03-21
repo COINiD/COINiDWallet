@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { StyleSheet, View, Text } from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { Icon } from 'react-native-elements';
@@ -124,7 +125,6 @@ class QRScan extends PureComponent {
       goBack();
     } else {
       // display error
-      console.log(qrResults.data);
       goBack();
     }
   };
@@ -218,6 +218,8 @@ class QRScan extends PureComponent {
   }
 }
 
-QRScan.propTypes = {};
+QRScan.propTypes = {
+  navigation: PropTypes.shape({}).isRequired,
+};
 
 export default QRScan;

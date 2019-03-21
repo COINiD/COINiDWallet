@@ -44,18 +44,18 @@ class AmountInput extends PureComponent {
     if (amount === '') {
       this.setState({ amount: '', fiatAmount: '' });
       onChangeAmount('');
-      return false;
+      return;
     }
 
     if (!this._isValidInput(amount, exchangeFrom)) {
-      return false;
+      return;
     }
 
     onChangeAmount(amount);
 
     if (skipFiatConversion) {
       this.setState({ amount });
-    } else {
+    } else if (!Number.isNaN(exchangeRate) && !Number.isNaN(amount)) {
       let fiatAmount = Number(Big(amount).times(exchangeRate));
       fiatAmount = this._convertNumberToFixed(fiatAmount, exchangeTo);
 
@@ -72,16 +72,19 @@ class AmountInput extends PureComponent {
   };
 
   _onChangeFiatText = (inputFiat) => {
-    const { exchangeRate, exchangeTo, exchangeFrom } = this.props;
+    const {
+      exchangeRate, exchangeTo, exchangeFrom, onChangeAmount,
+    } = this.props;
     const fiatAmount = this._cleanAmount(inputFiat, exchangeTo);
 
     if (fiatAmount === '') {
       this.setState({ amount: '', fiatAmount: '' });
-      return false;
+      onChangeAmount('');
+      return;
     }
 
     if (!this._isValidInput(fiatAmount, exchangeTo)) {
-      return false;
+      return;
     }
 
     this.setState({ fiatAmount });

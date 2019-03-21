@@ -11,11 +11,44 @@ import {
   BackHandler,
   Platform,
   Keyboard,
+  StyleSheet,
 } from 'react-native';
+
 import { getStatusBarHeight } from 'react-native-iphone-x-helper';
-import styles from './styles';
+import { colors } from '../config/styling';
 
 const BackButton = BackHandler || BackAndroid;
+
+const styles = StyleSheet.create({
+  container: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    zIndex: 10,
+    padding: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  visible: {},
+  hidden: {
+    transform: [{ translateX: -9999 }],
+  },
+  overlay: {
+    position: 'absolute',
+    backgroundColor: colors.black,
+    top: 0,
+    bottom: -100,
+    right: 0,
+    left: 0,
+  },
+  dialog: {
+    width: '100%',
+    overflow: 'hidden',
+    maxHeight: '100%',
+  },
+});
 
 export default class Modal extends PureComponent {
   constructor(props) {
@@ -23,6 +56,7 @@ export default class Modal extends PureComponent {
     this.state = {
       animate: new Animated.Value(0),
       isOpen: false,
+      keyboardOffset: 0,
     };
   }
 
@@ -143,7 +177,7 @@ export default class Modal extends PureComponent {
     const animatedStyle = {
       opacity: animate.interpolate({
         inputRange: [0, 1],
-        outputRange: [0, 1],
+        outputRange: [0, 0.4],
       }),
     };
 
@@ -167,19 +201,25 @@ export default class Modal extends PureComponent {
 }
 
 Modal.propTypes = {
-  title: PropTypes.string,
   verticalPosition: PropTypes.string,
+  onClosed: PropTypes.func,
+  onOpened: PropTypes.func,
+  onLayout: PropTypes.func,
+  onOpen: PropTypes.func,
+  onClose: PropTypes.func,
+  avoidKeyboardOffset: PropTypes.number,
+  avoidKeyboard: PropTypes.bool,
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 };
 
 Modal.defaultProps = {
-  title: 'Untitled',
   verticalPosition: 'center',
-  showMoreOptions: false,
-  onMoreOptions: () => {},
   onClosed: () => {},
   onOpened: () => {},
   onLayout: () => {},
   onOpen: () => {},
   onClose: () => {},
   avoidKeyboardOffset: 0,
+  avoidKeyboard: false,
+  children: null,
 };

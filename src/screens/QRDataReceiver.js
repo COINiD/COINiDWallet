@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { StyleSheet, View, Text } from 'react-native';
 import QRDataTransferReceiver from 'react-native-qr-data-transfer-receiver';
 import { Icon } from 'react-native-elements';
@@ -206,7 +207,7 @@ class QRDataReceiver extends PureComponent {
     this._goBack();
   };
 
-  _receiveError = (error) => {
+  _receiveError = () => {
     this._goBack();
   };
 
@@ -251,7 +252,6 @@ class QRDataReceiver extends PureComponent {
 
       if (blockIndex === index) {
         // animate cool effect
-        console.log('WOW!');
       }
 
       if (length > 13) {
@@ -326,6 +326,8 @@ class QRDataReceiver extends PureComponent {
   }
 }
 
-QRDataReceiver.propTypes = {};
+QRDataReceiver.propTypes = {
+  navigation: PropTypes.shape({}).isRequired,
+};
 
 export default QRDataReceiver;

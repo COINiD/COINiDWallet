@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import {
   Platform, StatusBar, View, Linking, StyleSheet,
 } from 'react-native';
-import { ifIphoneX } from 'react-native-iphone-x-helper';
+import { getStatusBarHeight } from 'react-native-iphone-x-helper';
 import { connectActionSheet } from '@expo/react-native-action-sheet';
 import bleCentral from 'react-native-p2p-transfer-ble-central';
 
@@ -11,24 +12,23 @@ import { InactiveOverlay } from './components';
 import SettingHelper from './utils/settingHelper';
 import GlobalContext from './contexts/GlobalContext';
 import projectSettings from './config/settings';
+import { colors } from './config/styling';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
-    ...ifIphoneX(
-      {
-        marginBottom: 0,
-        paddingTop: 44,
-      },
-      {
-        marginTop: Platform.OS === 'android' ? 0 : 20,
-      },
-    ),
+    backgroundColor: colors.black,
+    paddingTop: Platform.OS === 'android' ? 0 : getStatusBarHeight(true),
   },
 });
 
 class COINiDWallet extends PureComponent {
+  static propTypes = {
+    showActionSheetWithOptions: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {};
+
   constructor(props): void {
     super(props);
 
