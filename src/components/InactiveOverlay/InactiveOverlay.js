@@ -32,7 +32,9 @@ const lottieFiles = {
   lock: require('../../animations/lock.json'),
 };
 
-const AnimatedBlurView = Platform.OS === 'ios' ? Animated.createAnimatedComponent(BlurView) : Animated.createAnimatedComponent(View);
+const AnimatedBlurView = Platform.OS === 'ios'
+  ? Animated.createAnimatedComponent(BlurView)
+  : Animated.createAnimatedComponent(View);
 
 export default class InactiveOverlay extends PureComponent {
   constructor(props) {
@@ -68,7 +70,6 @@ export default class InactiveOverlay extends PureComponent {
     AppState.addEventListener('change', this._handleAppStateChange);
     this.forceUpdate();
   }
-
 
   componentDidUpdate() {
     // do not hide splash until all children have been rendered...
@@ -120,8 +121,7 @@ export default class InactiveOverlay extends PureComponent {
     if (action === '2FA') {
       const signature = splitted.slice(1).join('/');
 
-      if (signature && bitcoinMessage.verify(this.unlockMessage, this.verifyAddress, signature)
-      ) {
+      if (signature && bitcoinMessage.verify(this.unlockMessage, this.verifyAddress, signature)) {
         this._leaveAnimation();
       } else {
         alert('Could not authenticate with COINiD Vault');
@@ -133,12 +133,15 @@ export default class InactiveOverlay extends PureComponent {
 
   _unlockWithCOINiD = () => {
     this.setState({ disableUnlockButton: true });
-    setTimeout(() => { this.setState({ disableUnlockButton: false }); }, 1000); // disable button for a short time to prevent double tapping..
+    setTimeout(() => {
+      this.setState({ disableUnlockButton: false });
+    }, 1000); // disable button for a short time to prevent double tapping..
 
     this._removeUrlListener();
     this._addUrlListener();
 
-    if (1) { // simple login
+    if (1) {
+      // simple login
       this.unlockAddress = this.unlockChain.get();
       this.unlockMessage = `unlock wallet ${randomBytes(16).toString('base64')}`; // should use random string for unlocking.
 
@@ -151,7 +154,8 @@ export default class InactiveOverlay extends PureComponent {
       const url = `coinid://${appReturnScheme}/${data}`;
 
       Linking.openURL(url);
-    } else { // 2FA for viewlock...
+    } else {
+      // 2FA for viewlock...
       // derive P2PKH address at same position as current address because sign and verify message does not support segwit addresses.
       this.verifyAddress = addressFunctionP2PKH(
         this.unlockChain.__parent.derive(this.unlockChain.k),
@@ -160,10 +164,7 @@ export default class InactiveOverlay extends PureComponent {
       this.unlockAddress = this.unlockChain.get();
       this.unlockMessage = `unlock wallet ${randomBytes(16).toString('base64')}`; // should use random string for unlocking.
 
-      const data = this._getCOINiD().build2FACoinIdData(
-        this.unlockAddress,
-        this.unlockMessage,
-      );
+      const data = this._getCOINiD().build2FACoinIdData(this.unlockAddress, this.unlockMessage);
 
       const { appReturnScheme } = Settings;
       const url = `coinid://${appReturnScheme}/${data}`;
@@ -237,8 +238,7 @@ export default class InactiveOverlay extends PureComponent {
   _leaveLockAnimation = () => {
     if (!this.hasUpdated) {
       this.forceUpdate();
-    }
-    else {
+    } else {
       this._checkIfShouldLock().then((shouldLock) => {
         if (shouldLock) {
           this._lockAnimation();
@@ -287,7 +287,7 @@ export default class InactiveOverlay extends PureComponent {
       duration: opacityDuration,
       useNativeDriver: true,
     }).start(() => resolve());
-  })
+  });
 
   _lockAnimation = () => {
     const { isVisible, opacity } = this.state;
@@ -464,18 +464,14 @@ export default class InactiveOverlay extends PureComponent {
 
     const renderTestnet = () => {
       if (Settings.isTestnet) {
-        return (<Text style={[styles.testnetText]}>Testnet</Text>);
+        return <Text style={[styles.testnetText]}>Testnet</Text>;
       }
 
       return null;
-    }
+    };
 
     return (
-      <AnimatedBlurView
-        style={[styles.container, { opacity }]}
-        blurType="light"
-        blurAmount={6}
-      >
+      <AnimatedBlurView style={[styles.container, { opacity }]} blurType="light" blurAmount={6}>
         <Animated.View style={[styles.gradient, { opacity: gradientOpacity }]}>
           <LottieView
             style={{}}
@@ -498,7 +494,6 @@ export default class InactiveOverlay extends PureComponent {
             </View>
             {renderTestnet()}
           </Animated.View>
-
         </View>
 
         <Animated.View

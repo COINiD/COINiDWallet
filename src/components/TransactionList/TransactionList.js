@@ -1,7 +1,12 @@
 import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import {
-  ActivityIndicator, TouchableOpacity, SectionList, View, Animated,
+  ActivityIndicator,
+  TouchableOpacity,
+  SectionList,
+  View,
+  Animated,
+  Platform,
 } from 'react-native';
 import moment from 'moment';
 import { Icon } from 'react-native-elements';
@@ -538,7 +543,7 @@ export default class TransactionList extends PureComponent {
   _scrollToFirst = () => {
     const { headerHeight } = this.state;
     this.sectionRef.scrollToLocation({
-      itemIndex: 0,
+      itemIndex: Platform.OS === 'ios' ? 0 : 1,
       sectionIndex: 0,
       viewOffset: headerHeight,
     });
@@ -548,7 +553,7 @@ export default class TransactionList extends PureComponent {
     const { headerHeight, graphHeight } = this.state;
 
     this.sectionRef.scrollToLocation({
-      itemIndex: 0,
+      itemIndex: Platform.OS === 'ios' ? 0 : 1,
       sectionIndex: 0,
       viewOffset: graphHeight + headerHeight,
     });

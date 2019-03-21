@@ -1,8 +1,12 @@
 <resources>
+  <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+	<item name="android:windowTranslucentStatus">true</item>
+	<item name="android:windowTranslucentNavigation">false</item>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-    </style>
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowFullscreen">true</item>
 
+    <item name="android:windowBackground">@drawable/launch_screen_window_bg</item>
+
+  </style>
 </resources>

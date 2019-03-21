@@ -117,7 +117,17 @@ android {
         }
     }
     buildTypes {
+        debug {
+            manifestPlaceholders = [
+                appReturnScheme : "coinid-tbtc",
+                excludeSystemAlertWindowPermission: "android.permission.ACCESS_FINE_LOCATION"
+            ]
+        }
         release {
+            manifestPlaceholders = [
+                appReturnScheme : "coinid-tbtc",
+                excludeSystemAlertWindowPermission: "android.permission.ACCESS_FINE_LOCATION"
+            ]
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }

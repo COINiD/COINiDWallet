@@ -33,7 +33,7 @@ const themedStyleGenerator = theme => StyleSheet.create({
   topContainer: {
     paddingTop: 24,
     marginTop: -24,
-    backgroundColor: Platform.OS === 'ios' ? colors.getTheme(theme).seeThrough : null,
+    backgroundColor: colors.getTheme(theme).seeThrough,
     position: 'relative',
     zIndex: 10,
     paddingBottom: 16,
@@ -47,7 +47,7 @@ const themedStyleGenerator = theme => StyleSheet.create({
     borderColor: colors.getTheme(theme).border,
     flexDirection: 'row',
     justifyContent: 'center',
-    backgroundColor: Platform.OS === 'ios' ? colors.getTheme(theme).seeThrough : null,
+    backgroundColor: colors.getTheme(theme).seeThrough,
     height: 50 + getBottomSpace(),
     paddingBottom: getBottomSpace(),
   },

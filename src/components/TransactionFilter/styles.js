@@ -15,7 +15,7 @@ export default theme => StyleSheet.create({
   },
   listHeaderTop: {
     flexDirection: 'row',
-    zIndex: 15
+    zIndex: 15,
   },
   listHeaderFilter: {
     height: 91,
@@ -23,11 +23,11 @@ export default theme => StyleSheet.create({
     position: 'relative',
     overflow: 'hidden',
     justifyContent: 'flex-end',
-    backgroundColor: Platform.OS === 'ios' ? colors.getTheme(theme).seeThrough : colors.getTheme(theme).seeThrough,
+    backgroundColor: colors.getTheme(theme).seeThrough,
     paddingBottom: 10,
   },
   filterIcon: {
-    color: colors.gray
+    color: colors.gray,
   },
   filterIconCont: {
     position: 'absolute',
@@ -40,8 +40,8 @@ export default theme => StyleSheet.create({
     backgroundColor: colors.lighterGray,
     color: colors.gray,
     height: 36,
-    paddingTop:0,
-    paddingBottom:0,
+    paddingTop: 0,
+    paddingBottom: 0,
     paddingLeft: 31,
     paddingRight: 26,
     borderRadius: 11,
