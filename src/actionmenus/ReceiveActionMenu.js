@@ -7,14 +7,8 @@ class ReceiveActionMenu {
   }
 
   getRootMenu = () => {
-    const {
-      onSweepPrivateKey, onValidateAddress, onCopyAddress, onShare,
-    } = this.params;
+    const { onSweepPrivateKey, onValidateAddress, onShare } = this.params;
     return [
-      {
-        name: 'Copy Address',
-        callback: () => onCopyAddress(),
-      },
       {
         name: 'Share...',
         callback: () => onShare(),

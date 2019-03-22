@@ -1,24 +1,24 @@
-import { Platform } from "react-native";
-import { ifSmallDevice } from "../utils/device";
+import { Platform } from 'react-native';
+import { ifSmallDevice } from '../utils/device';
 
 export const colors = {
-  transparent: "transparent",
-  black: "#000000",
-  white: "#FFFFFF",
-  orange: "#FA503C",
-  lightOrange: "#FF7A00",
-  gray: "#8A8A8F",
-  red: "#FA503C",
-  lightGray: "#D8D8D8",
-  lighterGray: "#EDEDED",
-  green: "#00D6B0",
-  darkGreen: "#0AA49A",
-  lightBlue: "#0F73EE",
-  lighterBlue: "#65E1FB",
-  blue: "#1DACFC",
-  darkGray: "#2A2937",
-  yellow: "#FFCA7A",
-  purple: "#617AF7",
+  transparent: 'transparent',
+  black: '#000000',
+  white: '#FFFFFF',
+  orange: '#FA503C',
+  lightOrange: '#FF7A00',
+  gray: '#8A8A8F',
+  red: '#FA503C',
+  lightGray: '#D8D8D8',
+  lighterGray: '#EDEDED',
+  green: '#00D6B0',
+  darkGreen: '#0AA49A',
+  lightBlue: '#0F73EE',
+  lighterBlue: '#65E1FB',
+  blue: '#1DACFC',
+  darkGray: '#2A2937',
+  yellow: '#FFCA7A',
+  purple: '#617AF7',
 
   getHot: () => colors.yellow,
   getCold: () => colors.lighterBlue,
@@ -32,10 +32,10 @@ export const colors = {
   getOutgoing: () => colors.orange,
   getOnline: () => colors.green,
   getOffline: () => colors.orange,
-  getAlphaBg: () => "rgba(0,0,0,0.8)",
+  getAlphaBg: () => 'rgba(0,0,0,0.8)',
 
-  getTheme: theme => {
-    if (theme === "light") {
+  getTheme: (theme) => {
+    if (theme === 'light') {
       return {
         background: colors.white,
         text: colors.black,
@@ -58,7 +58,7 @@ export const colors = {
         altPositive: colors.darkGreen,
         negative: colors.red,
         warning: colors.red,
-        seeThrough: "rgba(255,255,255,0.95)"
+        seeThrough: 'rgba(255,255,255,0.95)',
       };
     }
 
@@ -69,7 +69,7 @@ export const colors = {
       button: colors.purple,
       buttonText: colors.white,
       disabledButton: colors.lightGray,
-      border: "rgba(0,0,0,0.5)",
+      border: 'rgba(0,0,0,0.5)',
       cancelButton: colors.red,
       cancelButtonText: colors.white,
       altCancelButton: colors.transparent,
@@ -82,9 +82,9 @@ export const colors = {
       altPositive: colors.green,
       negative: colors.red,
       warning: colors.red,
-      seeThrough: "rgba(42, 41, 55, 0.95)"
+      seeThrough: 'rgba(42, 41, 55, 0.95)',
     };
-  }
+  },
 };
 
 export const fontSize = ifSmallDevice(
@@ -96,7 +96,7 @@ export const fontSize = ifSmallDevice(
     h4: 15,
     base: 14,
     small: 14,
-    smaller: 12
+    smaller: 12,
   },
   {
     h1: 40,
@@ -106,40 +106,39 @@ export const fontSize = ifSmallDevice(
     h4: 17,
     base: 16,
     small: 14,
-    smaller: 12
-  }
+    smaller: 12,
+  },
 );
 
 export const fontStack = {
-  primary: Platform.OS === "android" ? "Inter-UI" : "Inter UI",
-  book: "Inter-UI-Book",
-  medium: "Inter-UI-Medium",
-  bold: "Inter-UI-Bold",
-  black: "Inter-UI-Black"
+  primary: Platform.OS === 'android' ? 'Inter-UI' : 'Inter UI',
+  book: 'Inter-UI-Book',
+  medium: 'Inter-UI-Medium',
+  bold: 'Inter-UI-Bold',
+  black: 'Inter-UI-Black',
 };
 
 export const buttonSize = {
   slim: 38,
   normal: 54,
-  big: 64
+  big: 64,
 };
 
-export const fontWeight =
-  Platform.OS === "android"
-    ? {
-        book: { fontFamily: fontStack.book },
-        normal: { fontFamily: fontStack.primary },
-        medium: { fontFamily: fontStack.medium },
-        bold: { fontFamily: fontStack.bold },
-        black: { fontFamily: fontStack.black }
-      }
-    : {
-        book: { fontWeight: "300" },
-        normal: { fontWeight: "400" },
-        medium: { fontWeight: "500" },
-        bold: { fontWeight: "700" },
-        black: { fontWeight: "900" }
-      };
+export const fontWeight = Platform.OS === 'android'
+  ? {
+    book: { fontFamily: fontStack.book },
+    normal: { fontFamily: fontStack.primary },
+    medium: { fontFamily: fontStack.medium },
+    bold: { fontFamily: fontStack.bold },
+    black: { fontFamily: fontStack.black },
+  }
+  : {
+    book: { fontWeight: '300' },
+    normal: { fontWeight: '400' },
+    medium: { fontWeight: '500' },
+    bold: { fontWeight: '700' },
+    black: { fontWeight: '900' },
+  };
 
 export const gridMultiplier = ifSmallDevice(4, 8);
 
@@ -147,39 +146,39 @@ export const layout = {
   paddingTop: gridMultiplier * 2,
   paddingBottom: gridMultiplier * 2,
   paddingLeft: gridMultiplier * 2,
-  paddingRight: gridMultiplier * 2
+  paddingRight: gridMultiplier * 2,
 };
 
 export const modal = {
   overlay: {
-    backgroundColor: "transparent",
-    height: null
+    backgroundColor: 'transparent',
+    height: null,
   },
   container: {
-    alignItems: "center",
+    alignItems: 'center',
     backgroundColor: colors.getPrimary(),
     borderRadius: 10,
-    flexDirection: "column",
-    margin: 8
+    flexDirection: 'column',
+    margin: 8,
   },
   modalContent: {
-    padding: 16
+    padding: 16,
   },
   title: {
     fontSize: 22,
     marginBottom: 24,
-    textAlign: "center",
-    ...fontWeight.bold
+    textAlign: 'center',
+    ...fontWeight.bold,
   },
   closeIconContainer: {
-    position: "absolute",
+    position: 'absolute',
     zIndex: 10,
     right: 19,
     top: 19,
     margin: 0,
-    padding: 0
+    padding: 0,
   },
   closeIconFont: {
-    fontSize: 21
-  }
+    fontSize: 21,
+  },
 };

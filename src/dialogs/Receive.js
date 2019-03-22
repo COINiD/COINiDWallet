@@ -1,13 +1,11 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import {
-  StyleSheet, View, Clipboard, TouchableOpacity, PixelRatio, Platform,
+  StyleSheet, View, TouchableOpacity, Platform,
 } from 'react-native';
-import QRCode from 'react-native-qrcode-svg';
 import Share from 'react-native-share';
-import ViewShot from 'react-native-view-shot';
 import {
-  DetailsModal, Text, FontScale, AmountInput,
+  DetailsModal, Text, AmountInput, ReceiveQRCode,
 } from '../components';
 import { ValidateAddress, SweepPrivateKey } from '.';
 import { colors, fontSize, fontWeight } from '../config/styling';
@@ -21,22 +19,6 @@ import parentStyles from './styles/common';
 const styles = styleMerge(
   parentStyles('light'),
   StyleSheet.create({
-    qrCode: {
-      padding: 8,
-      backgroundColor: colors.white,
-    },
-    qrCodeWrapper: {
-      marginTop: 4,
-      marginBottom: 16,
-      height: 160,
-      alignItems: 'center',
-      flexDirection: 'row',
-      justifyContent: 'center',
-    },
-    addressText: {
-      fontSize: fontSize.small,
-      textAlign: 'center',
-    },
     smallText: {
       color: colors.getTheme('light').fadedText,
       margin: 0,
@@ -199,11 +181,6 @@ class Receive extends PureComponent {
     this.elModal._close();
   };
 
-  _copyAddress = () => {
-    const { address } = this.state;
-    Clipboard.setString(address);
-  };
-
   _validateAddress = () => {
     const { address } = this.state;
     setTimeout(() => {
@@ -259,7 +236,6 @@ class Receive extends PureComponent {
       showActionSheetWithOptions,
       onSweepPrivateKey: this._sweepPrivateKey,
       onValidateAddress: this._validateAddress,
-      onCopyAddress: this._copyAddress,
       onShare: this._share,
     });
 
@@ -311,37 +287,15 @@ class Receive extends PureComponent {
         >
           <View style={styles.container}>
             <View style={styles.modalContent}>
-              <View style={styles.qrCodeWrapper}>
-                <ViewShot
-                  ref={(c) => {
-                    this.viewShot = c;
-                  }}
-                  options={{
-                    format: 'png',
-                    result: Platform.OS === 'ios' ? 'tmpfile' : 'data-uri',
-                    width: parseInt(320 / PixelRatio.get(), 10),
-                    height: parseInt(320 / PixelRatio.get(), 10),
-                  }}
-                >
-                  <View style={styles.qrCode}>
-                    <QRCode value={qrAddress} size={160} ecl="Q" />
-                  </View>
-                </ViewShot>
-              </View>
-
-              <FontScale
-                fontSizeMax={fontSize.small}
-                fontSizeMin={8}
-                text={address}
-                widthScale={0.9}
-              >
-                {({ fontSize }) => (
-                  <Text style={[styles.addressText, { fontSize }]} selectable>
-                    {address}
-                  </Text>
-                )}
-              </FontScale>
+              <ReceiveQRCode
+                getViewShot={(c) => {
+                  this.viewShot = c;
+                }}
+                address={address}
+                qrAddress={qrAddress}
+              />
             </View>
+
             <View
               style={styles.modalFooter}
               onLayout={(e) => {
