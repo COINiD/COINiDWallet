@@ -66,6 +66,16 @@ const styles = styleMerge(
 class Receive extends PureComponent {
   static contextType = WalletContext;
 
+  static propTypes = {
+    address: PropTypes.string,
+    theme: PropTypes.string,
+  };
+
+  static defaultProps = {
+    address: '',
+    theme: 'light',
+  };
+
   constructor(props, context) {
     super(props);
 
@@ -347,16 +357,6 @@ class Receive extends PureComponent {
 
 Receive.childContextTypes = {
   theme: PropTypes.string,
-};
-
-Receive.propTypes = {
-  address: PropTypes.string,
-  theme: PropTypes.string,
-};
-
-Receive.defaultProps = {
-  address: undefined,
-  theme: 'light',
 };
 
 export default Receive;

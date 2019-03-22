@@ -9,6 +9,7 @@ import bleCentral from 'react-native-p2p-transfer-ble-central';
 
 import { RootNavigator } from './routes/root';
 import { InactiveOverlay } from './components';
+import StatusBoxContext from './contexts/StatusBoxContext';
 import SettingHelper from './utils/settingHelper';
 import GlobalContext from './contexts/GlobalContext';
 import projectSettings from './config/settings';
@@ -90,7 +91,9 @@ class COINiDWallet extends PureComponent {
     return (
       <GlobalContext.Provider value={this._getGlobalContextValue()}>
         <View style={styles.container}>
-          <RootNavigator />
+          <StatusBoxContext.Provider>
+            <RootNavigator />
+          </StatusBoxContext.Provider>
           <InactiveOverlay />
         </View>
       </GlobalContext.Provider>

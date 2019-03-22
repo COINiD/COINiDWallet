@@ -19,6 +19,7 @@ export const colors = {
   darkGray: '#2A2937',
   yellow: '#FFCA7A',
   purple: '#617AF7',
+  otherGray: '#2F2E33',
 
   getHot: () => colors.yellow,
   getCold: () => colors.lighterBlue,
