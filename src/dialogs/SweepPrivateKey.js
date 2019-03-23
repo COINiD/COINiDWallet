@@ -2,48 +2,47 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, View } from 'react-native';
 import {
-  Button, CancelButton, DetailsModal, Text, COINiDTransport,
+  Button, CancelButton, Text, COINiDTransport,
 } from '../components';
-import { SweepKeyDetails } from '.';
+
+import WalletContext from '../contexts/WalletContext';
 
 const styles = StyleSheet.create({
   container: {
     marginBottom: 11,
     marginHorizontal: 10,
   },
-  cancelButton: {
-    backgroundColor: '#FA503C',
-  },
 });
 
 export default class SweepPrivateKey extends PureComponent {
+  static contextType = WalletContext;
+
+  static propTypes = {
+    address: PropTypes.string.isRequired,
+    dialogRef: PropTypes.shape({}).isRequired,
+  };
+
   constructor(props, context) {
     super(props);
+
     const { coinid } = context;
     const { coinTitle } = coinid;
+    this.coinid = coinid;
 
     this.state = {
       coinTitle,
     };
   }
 
-  getChildContext() {
-    const { theme: propsTheme } = this.props;
-    const { theme: contextTheme } = this.context;
-
-    return {
-      theme: propsTheme || contextTheme,
-    };
-  }
-
-  _open = (address) => {
-    this.address = address;
-    this.refModal._open();
+  _close = (cb) => {
+    const { dialogRef } = this.props;
+    dialogRef._close(cb);
   };
 
   _getTransportData = () => {
-    const { coinid } = this.context;
-    const valData = coinid.buildSwpCoinIdData(this.address);
+    const { address } = this.props;
+
+    const valData = this.coinid.buildSwpCoinIdData(address);
     return Promise.resolve(valData);
   };
 
@@ -54,27 +53,18 @@ export default class SweepPrivateKey extends PureComponent {
       return { type, address, compressed: compressedStr === '1' };
     });
 
-    // open PrivateKeyDetails with one output address and input addresses as argument.
-    this._close();
-    setTimeout(() => this.refSweepKeyDetails._open(inputAddressInfo), 100);
-  };
+    const { dialogNavigate } = this.context;
 
-  _close = () => {
-    this.refModal._close();
-  };
-
-  _onOpened = () => {
-    const { onOpened } = this.props;
-    onOpened();
-  };
-
-  _onClosed = () => {
-    const { onClosed } = this.props;
-    onClosed();
+    dialogNavigate(
+      'SweepPrivateKey',
+      {
+        inputAddressInfo,
+      },
+      this.context,
+    );
   };
 
   render() {
-    const { onOpened, onClosed } = this.props;
     const { coinTitle } = this.state;
 
     const renderTransportContent = ({
@@ -109,51 +99,15 @@ export default class SweepPrivateKey extends PureComponent {
     };
 
     return (
-      <React.Fragment>
-        <DetailsModal
-          ref={(c) => {
-            this.refModal = c;
-          }}
-          title="Sweep Private Key"
-          onClosed={this._onClosed}
-          onOpened={this._onOpened}
-        >
-          <COINiDTransport
-            ref={(c) => {
-              this.transportRef = c;
-            }}
-            getData={this._getTransportData}
-            handleReturnData={this._handleReturnData}
-          >
-            {renderTransportContent}
-          </COINiDTransport>
-        </DetailsModal>
-        <SweepKeyDetails
-          ref={(c) => {
-            this.refSweepKeyDetails = c;
-          }}
-          onClosed={onClosed}
-          onOpened={onOpened}
-        />
-      </React.Fragment>
+      <COINiDTransport
+        ref={(c) => {
+          this.transportRef = c;
+        }}
+        getData={this._getTransportData}
+        handleReturnData={this._handleReturnData}
+      >
+        {renderTransportContent}
+      </COINiDTransport>
     );
   }
 }
-
-SweepPrivateKey.contextTypes = {
-  coinid: PropTypes.shape({}),
-  type: PropTypes.string,
-  theme: PropTypes.string,
-};
-
-SweepPrivateKey.childContextTypes = {
-  theme: PropTypes.string,
-};
-
-SweepPrivateKey.propTypes = {
-  theme: PropTypes.string,
-};
-
-SweepPrivateKey.defaultProps = {
-  theme: 'light',
-};

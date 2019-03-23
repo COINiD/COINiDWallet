@@ -3,10 +3,12 @@ import PropTypes from 'prop-types';
 import {
   StyleSheet, View, TextInput, Alert,
 } from 'react-native';
-import { DetailsModal, Text, Button } from '../components';
+import { Text, Button } from '../components';
 import { fontWeight } from '../config/styling';
 import parentStyles from './styles/common';
 import styleMerge from '../utils/styleMerge';
+
+import WalletContext from '../contexts/WalletContext';
 
 const styles = styleMerge(
   parentStyles('light'),
@@ -27,30 +29,32 @@ const styles = styleMerge(
 );
 
 export default class InputPublicKey extends PureComponent {
+  static contextType = WalletContext;
+
+  static propTypes = {
+    dialogRef: PropTypes.shape({}).isRequired,
+    onContinue: PropTypes.func.isRequired,
+  };
+
   constructor(props, context) {
     super(props);
 
-    this.coinid = context.coinid;
-    this.settingHelper = context.settingHelper;
+    const {
+      coinid,
+      globalContext: { settingHelper },
+    } = context;
+
+    this.coinid = coinid;
+    this.settingHelper = settingHelper;
 
     this.state = {
       publicKey: '',
     };
   }
 
-  getChildContext() {
-    return {
-      theme: this.props.theme ? this.props.theme : this.context.theme,
-    };
-  }
-
-  _open = () => {
-    this.setState({ publicKey: '' });
-    this.detailsModal._open();
-  };
-
   _close = () => {
-    this.detailsModal._close();
+    const { dialogRef } = this.props;
+    dialogRef._close();
   };
 
   _verifyPublicKey = (data) => {
@@ -90,69 +94,41 @@ export default class InputPublicKey extends PureComponent {
   };
 
   render() {
+    const { dialogRef } = this.props;
+
     return (
-      <DetailsModal
-        ref={(c) => {
-          this.detailsModal = c;
+      <View
+        style={styles.container}
+        onLayout={(e) => {
+          this.refContHeight = e.nativeEvent.layout.height;
         }}
-        title="Enter Public Key"
-        avoidKeyboard
-        avoidKeyboardOffset={40}
       >
+        <Text style={styles.formLabel}>Public key data</Text>
         <View
-          style={styles.container}
+          style={styles.formItemRow}
+          onFocus={() => {
+            dialogRef._setKeyboardOffset(this.refAmountBottom - this.refContHeight + 8);
+          }}
           onLayout={(e) => {
-            this.refContHeight = e.nativeEvent.layout.height;
+            this.refAmountBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
           }}
         >
-          <Text style={styles.formLabel}>Public key data</Text>
-          <View
-            style={styles.formItemRow}
-            onFocus={(e) => {
-              this.detailsModal._setKeyboardOffset(this.refAmountBottom - this.refContHeight + 8);
-            }}
-            onLayout={(e) => {
-              this.refAmountBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
-            }}
-          >
-            <TextInput
-              style={[styles.formItemInput]}
-              autoCorrect={false}
-              spellCheck={false}
-              textContentType="none"
-              returnKeyType="done"
-              onChangeText={this._onChangePublicKey}
-              underlineColorAndroid="transparent"
-              blurOnSubmit
-              multiline
-            />
-          </View>
-          <Button big onPress={this._continue} style={{ marginTop: 24 }}>
-            Create Wallet
-          </Button>
+          <TextInput
+            style={[styles.formItemInput]}
+            autoCorrect={false}
+            spellCheck={false}
+            textContentType="none"
+            returnKeyType="done"
+            onChangeText={this._onChangePublicKey}
+            underlineColorAndroid="transparent"
+            blurOnSubmit
+            multiline
+          />
         </View>
-      </DetailsModal>
+        <Button big onPress={this._continue} style={{ marginTop: 24 }}>
+          Create Wallet
+        </Button>
+      </View>
     );
   }
 }
-
-InputPublicKey.contextTypes = {
-  theme: PropTypes.string,
-  type: PropTypes.string,
-  coinid: PropTypes.object,
-  settingHelper: PropTypes.object,
-};
-
-InputPublicKey.childContextTypes = {
-  theme: PropTypes.string,
-};
-
-InputPublicKey.propTypes = {
-  theme: PropTypes.string,
-  onContinue: PropTypes.func,
-};
-
-InputPublicKey.defaultProps = {
-  theme: 'light',
-  onContinue: () => {},
-};

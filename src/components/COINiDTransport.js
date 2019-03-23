@@ -8,7 +8,11 @@ import Settings from '../config/settings';
 import { p2pServer } from '../utils/p2p-ble-central';
 import { getP2PCode } from '../utils/p2p-ble-common';
 
+import WalletContext from '../contexts/WalletContext';
+
 export default class COINiDTransport extends PureComponent {
+  static contextType = WalletContext;
+
   constructor(props) {
     super(props);
 
@@ -34,13 +38,6 @@ export default class COINiDTransport extends PureComponent {
   componentWillUnmount() {
     this._cancel();
   }
-
-  _openNotFoundModal = () => {
-    const {
-      modals: { notFoundModal },
-    } = this.context;
-    notFoundModal._open();
-  };
 
   _checkForCOINiD = () => {
     const { type } = this.context;
@@ -115,18 +112,19 @@ export default class COINiDTransport extends PureComponent {
       });
     }
 
-    Linking.openURL(url).catch(err => console.error('An error occured', err));
+    Linking.openURL(url);
     onSent();
   };
 
   _transportDataCold = (dataToTransport, skipReturnData, skipPreferred) => {
     const url = this._getCOINiDUrl(dataToTransport);
     const {
-      settingHelper,
-      settingHelper: {
+      globalContext: {
+        settingHelper,
         settings: { preferredColdTransport },
       },
-      modals: { coldTransportModal },
+      dialogNavigate,
+      dialogGetCurrentDialog,
     } = this.context;
 
     const doTransportDataCold = (transportType, successCb) => {
@@ -152,31 +150,43 @@ export default class COINiDTransport extends PureComponent {
         onTransportData(data, preferredColdTransport);
       });
     } else {
-      coldTransportModal._open((transportType) => {
-        doTransportDataCold(transportType, (data) => {
-          onTransportData(data, transportType);
-        });
-      });
+      dialogNavigate(
+        'SelectColdTransportType',
+        {
+          onSelected: (transportType) => {
+            doTransportDataCold(transportType, (data) => {
+              onTransportData(data, transportType);
+            });
+          },
+        },
+        this.context,
+        false,
+      );
     }
   };
 
   _transportDataQR = (url, skipReturnData, successCb) => {
     const { onSent } = this.props;
-    const {
-      modals: { qrDataSenderModal },
-      navigation,
-    } = this.context;
+    const { navigation, dialogNavigate } = this.context;
 
-    qrDataSenderModal._open(url, () => {
-      onSent();
-      if (!skipReturnData) {
-        navigation.navigate('QRDataReceiver', {
-          onComplete: (data) => {
-            successCb(data);
-          },
-        });
-      }
-    });
+    dialogNavigate(
+      'QRDataSender',
+      {
+        data: url,
+        onDone: () => {
+          onSent();
+          if (!skipReturnData) {
+            navigation.navigate('QRDataReceiver', {
+              onComplete: (data) => {
+                successCb(data);
+              },
+            });
+          }
+        },
+      },
+      this.context,
+      false,
+    );
   };
 
   _transportDataBLE = (url, skipReturnData, successCb) => {
@@ -270,9 +280,11 @@ export default class COINiDTransport extends PureComponent {
   };
 
   _submit = (submitArg, skipReturnData, skipPreferred) => {
+    const { dialogNavigate } = this.context;
+
     this._checkForCOINiD().then((hasCOINiD) => {
       if (!hasCOINiD) {
-        this._openNotFoundModal();
+        dialogNavigate('COINiDNotFound');
       } else {
         const { getData } = this.props;
         getData(submitArg).then((data) => {
@@ -306,13 +318,6 @@ export default class COINiDTransport extends PureComponent {
     );
   }
 }
-
-COINiDTransport.contextTypes = {
-  type: PropTypes.string,
-  modals: PropTypes.object,
-  navigation: PropTypes.object,
-  settingHelper: PropTypes.object,
-};
 
 COINiDTransport.propTypes = {
   getData: PropTypes.func,

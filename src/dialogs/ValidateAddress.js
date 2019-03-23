@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import { StyleSheet, View } from 'react-native';
 import { fontWeight } from '../config/styling';
 import {
-  Button, CancelButton, DetailsModal, Text, COINiDTransport,
+  Button, CancelButton, Text, COINiDTransport,
 } from '../components';
+
+import WalletContext from '../contexts/WalletContext';
 
 const styles = StyleSheet.create({
   container: {
@@ -18,28 +20,24 @@ const styles = StyleSheet.create({
 });
 
 export default class ValidateAddress extends PureComponent {
-  getChildContext() {
-    const { theme: propsTheme } = this.props;
-    const { theme: contextTheme } = this.context;
+  static contextType = WalletContext;
 
-    return {
-      theme: propsTheme || contextTheme,
-    };
-  }
+  static propTypes = {
+    address: PropTypes.string.isRequired,
+    dialogRef: PropTypes.shape({}).isRequired,
+  };
 
-  _open = (address) => {
-    this.address = address;
-    this.refModal._open();
+  _close = (cb) => {
+    const { dialogRef } = this.props;
+    dialogRef._close(cb);
   };
 
   _getValidateData = () => {
     const { coinid } = this.context;
-    const valData = coinid.buildValCoinIdData(this.address);
-    return Promise.resolve(valData);
-  };
+    const { address } = this.props;
 
-  _close = () => {
-    this.refModal._close();
+    const valData = coinid.buildValCoinIdData(address);
+    return Promise.resolve(valData);
   };
 
   render() {
@@ -79,41 +77,15 @@ export default class ValidateAddress extends PureComponent {
     };
 
     return (
-      <DetailsModal
+      <COINiDTransport
         ref={(c) => {
-          this.refModal = c;
+          this.transportRef = c;
         }}
-        title="Validate Address"
-        onClosed={this._onClosed}
+        getData={this._getValidateData}
+        onSent={this._close}
       >
-        <COINiDTransport
-          ref={(c) => {
-            this.transportRef = c;
-          }}
-          getData={this._getValidateData}
-          onSent={this._close}
-        >
-          {renderTransportContent}
-        </COINiDTransport>
-      </DetailsModal>
+        {renderTransportContent}
+      </COINiDTransport>
     );
   }
 }
-
-ValidateAddress.contextTypes = {
-  coinid: PropTypes.shape({}),
-  type: PropTypes.string,
-  theme: PropTypes.string,
-};
-
-ValidateAddress.childContextTypes = {
-  theme: PropTypes.string,
-};
-
-ValidateAddress.propTypes = {
-  theme: PropTypes.string,
-};
-
-ValidateAddress.defaultProps = {
-  theme: 'light',
-};

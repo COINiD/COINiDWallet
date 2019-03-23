@@ -14,10 +14,11 @@ import LottieView from 'lottie-react-native';
 import {
   Button, Text, CancelButton, COINiDTransport,
 } from '../components';
-import { SelectAddressType, SetupWallet, InputPublicKey } from '../dialogs';
 import projectSettings from '../config/settings';
 import { Build } from '.';
 import { colors, fontWeight } from '../config/styling';
+
+import WalletContext from '../contexts/WalletContext';
 
 const lottieFiles = {
   setuphot: require('../animations/setuphot.json'),
@@ -95,6 +96,12 @@ const themedStyleGenerator = theme => StyleSheet.create({
 });
 
 class Setup extends PureComponent {
+  static contextType = WalletContext;
+
+  static propTypes = {
+    onReady: PropTypes.func.isRequired,
+  };
+
   constructor(props, context) {
     super(props);
 
@@ -216,17 +223,12 @@ class Setup extends PureComponent {
     }
   };
 
-  _openNotFoundModal = () => {
-    const {
-      modals: { notFoundModal },
-    } = this.context;
-    notFoundModal._open();
-  };
-
   _selectAddressType = () => {
+    const { dialogNavigate } = this.context;
+
     this._checkForCOINiD().then((hasCOINiD) => {
       if (!hasCOINiD) {
-        this._openNotFoundModal();
+        dialogNavigate('COINiDNotFound');
         return;
       }
 
@@ -235,23 +237,45 @@ class Setup extends PureComponent {
       if (supportedAddressTypes.length === 1) {
         this._onSelectAddressType(supportedAddressTypes[0]);
       } else {
-        this.addressTypeModal._open();
+        dialogNavigate(
+          'SelectAddressType',
+          {
+            onSelectAddressType: this._onSelectAddressType,
+          },
+          this.context,
+        );
       }
     });
   };
 
-  _onReturnFromSelectAddressType = (addressType) => {
-    this.addressTypeModal._close();
-    this._onSelectAddressType(addressType);
-  };
-
   _showSetupWallet = (setupSubmit) => {
+    const { dialogNavigate } = this.context;
+
     this.setupSubmit = setupSubmit;
-    this.setupWalletModal._open();
+
+    dialogNavigate(
+      'SetupWallet',
+      {
+        onContinue: this._selectAddressType,
+        onContinuePublic: this._enterPublicKey,
+      },
+      this.context,
+    );
   };
 
   _enterPublicKey = () => {
-    this.inputPublicKeyModal._open();
+    const { dialogNavigate } = this.context;
+
+    dialogNavigate(
+      'InputPublicKey',
+      {
+        onContinue: (data) => {
+          const pubKeyData = data.split('://')[1];
+          this._handleReturnData(pubKeyData);
+        },
+      },
+      this.context,
+    );
   };
 
   _onSelectAddressType = (addressType) => {
@@ -430,38 +454,7 @@ class Setup extends PureComponent {
       return this._hotView(renderArgs);
     };
 
-    const renderTransportContent = (renderArgs) => {
-      const { isBLESupported } = renderArgs;
-
-      return (
-        <React.Fragment>
-          {renderView(renderArgs)}
-          <SelectAddressType
-            ref={(c) => {
-              this.addressTypeModal = c;
-            }}
-            onSelectAddressType={this._onReturnFromSelectAddressType}
-          />
-          <SetupWallet
-            ref={(c) => {
-              this.setupWalletModal = c;
-            }}
-            onContinue={this._selectAddressType}
-            onContinuePublic={this._enterPublicKey}
-            isBLESupported={isBLESupported}
-          />
-          <InputPublicKey
-            ref={(c) => {
-              this.inputPublicKeyModal = c;
-            }}
-            onContinue={(data) => {
-              const pubKeyData = data.split('://')[1];
-              this._handleReturnData(pubKeyData);
-            }}
-          />
-        </React.Fragment>
-      );
-    };
+    const renderTransportContent = renderArgs => renderView(renderArgs);
 
     return (
       <View style={{ flex: 1 }}>
@@ -472,16 +465,5 @@ class Setup extends PureComponent {
     );
   }
 }
-
-Setup.propTypes = {
-  onReady: PropTypes.func.isRequired,
-};
-
-Setup.contextTypes = {
-  coinid: PropTypes.shape({}),
-  type: PropTypes.string,
-  theme: PropTypes.string,
-  modals: PropTypes.shape({}),
-};
 
 export default Setup;
