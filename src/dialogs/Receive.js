@@ -4,9 +4,7 @@ import {
   StyleSheet, View, TouchableOpacity, Platform,
 } from 'react-native';
 import Share from 'react-native-share';
-import {
-  DetailsModal, Text, AmountInput, ReceiveQRCode,
-} from '../components';
+import { Text, AmountInput, ReceiveQRCode } from '../components';
 import { colors, fontSize, fontWeight } from '../config/styling';
 import ExchangeHelper from '../utils/exchangeHelper';
 import ReceiveActionMenu from '../actionmenus/ReceiveActionMenu';
@@ -67,19 +65,15 @@ class Receive extends PureComponent {
   static contextType = WalletContext;
 
   static propTypes = {
-    address: PropTypes.string,
-    theme: PropTypes.string,
-  };
-
-  static defaultProps = {
-    address: '',
-    theme: 'light',
+    address: PropTypes.string.isRequired,
+    dialogRef: PropTypes.shape({}).isRequired,
+    setMoreOptionsFunc: PropTypes.func.isRequired,
   };
 
   constructor(props, context) {
     super(props);
 
-    const { address } = props;
+    const { address, setMoreOptionsFunc } = props;
     const {
       coinid,
       globalContext: { settingHelper, showActionSheetWithOptions },
@@ -88,6 +82,7 @@ class Receive extends PureComponent {
 
     this.settingHelper = settingHelper;
     this.exchangeHelper = ExchangeHelper(ticker);
+    setMoreOptionsFunc(this._onMoreOptions);
 
     this.state = {
       address,
@@ -98,15 +93,6 @@ class Receive extends PureComponent {
       amount: 0,
       coinTitle,
       showActionSheetWithOptions,
-    };
-  }
-
-  getChildContext() {
-    const { theme: propTheme } = this.props;
-    const { theme: contextTheme } = this.context;
-
-    return {
-      theme: propTheme || contextTheme,
     };
   }
 
@@ -183,14 +169,6 @@ class Receive extends PureComponent {
     return tmpl.join('');
   };
 
-  _open = () => {
-    this.elModal._open();
-  };
-
-  _close = () => {
-    this.elModal._close();
-  };
-
   _validateAddress = () => {
     const { dialogNavigate } = this.context;
     const { address } = this.state;
@@ -251,7 +229,7 @@ class Receive extends PureComponent {
     Share.open(options);
   };
 
-  _showMoreOptions = () => {
+  _onMoreOptions = () => {
     const { showActionSheetWithOptions } = this.state;
 
     const receiveActionMenu = new ReceiveActionMenu({
@@ -277,12 +255,10 @@ class Receive extends PureComponent {
 
   render() {
     const {
-      onOpened, onClosed, onOpen, onClose,
-    } = this.props;
-
-    const {
       ticker, qrAddress, address, exchangeRate, currency, amount,
     } = this.state;
+
+    const { dialogRef } = this.props;
 
     let { inputInFiat } = this.state;
 
@@ -291,70 +267,50 @@ class Receive extends PureComponent {
     }
 
     return (
-      <DetailsModal
-        verticalPosition="flex-end"
-        ref={(el) => {
-          this.elModal = el;
-        }}
-        onOpened={onOpened}
-        onClosed={onClosed}
-        onOpen={onOpen}
-        onClose={onClose}
-        showMoreOptions
-        onMoreOptions={this._showMoreOptions}
-        avoidKeyboard
-        avoidKeyboardOffset={40}
-        title="Receive"
-      >
-        <View style={styles.container}>
-          <View style={styles.modalContent}>
-            <ReceiveQRCode
-              getViewShot={(c) => {
-                this.viewShot = c;
-              }}
-              address={address}
-              qrAddress={qrAddress}
-            />
-          </View>
+      <View style={styles.container}>
+        <View style={styles.modalContent}>
+          <ReceiveQRCode
+            getViewShot={(c) => {
+              this.viewShot = c;
+            }}
+            address={address}
+            qrAddress={qrAddress}
+          />
+        </View>
 
+        <View
+          style={styles.modalFooter}
+          onLayout={(e) => {
+            this.refContHeight = e.nativeEvent.layout.height;
+          }}
+        >
+          <Text style={styles.smallText}>Request custom amount</Text>
           <View
-            style={styles.modalFooter}
+            style={styles.amountForm}
+            onFocus={(e) => {
+              dialogRef._setKeyboardOffset(this.refAmountBottom - this.refContHeight + 8);
+            }}
             onLayout={(e) => {
-              this.refContHeight = e.nativeEvent.layout.height;
+              this.refAmountBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
             }}
           >
-            <Text style={styles.smallText}>Request custom amount</Text>
-            <View
-              style={styles.amountForm}
-              onFocus={(e) => {
-                this.elModal._setKeyboardOffset(this.refAmountBottom - this.refContHeight + 8);
-              }}
-              onLayout={(e) => {
-                this.refAmountBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
-              }}
-            >
-              <AmountInput
-                style={[styles.amountInput, { paddingRight: 60 }]}
-                onChangeAmount={this._onChangeAmount}
-                exchangeRate={exchangeRate}
-                inputInFiat={inputInFiat}
-                amount={amount}
-                exchangeTo={currency}
-                exchangeFrom={ticker}
-              />
-              <TouchableOpacity style={styles.currencyButton} onPress={this._toggleInputFiat}>
-                <Text style={styles.currencyButtonText}>{inputInFiat ? currency : ticker}</Text>
-              </TouchableOpacity>
-            </View>
+            <AmountInput
+              style={[styles.amountInput, { paddingRight: 60 }]}
+              onChangeAmount={this._onChangeAmount}
+              exchangeRate={exchangeRate}
+              inputInFiat={inputInFiat}
+              amount={amount}
+              exchangeTo={currency}
+              exchangeFrom={ticker}
+            />
+            <TouchableOpacity style={styles.currencyButton} onPress={this._toggleInputFiat}>
+              <Text style={styles.currencyButtonText}>{inputInFiat ? currency : ticker}</Text>
+            </TouchableOpacity>
           </View>
         </View>
-      </DetailsModal>
+      </View>
     );
   }
 }
-
-Receive.childContextTypes = {
-  theme: PropTypes.string,
-};
 
 export default Receive;

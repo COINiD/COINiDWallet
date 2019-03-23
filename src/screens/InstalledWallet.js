@@ -9,9 +9,7 @@ import { getBottomSpace } from 'react-native-iphone-x-helper';
 import {
   BatchSummary, ConnectionStatus, Balance, TransactionList, Text,
 } from '../components';
-import {
-  Sign, Receive, Send, TransactionDetails,
-} from '../dialogs';
+import { Sign, Send, TransactionDetails } from '../dialogs';
 
 import projectSettings from '../config/settings';
 import { colors } from '../config/styling';
@@ -195,7 +193,22 @@ class InstalledWallet extends PureComponent {
   };
 
   _openReceive = () => {
-    this.receiveModal._open();
+    const { dialogNavigate } = this.context;
+    const { receiveAddress } = this.state;
+
+    dialogNavigate(
+      'Receive',
+      {
+        address: receiveAddress,
+        onOpen: () => {
+          this._blurScreen(1, true, 'receive');
+        },
+        onClose: () => {
+          this._blurScreen(0, true, 'receive');
+        },
+      },
+      this.context,
+    );
   };
 
   _openSend = () => {
@@ -325,7 +338,6 @@ class InstalledWallet extends PureComponent {
       antiBlurOpacity,
       realBalance,
       paymentsInBatch,
-      receiveAddress,
       styles,
       txDetailsInfo,
       blockHeight,
@@ -387,21 +399,6 @@ class InstalledWallet extends PureComponent {
             />
           </View>
         </View>
-
-        <Receive
-          ref={(c) => {
-            this.receiveModal = c;
-          }}
-          address={receiveAddress}
-          onOpened={onBuild}
-          onClosed={onReady}
-          onOpen={() => {
-            this._blurScreen(1, true, 'receive');
-          }}
-          onClose={() => {
-            this._blurScreen(0, true, 'receive');
-          }}
-        />
 
         <Sign
           ref={(c) => {

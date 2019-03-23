@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { getBottomSpace } from 'react-native-iphone-x-helper';
 
 import DetailsModal from '../components/DetailsModal';
 
@@ -12,6 +13,7 @@ import QRDataSender from '../dialogs/QRDataSender';
 import ValidateAddress from '../dialogs/ValidateAddress';
 import SweepPrivateKey from '../dialogs/SweepPrivateKey';
 import SweepKeyDetails from '../dialogs/SweepKeyDetails';
+import Receive from '../dialogs/Receive';
 
 import WalletContext from './WalletContext';
 
@@ -32,7 +34,11 @@ export const dialogRoutes = {
   },
   InputPublicKey: {
     DialogComponent: InputPublicKey,
-    defaultProps: { title: 'Enter Public Key', avoidKeyboard: true, avoidKeyboardOffset: 40 },
+    defaultProps: {
+      title: 'Enter Public Key',
+      avoidKeyboard: true,
+      avoidKeyboardOffset: -getBottomSpace(),
+    },
   },
   SelectColdTransportType: {
     DialogComponent: SelectColdTransportType,
@@ -54,6 +60,16 @@ export const dialogRoutes = {
     DialogComponent: SweepKeyDetails,
     defaultProps: { title: 'Private Key Details' },
   },
+  Receive: {
+    DialogComponent: Receive,
+    defaultProps: {
+      title: 'Receive',
+      verticalPosition: 'flex-end',
+      showMoreOptions: true,
+      avoidKeyboard: true,
+      avoidKeyboardOffset: -getBottomSpace(),
+    },
+  },
 };
 
 class DialogBox extends PureComponent {
@@ -71,6 +87,8 @@ class DialogBox extends PureComponent {
       dialogInnerHeight: 0,
       currentDialog: 0,
     };
+
+    this.moreOptionCallbacks = {};
 
     this.dialogs = [];
   }
@@ -218,6 +236,9 @@ class DialogBox extends PureComponent {
         dialogInnerHeight={dialogInnerHeight}
         dialogWidth={dialogWidth}
         dialogHeight={dialogHeight}
+        setMoreOptionsFunc={(moreOptions) => {
+          this.moreOptionCallbacks[key] = moreOptions;
+        }}
       />
     );
   };
@@ -237,6 +258,12 @@ class DialogBox extends PureComponent {
           onOuterLayout={this._onOuterLayout}
           currentDialog={currentDialog}
           removeWhenClosed={false}
+          onMoreOptions={() => {
+            const { key } = this._getCurrent();
+            if (this.moreOptionCallbacks[key]) {
+              this.moreOptionCallbacks[key]();
+            }
+          }}
         >
           {dialogs.map(this._renderDialogComponent)}
         </DetailsModal>
