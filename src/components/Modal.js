@@ -14,18 +14,14 @@ import {
   StyleSheet,
 } from 'react-native';
 
-import { getStatusBarHeight } from 'react-native-iphone-x-helper';
+import { getStatusBarHeight, getBottomSpace } from 'react-native-iphone-x-helper';
 import { colors } from '../config/styling';
 
 const BackButton = BackHandler || BackAndroid;
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
+    ...StyleSheet.absoluteFill,
     zIndex: 10,
     padding: 8,
     alignItems: 'center',
@@ -36,17 +32,13 @@ const styles = StyleSheet.create({
     transform: [{ translateX: -9999 }],
   },
   overlay: {
-    position: 'absolute',
     backgroundColor: colors.black,
-    top: 0,
-    bottom: -100,
-    right: 0,
-    left: 0,
+    ...StyleSheet.absoluteFill,
   },
   dialog: {
     width: '100%',
     overflow: 'hidden',
-    maxHeight: '100%',
+    maxHeight: Dimensions.get('window').height - getBottomSpace() - 56 - getStatusBarHeight(true),
   },
 });
 
@@ -164,7 +156,7 @@ export default class Modal extends PureComponent {
         {
           translateY: animate.interpolate({
             inputRange: [0, 1],
-            outputRange: [Dimensions.get('window').height, 0],
+            outputRange: [Dimensions.get('window').height, -getBottomSpace()],
           }),
         },
       ],
