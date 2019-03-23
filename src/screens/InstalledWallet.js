@@ -9,7 +9,7 @@ import { getBottomSpace } from 'react-native-iphone-x-helper';
 import {
   BatchSummary, ConnectionStatus, Balance, TransactionList, Text,
 } from '../components';
-import { Sign, Send, TransactionDetails } from '../dialogs';
+import { Sign, Send } from '../dialogs';
 
 import projectSettings from '../config/settings';
 import { colors } from '../config/styling';
@@ -186,10 +186,23 @@ class InstalledWallet extends PureComponent {
   };
 
   _openTransactionDetails = (info) => {
-    this.setState({
-      txDetailsInfo: info,
-    });
-    this.detailsModal._open();
+    const {
+      dialogNavigate,
+      globalContext: {
+        settings: { currency },
+      },
+    } = this.context;
+    const { blockHeight } = this.state;
+
+    dialogNavigate(
+      'TransactionDetails',
+      {
+        info,
+        blockHeight,
+        currency,
+      },
+      this.context,
+    );
   };
 
   _openReceive = () => {
@@ -339,8 +352,6 @@ class InstalledWallet extends PureComponent {
       realBalance,
       paymentsInBatch,
       styles,
-      txDetailsInfo,
-      blockHeight,
       balance,
     } = this.state;
 
@@ -423,17 +434,6 @@ class InstalledWallet extends PureComponent {
           onOpened={onBuild}
           onClosed={onReady}
           signModal={this.signModal}
-        />
-
-        <TransactionDetails
-          ref={(c) => {
-            this.detailsModal = c;
-          }}
-          info={txDetailsInfo}
-          currency={settings.currency}
-          blockHeight={blockHeight}
-          onOpened={onBuild}
-          onClosed={onReady}
         />
       </View>
     );

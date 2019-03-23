@@ -14,6 +14,7 @@ import ValidateAddress from '../dialogs/ValidateAddress';
 import SweepPrivateKey from '../dialogs/SweepPrivateKey';
 import SweepKeyDetails from '../dialogs/SweepKeyDetails';
 import Receive from '../dialogs/Receive';
+import TransactionDetails from '../dialogs/TransactionDetails';
 
 import WalletContext from './WalletContext';
 
@@ -66,6 +67,15 @@ export const dialogRoutes = {
       title: 'Receive',
       verticalPosition: 'flex-end',
       showMoreOptions: true,
+      avoidKeyboard: true,
+      avoidKeyboardOffset: -getBottomSpace(),
+    },
+  },
+  TransactionDetails: {
+    DialogComponent: TransactionDetails,
+    defaultProps: {
+      title: 'Transaction Details',
+      verticalPosition: 'flex-end',
       avoidKeyboard: true,
       avoidKeyboardOffset: -getBottomSpace(),
     },
