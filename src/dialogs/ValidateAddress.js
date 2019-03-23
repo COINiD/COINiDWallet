@@ -27,11 +27,6 @@ export default class ValidateAddress extends PureComponent {
     dialogRef: PropTypes.shape({}).isRequired,
   };
 
-  _close = (cb) => {
-    const { dialogRef } = this.props;
-    dialogRef._close(cb);
-  };
-
   _getValidateData = () => {
     const { coinid } = this.context;
     const { address } = this.props;
@@ -41,6 +36,8 @@ export default class ValidateAddress extends PureComponent {
   };
 
   render() {
+    const { dialogGoBack } = this.context;
+
     const renderTransportContent = ({
       isSigning, signingText, cancel, submit,
     }) => {
@@ -82,7 +79,7 @@ export default class ValidateAddress extends PureComponent {
           this.transportRef = c;
         }}
         getData={this._getValidateData}
-        onSent={this._close}
+        onSent={dialogGoBack}
       >
         {renderTransportContent}
       </COINiDTransport>
