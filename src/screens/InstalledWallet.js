@@ -62,6 +62,21 @@ const themedStyleGenerator = theme => StyleSheet.create({
 class InstalledWallet extends PureComponent {
   static contextType = WalletContext;
 
+  static propTypes = {
+    navigation: PropTypes.shape({}).isRequired,
+    hideSensitive: PropTypes.bool,
+    onBuild: PropTypes.func,
+    onReady: PropTypes.func,
+    hasBeenSetup: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    hideSensitive: false,
+    hasBeenSetup: false,
+    onReady: () => {},
+    onBuild: () => {},
+  };
+
   constructor(props, context) {
     super(props);
 
@@ -427,20 +442,5 @@ class InstalledWallet extends PureComponent {
     );
   }
 }
-
-InstalledWallet.propTypes = {
-  navigation: PropTypes.shape({}).isRequired,
-  hideSensitive: PropTypes.bool,
-  onBuild: PropTypes.func,
-  onReady: PropTypes.func,
-  hasBeenSetup: PropTypes.bool,
-};
-
-InstalledWallet.defaultProps = {
-  hideSensitive: false,
-  hasBeenSetup: false,
-  onReady: () => {},
-  onBuild: () => {},
-};
 
 export default InstalledWallet;

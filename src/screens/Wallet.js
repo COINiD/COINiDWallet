@@ -4,10 +4,10 @@ import { View, StyleSheet } from 'react-native';
 import { getBottomSpace } from 'react-native-iphone-x-helper';
 import { Loading } from '../components';
 import { InstalledWallet, Setup } from '.';
-import { COINiDNotFound, SelectColdTransportType, QRDataSender } from '../dialogs';
 
 import GlobalContext from '../contexts/GlobalContext';
 import WalletContext from '../contexts/WalletContext';
+import DialogBoxContext from '../contexts/DialogBoxContext';
 
 import { colors } from '../config/styling';
 
@@ -47,11 +47,6 @@ class Wallet extends PureComponent {
       type,
       theme,
       navigation,
-      modals: {
-        notFoundModal: this.notFoundModal,
-        coldTransportModal: this.coldTransportModal,
-        qrDataSenderModal: this.qrDataSenderModal,
-      },
     };
   }
 
@@ -149,45 +144,46 @@ class Wallet extends PureComponent {
       type,
       theme,
       navigation,
-      modals: {
-        notFoundModal: this.notFoundModal,
-        coldTransportModal: this.coldTransportModal,
-        qrDataSenderModal: this.qrDataSenderModal,
-      },
+      setContextBridger: this._setContextBridger,
     };
 
     return contextValue;
   };
 
-  _renderGlobalContextConsumer = (globalContext) => {
+  _setContextBridger = (contextBridger) => {
+    this.contextBridger = contextBridger;
+  };
+
+  _renderContent = (globalContext, dialogBoxContext) => {
     const { styles } = this.state;
 
+    const context = {
+      ...this._getWalletContextValue(),
+      globalContext,
+      ...dialogBoxContext,
+    };
+
+    if (this.contextBridger) {
+      this.contextBridger(context);
+    }
+
     return (
-      <WalletContext.Provider value={{ ...this._getWalletContextValue(), globalContext }}>
-        <View style={styles.container}>
-          {this._content}
-          <COINiDNotFound
-            ref={(c) => {
-              this.notFoundModal = c;
-            }}
-          />
-          <SelectColdTransportType
-            ref={(c) => {
-              this.coldTransportModal = c;
-            }}
-          />
-          <QRDataSender
-            ref={(c) => {
-              this.qrDataSenderModal = c;
-            }}
-          />
-        </View>
+      <WalletContext.Provider value={context}>
+        <View style={styles.container}>{this._content}</View>
       </WalletContext.Provider>
     );
   };
 
   render() {
-    return <GlobalContext.Consumer>{this._renderGlobalContextConsumer}</GlobalContext.Consumer>;
+    return (
+      <DialogBoxContext.Consumer>
+        {dialogBoxContext => (
+          <GlobalContext.Consumer>
+            {globalContext => this._renderContent(globalContext, dialogBoxContext)}
+          </GlobalContext.Consumer>
+        )}
+      </DialogBoxContext.Consumer>
+    );
   }
 }
 

@@ -17,7 +17,6 @@ import {
 } from '../components';
 import { numFormat } from '../utils/numFormat';
 import ExchangeHelper from '../utils/exchangeHelper';
-import SettingHelper from '../utils/settingHelper';
 import { getByteCount } from '../libs/coinid-public/utils';
 import {
   colors, fontWeight, fontSize, gridMultiplier,
@@ -25,6 +24,8 @@ import {
 
 import styleMerge from '../utils/styleMerge';
 import parentStyles from './styles/common';
+
+import WalletContext from '../contexts/WalletContext';
 
 const styles = styleMerge(
   parentStyles('light'),
@@ -95,18 +96,31 @@ const styles = styleMerge(
 );
 
 export default class SweepKeyDetails extends PureComponent {
+  static contextType = WalletContext;
+
+  static propTypes = {
+    dialogRef: PropTypes.shape({}).isRequired,
+    inputAddressInfo: PropTypes.shape([]).isRequired,
+  };
+
   constructor(props, context) {
     super(props);
 
     const {
-      coinid: { ticker },
+      coinid,
+      globalContext: { settingHelper },
     } = context;
 
-    this.settingHelper = SettingHelper(ticker);
+    this.coinid = coinid;
+    const { ticker } = this.coinid;
+
+    const { inputAddressInfo } = this.props;
+
+    this.settingHelper = settingHelper;
     this.exchangeHelper = ExchangeHelper(ticker);
 
     this.state = {
-      inputAddressInfo: [],
+      inputAddressInfo,
       groupBalance: {},
       balance: 0,
       ticker,
@@ -117,16 +131,9 @@ export default class SweepKeyDetails extends PureComponent {
     };
   }
 
-  getChildContext() {
-    const { theme: propsTheme } = this.props;
-    const { theme: contextTheme } = this.context;
-
-    return {
-      theme: propsTheme || contextTheme,
-    };
-  }
-
   componentDidMount() {
+    this._fetchUnspentInputs(false);
+
     this._onSettingsUpdated(this.settingHelper.getAll());
     this.settingHelper.on('updated', this._onSettingsUpdated);
   }
@@ -135,6 +142,11 @@ export default class SweepKeyDetails extends PureComponent {
     this.settingHelper.removeListener('updated', this._onSettingsUpdated);
     clearTimeout(this.queuedFetch);
   }
+
+  _close = (cb) => {
+    const { dialogRef } = this.props;
+    dialogRef._close(cb);
+  };
 
   _onSettingsUpdated = (settings) => {
     const { currency } = settings;
@@ -148,43 +160,28 @@ export default class SweepKeyDetails extends PureComponent {
     });
   };
 
-  _open = (inputAddressInfo) => {
-    this.setState(
-      {
-        groupBalance: {},
-        balance: 0,
-        fee: 0,
-        isLoadingHistory: true,
-        inputAddressInfo,
-      },
-      () => {
-        this._fetchUnspentInputs(false);
-      },
-    );
-
-    this.refModal._open();
-  };
-
   _getTransportData = () => {
-    const { coinid } = this.context;
     const { fee } = this.state;
-    const receiveAddress = coinid.getReceiveAddress();
+    const receiveAddress = this.coinid.getReceiveAddress();
 
     const feeSat = Number(Big(fee).times(1e8));
-    const valData = coinid.buildSwpTxCoinIdData(receiveAddress, this.formattedInputArr, feeSat);
+    const valData = this.coinid.buildSwpTxCoinIdData(
+      receiveAddress,
+      this.formattedInputArr,
+      feeSat,
+    );
 
     return Promise.resolve(valData);
   };
 
   _handleReturnData = (data) => {
-    const { coinid } = this.context;
     const [action, hex] = data.split('/');
 
     if (action === 'SWPTX' && hex) {
-      coinid
+      this.coinid
         .queueTx(hex, undefined, undefined, this.formattedInputArr)
         .then((queueData) => {
-          coinid.noteHelper.saveNote(
+          this.coinid.noteHelper.saveNote(
             queueData.tx,
             queueData.tx.vout[0].addr,
             'From sweeped private key',
@@ -199,7 +196,6 @@ export default class SweepKeyDetails extends PureComponent {
   };
 
   _fetchUnspentInputs = (silent) => {
-    const { coinid } = this.context;
     const { inputAddressInfo } = this.state;
 
     const addresses = inputAddressInfo.map(e => e.address);
@@ -210,7 +206,7 @@ export default class SweepKeyDetails extends PureComponent {
       this.setState({ isLoadingHistory: true });
     }
 
-    coinid
+    this.coinid
       .fetchUnspent(addresses)
       .then((unspentTxs) => {
         const formattedInputArr = this._getFormattedInputArray(unspentTxs, inputAddressInfo);
@@ -266,10 +262,6 @@ export default class SweepKeyDetails extends PureComponent {
     };
   });
 
-  _close = () => {
-    this.refModal._close();
-  };
-
   _renderAddresses = () => {
     const { inputAddressInfo, groupBalance } = this.state;
 
@@ -296,8 +288,6 @@ export default class SweepKeyDetails extends PureComponent {
       return 0;
     }
 
-    const { coinid } = this.context;
-
     const unCompressedInputs = formattedInputArr.filter(e => e.compressed === false);
     const uncompressed = !!unCompressedInputs.length;
 
@@ -309,7 +299,7 @@ export default class SweepKeyDetails extends PureComponent {
       {},
     );
 
-    const addressType = coinid.getAccountAddressType();
+    const addressType = this.coinid.getAccountAddressType();
 
     const outputCounts = {
       [addressType]: 1,
@@ -319,19 +309,18 @@ export default class SweepKeyDetails extends PureComponent {
   };
 
   _getExpandableMaxHeight = () => {
-    const {
-      modalHeight, containerHeight, innerExpandableHeight, expandableContentHeight,
-    } = this;
+    const { innerExpandableHeight, expandableContentHeight } = this;
+    const { dialogInnerHeight, dialogHeight } = this.props;
 
     if (
-      modalHeight === undefined
-      || containerHeight === undefined
+      dialogInnerHeight === undefined
+      || dialogHeight === undefined
       || innerExpandableHeight === undefined
     ) {
       return 0;
     }
 
-    const expandableMaxHeight = containerHeight - (modalHeight - innerExpandableHeight);
+    const expandableMaxHeight = dialogHeight - (dialogInnerHeight - innerExpandableHeight);
 
     if (expandableContentHeight < expandableMaxHeight) {
       return expandableContentHeight;
@@ -347,16 +336,6 @@ export default class SweepKeyDetails extends PureComponent {
       address,
       balanceSat: groupBalance[address] ? groupBalance[address] : 0,
     }));
-  };
-
-  _onModalLayout = ({ nativeEvent: { layout } }) => {
-    const { height } = layout;
-    this.modalHeight = height;
-  };
-
-  _onModalOuterLayout = ({ nativeEvent: { layout } }) => {
-    const { height } = layout;
-    this.containerHeight = height - 16;
   };
 
   _onExpandableScrollViewLayout = ({ nativeEvent: { layout } }) => {
@@ -422,16 +401,6 @@ export default class SweepKeyDetails extends PureComponent {
         keyExtractor={item => item.address}
       />
     );
-  };
-
-  _onOpened = () => {
-    const { onOpened } = this.props;
-    onOpened();
-  };
-
-  _onClosed = () => {
-    const { onClosed } = this.props;
-    onClosed();
   };
 
   _renderTransportContent = ({
@@ -563,21 +532,3 @@ export default class SweepKeyDetails extends PureComponent {
     );
   }
 }
-
-SweepKeyDetails.contextTypes = {
-  coinid: PropTypes.shape({}),
-  type: PropTypes.string,
-  theme: PropTypes.string,
-};
-
-SweepKeyDetails.childContextTypes = {
-  theme: PropTypes.string,
-};
-
-SweepKeyDetails.propTypes = {
-  theme: PropTypes.string,
-};
-
-SweepKeyDetails.defaultProps = {
-  theme: 'light',
-};

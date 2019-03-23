@@ -15,21 +15,40 @@ const styles = StyleSheet.create({
 });
 
 export default class DetailsModal extends PureComponent {
-  _open = () => {
-    this.elModal._open();
+  _open = (cb) => {
+    this.elModal._open(cb);
   };
 
-  _close = () => {
-    this.elModal._close();
+  _close = (cb) => {
+    this.elModal._close(cb);
   };
 
   _setKeyboardOffset = (offset) => {
     this.elModal._setKeyboardOffset(offset);
   };
 
+  _renderChildren = () => {
+    const { children, currentDialog } = this.props;
+
+    if (Array.isArray(children)) {
+      return children.map((dialog, i) => {
+        if (currentDialog === i) {
+          return <View key={dialog.key}>{dialog}</View>;
+        }
+        return (
+          <View key={dialog.key} style={{ display: 'none' }}>
+            {dialog}
+          </View>
+        );
+      });
+    }
+
+    return children;
+  };
+
   render() {
     const {
-      showMoreOptions, onMoreOptions, onLayout, onOuterLayout, children, title,
+      showMoreOptions, onMoreOptions, onLayout, onOuterLayout, title,
     } = this.props;
 
     return (
@@ -54,7 +73,7 @@ export default class DetailsModal extends PureComponent {
               maxHeight: '100%',
             }}
           >
-            {children}
+            {this._renderChildren()}
           </View>
         </View>
       </Modal>
@@ -72,6 +91,7 @@ DetailsModal.propTypes = {
   onLayout: PropTypes.func,
   onOuterLayout: PropTypes.func,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+  currentDialog: PropTypes.number,
 };
 
 DetailsModal.defaultProps = {
@@ -84,4 +104,5 @@ DetailsModal.defaultProps = {
   onLayout: () => {},
   onOuterLayout: () => {},
   children: null,
+  currentDialog: 0,
 };

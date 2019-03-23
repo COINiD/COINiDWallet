@@ -7,6 +7,8 @@ import { Text, FontScale } from '.';
 import { numFormat } from '../utils/numFormat';
 import { colors, fontWeight, fontSize } from '../config/styling';
 
+import WalletContext from '../contexts/WalletContext';
+
 const styles = StyleSheet.create({
   container: {
     marginHorizontal: -16,
@@ -39,13 +41,21 @@ const styles = StyleSheet.create({
 });
 
 class BatchListItem extends PureComponent {
-  componentDidMount() {
-    const { ticker } = this.context.coinid;
-    this.setState({ ticker });
+  static contextType = WalletContext;
+
+  constructor(props, context) {
+    super();
+    const { coinid } = context;
+    const { ticker } = coinid;
+
+    this.state = {
+      ticker,
+    };
   }
 
   _onPress = () => {
-    this.props.onPressItem(this.props.item);
+    const { onPressItem, item } = this.props;
+    onPressItem(item);
   };
 
   render() {
@@ -79,12 +89,6 @@ class BatchListItem extends PureComponent {
     );
   }
 }
-
-BatchListItem.contextTypes = {
-  coinid: PropTypes.object,
-  type: PropTypes.string,
-  theme: PropTypes.string,
-};
 
 export default class BatchList extends React.PureComponent {
   _onPressItem = (item) => {

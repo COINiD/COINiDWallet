@@ -74,8 +74,16 @@ export default class Modal extends PureComponent {
     this.subscriptions.forEach(sub => sub.remove());
   }
 
-  _open = () => {
+  _open = (cb) => {
     const { onOpen, onOpened } = this.props;
+    const { isOpen } = this.state;
+
+    if (isOpen) {
+      if (typeof cb === 'function') {
+        cb();
+      }
+      return;
+    }
 
     if (Platform.OS === 'android') {
       BackButton.addEventListener('hardwareBackPress', this._onBackPress);
@@ -85,12 +93,23 @@ export default class Modal extends PureComponent {
     onOpen();
 
     this._animate(1, () => {
+      if (typeof cb === 'function') {
+        cb();
+      }
       onOpened();
     });
   };
 
-  _close = () => {
+  _close = (cb) => {
     const { onClose, onClosed } = this.props;
+    const { isOpen } = this.state;
+
+    if (!isOpen) {
+      if (typeof cb === 'function') {
+        cb();
+      }
+      return;
+    }
 
     if (Platform.OS === 'android') {
       BackButton.removeEventListener('hardwareBackPress', this._onBackPress);
@@ -99,8 +118,12 @@ export default class Modal extends PureComponent {
     onClose();
 
     this._animate(0, () => {
-      this.setState({ isOpen: false });
-      onClosed();
+      this.setState({ isOpen: false }, () => {
+        if (typeof cb === 'function') {
+          cb();
+        }
+        onClosed();
+      });
     });
   };
 
@@ -167,10 +190,10 @@ export default class Modal extends PureComponent {
   };
 
   render() {
-    const { verticalPosition, onLayout } = this.props;
+    const { verticalPosition, onLayout, removeWhenClosed } = this.props;
     const { isOpen, animate } = this.state;
 
-    if (!isOpen) {
+    if (!isOpen && removeWhenClosed) {
       return null;
     }
 
@@ -210,6 +233,7 @@ Modal.propTypes = {
   avoidKeyboardOffset: PropTypes.number,
   avoidKeyboard: PropTypes.bool,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+  removeWhenClosed: PropTypes.bool,
 };
 
 Modal.defaultProps = {
@@ -222,4 +246,5 @@ Modal.defaultProps = {
   avoidKeyboardOffset: 0,
   avoidKeyboard: false,
   children: null,
+  removeWhenClosed: true,
 };

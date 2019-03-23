@@ -17,10 +17,10 @@ class ReceiveActionMenu {
         name: 'Validate Address...',
         callback: () => onValidateAddress(),
       },
-      /* {
+      {
         name: 'Sweep Private Key...',
         callback: () => onSweepPrivateKey(),
-      }, */
+      },
       {
         name: 'Cancel',
         isCancel: true,

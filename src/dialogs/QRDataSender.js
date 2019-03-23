@@ -31,70 +31,53 @@ const styles = StyleSheet.create({
 });
 
 export default class QRDataSender extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      data: '',
-    };
-  }
-
-  getChildContext() {
-    return {
-      theme: this.props.theme ? this.props.theme : this.context.theme,
-    };
-  }
-
-  _open = (data, doneCb) => {
-    this.doneCb = doneCb;
-    this.setState({ data });
-    this.detailsModal._open();
+  static propTypes = {
+    data: PropTypes.string.isRequired,
+    onDone: PropTypes.func.isRequired,
+    dialogRef: PropTypes.shape({}).isRequired,
+    dialogWidth: PropTypes.number.isRequired,
+    dialogHeight: PropTypes.number.isRequired,
   };
 
-  _close = () => {
-    this.detailsModal._close();
+  constructor() {
+    super();
+    this.state = {};
+  }
+
+  _close = (cb) => {
+    const { dialogRef } = this.props;
+    dialogRef._close(cb);
   };
 
   _done = () => {
-    this.doneCb();
-    this._close();
-  };
+    const { onDone } = this.props;
 
-  _onLayout = ({
-    nativeEvent: {
-      layout: { width, height },
-    },
-  }) => {
-    this.setState({
-      dialogHeight: height,
-      dialogWidth: width,
+    this._close(() => {
+      onDone();
     });
   };
 
-  _onLayoutTop = ({
-    nativeEvent: {
-      layout: { height },
-    },
-  }) => {
+  _onLayoutTop = ({ nativeEvent }) => {
+    const { layout } = nativeEvent;
+    const { height: topHeight } = layout;
+
     this.setState({
-      topHeight: height,
+      topHeight,
     });
   };
 
-  _onLayoutBottom = ({
-    nativeEvent: {
-      layout: { height },
-    },
-  }) => {
+  _onLayoutBottom = ({ nativeEvent }) => {
+    const { layout } = nativeEvent;
+    const { height: bottomHeight } = layout;
+
     this.setState({
-      bottomHeight: height,
+      bottomHeight,
     });
   };
 
   _calcQrWidth = () => {
-    const {
-      dialogWidth, dialogHeight, topHeight, bottomHeight,
-    } = this.state;
+    const { topHeight, bottomHeight } = this.state;
+    const { dialogWidth, dialogHeight } = this.props;
 
     if (
       dialogWidth === undefined
@@ -124,7 +107,7 @@ export default class QRDataSender extends PureComponent {
   };
 
   render() {
-    const { data } = this.state;
+    const { data } = this.props;
     const qrWidth = this._calcQrWidth();
 
     const renderBox = ({ blockIndex, index, length }) => {
@@ -167,43 +150,19 @@ export default class QRDataSender extends PureComponent {
     };
 
     return (
-      <DetailsModal
-        onOuterLayout={this._onLayout}
-        ref={(c) => {
-          this.detailsModal = c;
-        }}
-        title="QR Transfer to Vault"
-      >
-        <View style={styles.container}>
-          <View onLayout={this._onLayoutTop}>
-            <Text style={{ fontSize: 16, ...fontWeight.normal }}>
-              Scan the QR Code from the offline device.
-            </Text>
-          </View>
-          <View style={{ marginTop: 16, alignItems: 'center' }}>{renderQr()}</View>
-          <View onLayout={this._onLayoutBottom}>
-            <Button style={{ marginTop: 24 }} onPress={this._done}>
-              Done
-            </Button>
-          </View>
+      <View style={styles.container}>
+        <View onLayout={this._onLayoutTop}>
+          <Text style={{ fontSize: 16, ...fontWeight.normal }}>
+            Scan the QR Code from the offline device.
+          </Text>
         </View>
-      </DetailsModal>
+        <View style={{ marginTop: 16, alignItems: 'center' }}>{renderQr()}</View>
+        <View onLayout={this._onLayoutBottom}>
+          <Button style={{ marginTop: 24 }} onPress={this._done}>
+            Done
+          </Button>
+        </View>
+      </View>
     );
   }
 }
-
-QRDataSender.contextTypes = {
-  theme: PropTypes.string,
-};
-
-QRDataSender.childContextTypes = {
-  theme: PropTypes.string,
-};
-
-QRDataSender.propTypes = {
-  theme: PropTypes.string,
-};
-
-QRDataSender.defaultProps = {
-  theme: 'light',
-};
