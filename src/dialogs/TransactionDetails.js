@@ -7,7 +7,6 @@ import moment from 'moment';
 import Big from 'big.js';
 
 import {
-  DetailsModal,
   Text,
   TransactionState,
   Button,
@@ -16,7 +15,6 @@ import {
   CancelButton,
   FontScale,
 } from '../components';
-import Settings from '../config/settings';
 import ExchangeHelper from '../utils/exchangeHelper';
 import { numFormat } from '../utils/numFormat';
 import { getConfirmationsFromBlockHeight } from '../libs/coinid-public/transactionHelper';
@@ -26,6 +24,8 @@ import {
 
 import styleMerge from '../utils/styleMerge';
 import parentStyles from './styles/common';
+
+import WalletContext from '../contexts/WalletContext';
 
 const styles = styleMerge(
   parentStyles('light'),
@@ -67,6 +67,15 @@ const styles = styleMerge(
 );
 
 export default class TransactionDetails extends PureComponent {
+  static contextType = WalletContext;
+
+  static propTypes = {
+    info: PropTypes.shape({}).isRequired,
+    currency: PropTypes.string.isRequired,
+    blockHeight: PropTypes.number.isRequired,
+    dialogRef: PropTypes.shape({}).isRequired,
+  };
+
   constructor(props, context) {
     super(props);
 
@@ -85,15 +94,6 @@ export default class TransactionDetails extends PureComponent {
       ticker,
       maxFeeIncrease: 0,
       recommendedConfirmations,
-    };
-  }
-
-  getChildContext() {
-    const { theme: propsTheme } = this.props;
-    const { theme: contextTheme } = this.context;
-
-    return {
-      theme: propsTheme || contextTheme,
     };
   }
 
@@ -130,14 +130,6 @@ export default class TransactionDetails extends PureComponent {
       .then(fiatAmountOnDate => this.setState({ fiatAmountOnDate }));
   };
 
-  _open = () => {
-    this.elModal._open();
-  };
-
-  _close = () => {
-    this.elModal._close();
-  };
-
   _handleReturnData = (data) => {
     if (data) {
       const { coinid } = this.context;
@@ -159,14 +151,6 @@ export default class TransactionDetails extends PureComponent {
           });
       }
     }
-  };
-
-  _onOpened = () => {
-    this.props.onOpened();
-  };
-
-  _onClosed = () => {
-    this.props.onClosed();
   };
 
   _getNewFee = () => {
@@ -259,8 +243,10 @@ export default class TransactionDetails extends PureComponent {
     );
   };
 
-  _renderContent = () => {
-    const { currency, info, blockHeight } = this.props;
+  render() {
+    const {
+      dialogRef, currency, info, blockHeight,
+    } = this.props;
 
     if (!info) return null;
 
@@ -374,8 +360,8 @@ export default class TransactionDetails extends PureComponent {
               autoCorrect={false}
               spellCheck={false}
               textContentType="none"
-              onFocus={(e) => {
-                this.elModal._setKeyboardOffset(
+              onFocus={() => {
+                dialogRef._setKeyboardOffset(
                   this.refNoteBottom - this.refContHeight + 8 - this.refContScroll,
                 );
               }}
@@ -396,48 +382,5 @@ export default class TransactionDetails extends PureComponent {
         <View style={styles.footer} />
       </View>
     );
-  };
-
-  render() {
-    return (
-      <DetailsModal
-        ref={(c) => {
-          this.elModal = c;
-        }}
-        title="Transaction Details"
-        onOpened={this._onOpened}
-        onClosed={this._onClosed}
-        avoidKeyboard
-        avoidKeyboardOffset={40}
-      >
-        {this._renderContent()}
-      </DetailsModal>
-    );
   }
 }
-
-TransactionDetails.contextTypes = {
-  coinid: PropTypes.shape({}),
-  type: PropTypes.string,
-  theme: PropTypes.string,
-};
-
-TransactionDetails.childContextTypes = {
-  theme: PropTypes.string,
-};
-
-TransactionDetails.propTypes = {
-  tx: PropTypes.object,
-  txDetailsInfo: PropTypes.object,
-  currency: PropTypes.string,
-  theme: PropTypes.string,
-};
-
-TransactionDetails.defaultProps = {
-  fiatAmount: 0.0,
-  // fiatAmountOnTxTime: 0.0,
-  currency: Settings.currency,
-  onClosed: () => {},
-  onOpened: () => {},
-  theme: 'light',
-};
