@@ -10,6 +10,8 @@ import { numFormat } from '../utils/numFormat';
 import FeeHelper from '../utils/feeHelper';
 import { colors, fontSize } from '../config/styling';
 
+import WalletContext from '../contexts/WalletContext';
+
 const styles = StyleSheet.create({
   estimationText: {
     fontSize: fontSize.small,
@@ -42,7 +44,19 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class FeeSlider extends PureComponent {
+class FeeSlider extends PureComponent {
+  static contextType = WalletContext;
+
+  static propTypes = {
+    batchedTransactions: PropTypes.arrayOf(PropTypes.shape({})),
+    customEstimateSizeFn: PropTypes.func,
+  };
+
+  static defaultProps = {
+    batchedTransactions: [],
+    customEstimateSizeFn: undefined,
+  };
+
   constructor(props, context) {
     super(props);
 
@@ -377,18 +391,4 @@ export default class FeeSlider extends PureComponent {
   }
 }
 
-FeeSlider.contextTypes = {
-  coinid: PropTypes.object,
-  type: PropTypes.string,
-  theme: PropTypes.string,
-};
-
-FeeSlider.propTypes = {
-  batchedTransactions: PropTypes.array,
-  customEstimateSizeFn: PropTypes.func,
-};
-
-FeeSlider.defaultProps = {
-  batchedTransactions: [],
-  customEstimateSizeFn: undefined,
-};
+export default FeeSlider;
