@@ -64,6 +64,7 @@
   "devDependencies": {
     "@babel/core": "^7.4.0",
     "@babel/runtime": "^7.4.0",
+    "babel-eslint": "^10.0.1",
     "babel-jest": "^24.5.0",
     "enzyme": "^3.8.0",
     "enzyme-adapter-react-16": "^1.7.1",
@@ -74,11 +75,11 @@
     "eslint-plugin-react": "^7.12.4",
     "jest": "^24.5.0",
     "jest-fetch-mock": "^2.1.0",
+    "metro-react-native-babel-preset": "^0.53.1",
     "mock-async-storage": "^2.0.4",
     "mock-socket": "^8.0.5",
     "react-dom": "^16.7.0",
     "react-native-version": "^2.4.1",
-    "metro-react-native-babel-preset": "^0.53.1",
     "react-test-renderer": "16.8.3",
     "rn-nodeify": "^10.0.0"
   },
