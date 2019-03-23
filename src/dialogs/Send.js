@@ -1,18 +1,20 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import {
-  StyleSheet, Platform, TextInput, View, TouchableOpacity,
+  Alert, StyleSheet, Platform, TextInput, View, TouchableOpacity,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import Big from 'big.js';
 
 import {
-  Button, Text, DetailsModal, AmountInput, FontScale,
+  Button, Text, AmountInput, FontScale,
 } from '../components';
 import { numFormat } from '../utils/numFormat';
 import ExchangeHelper from '../utils/exchangeHelper';
 import { fontSize, colors, fontWeight } from '../config/styling';
 import { decodeQrRequest } from '../utils/addressHelper';
+
+import WalletContext from '../contexts/WalletContext';
 
 import styleMerge from '../utils/styleMerge';
 import parentStyles from './styles/common';
@@ -48,35 +50,57 @@ const styles = styleMerge(
   }),
 );
 
-export default class Send extends PureComponent {
+class Send extends PureComponent {
+  static contextType = WalletContext;
+
+  static propTypes = {
+    navigation: PropTypes.shape({}).isRequired,
+    dialogRef: PropTypes.shape({}).isRequired,
+    editItem: PropTypes.shape({}),
+    balance: PropTypes.number.isRequired,
+    onAddToBatch: PropTypes.func.isRequired,
+    onRemoveFromBatch: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    editItem: {},
+  };
+
   constructor(props, context) {
     super(props);
 
-    const { navigation } = props;
-    const { coinid, settingHelper } = context;
+    const { navigation, editItem } = props;
+    const {
+      coinid,
+      globalContext: { settingHelper },
+    } = context;
     const { ticker } = coinid;
+
+    this.coinid = coinid;
 
     this.settingHelper = settingHelper;
     this.exchangeHelper = ExchangeHelper(ticker);
-    this.navigate = navigation;
+    this.navigation = navigation;
 
     this.state = {
       exchangeRate: 0,
       currency: '',
       ticker,
       address: '',
+      note: '',
       amount: '',
-      note: undefined,
       editAddress: '',
       editAmount: 0,
       inputInFiat: false,
     };
-  }
 
-  getChildContext() {
-    return {
-      theme: this.props.theme ? this.props.theme : this.context.theme,
-    };
+    if (editItem.address) {
+      this.state = {
+        ...editItem,
+        editAddress: editItem.address,
+        editAmount: editItem.amount,
+      };
+    }
   }
 
   componentDidMount() {
@@ -101,9 +125,8 @@ export default class Send extends PureComponent {
   };
 
   _verify = () => {
-    let { amount, address, editAmount } = this.state;
-    const { balance } = this.props;
-    const availableBalance = balance + editAmount;
+    const { address } = this.state;
+    let { amount } = this.state;
 
     amount = Number(amount);
 
@@ -124,6 +147,11 @@ export default class Send extends PureComponent {
     }
 
     /*
+    const { editAmount } = this.state;
+
+    const { balance } = this.props;
+    const availableBalance = balance + editAmount;
+
     if (amount > availableBalance) {
       errors.push({
         type: 'balance',
@@ -132,10 +160,10 @@ export default class Send extends PureComponent {
     }
     */
 
-    if (!this.context.coinid.validateAddress(address)) {
+    if (!this.coinid.validateAddress(address)) {
       errors.push({
         type: 'address',
-        message: `address is not a valid ${this.context.coinid.coin} address`,
+        message: `address is not a valid ${this.coinid.coin} address`,
       });
     }
 
@@ -147,31 +175,34 @@ export default class Send extends PureComponent {
   };
 
   _addToBatch = () => {
-    let {
-      amount, address, note, editAddress,
-    } = this.state;
+    const { onAddToBatch } = this.props;
+
+    let { amount } = this.state;
+    const { address, note, editAddress } = this.state;
     amount = Number(amount);
-    this.props.onAddToBatch({ amount, address, note }, editAddress);
+
+    onAddToBatch({ amount, address, note }, editAddress);
   };
 
   _removeFromBatch = () => {
+    const { onRemoveFromBatch } = this.props;
+
     const { editAddress } = this.state;
-    this.props.onRemoveFromBatch(editAddress);
+    onRemoveFromBatch(editAddress);
   };
 
   _submit = () => {
     try {
       if (this._verify()) {
         this._addToBatch();
-        // this._close();
       }
     } catch (err) {
-      alert(err[0].message);
+      Alert.alert(err[0].message);
     }
   };
 
   _startQr = () => {
-    this.navigate('QRScan', { qrCodeResult: this._parseQRCodeResult });
+    this.navigation.navigate('QRScan', { qrCodeResult: this._parseQRCodeResult });
   };
 
   _parseQRCodeResult = (qrResult) => {
@@ -193,30 +224,6 @@ export default class Send extends PureComponent {
     return false;
   };
 
-  _open = (item) => {
-    // if item is set then we enter edit mode
-    if (item !== undefined) {
-      this.setState({
-        ...item,
-        editAddress: item.address,
-        editAmount: item.amount,
-      });
-    } else {
-      this.setState({
-        address: '',
-        note: '',
-        amount: '',
-        editAddress: '',
-        editAmount: 0,
-      });
-    }
-    this.elModal._open();
-  };
-
-  _close = () => {
-    this.elModal._close();
-  };
-
   _onChangeAmount = (amount) => {
     this.setState({ amount });
   };
@@ -225,7 +232,7 @@ export default class Send extends PureComponent {
     const { inputInFiat, exchangeRate } = this.state;
 
     if (!exchangeRate) {
-      return false;
+      return;
     }
 
     this.setState({ inputInFiat: !inputInFiat });
@@ -243,7 +250,7 @@ export default class Send extends PureComponent {
       currency,
     } = this.state;
 
-    const { onOpened, onClosed, balance } = this.props;
+    const { balance, dialogRef } = this.props;
 
     let { inputInFiat } = this.state;
 
@@ -306,196 +313,165 @@ export default class Send extends PureComponent {
     );
 
     return (
-      <DetailsModal
+      <View
+        style={styles.container}
         ref={(c) => {
-          this.elModal = c;
+          this.refCont = c;
         }}
-        title={editAddress ? 'Edit Transaction' : 'Send'}
-        verticalPosition="flex-end"
-        onOpened={onOpened}
-        onClosed={onClosed}
-        avoidKeyboard
-        avoidKeyboardOffset={40}
+        onLayout={() => {}}
       >
         <View
-          style={styles.container}
-          ref={(c) => {
-            this.refCont = c;
+          style={styles.modalContent}
+          onLayout={(e) => {
+            this.refContHeight = e.nativeEvent.layout.height;
           }}
-          onLayout={() => {}}
         >
           <View
-            style={styles.modalContent}
+            style={styles.formItem}
+            onFocus={() => {
+              dialogRef._setKeyboardOffset(this.refToBottom - this.refContHeight + 8);
+            }}
             onLayout={(e) => {
-              this.refContHeight = e.nativeEvent.layout.height;
+              this.refToBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
             }}
           >
-            <View
-              style={styles.formItem}
-              onLayout={c => (this.toContPos = c)}
-              ref={c => (this.toContRef = c)}
-              onFocus={(e) => {
-                this.elModal._setKeyboardOffset(this.refToBottom - this.refContHeight + 8);
-              }}
-              onLayout={(e) => {
-                this.refToBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
-              }}
-            >
-              <Text style={styles.formLabel}>To</Text>
-              <View style={styles.formItemRow}>
-                <FontScale
-                  style={{
-                    flex: 1,
-                    flexDirection: 'column',
-                    alignItems: 'flex-start',
-                  }}
-                  fontSizeMax={fontSize.base}
-                  fontSizeMin={6}
-                  text={address.trim()}
-                  widthScale={0.9}
-                  ref={(c) => {
-                    this.toScaleRef = c;
-                  }}
-                  extraData={this.state.scaleBlurred}
-                >
-                  {({ fontSize: scaledFontSize }) => (
-                    <TextInput
-                      keyboardType={Platform.OS === 'ios' ? 'default' : 'visible-password'}
-                      style={[
-                        styles.formItemInput,
-                        { flex: 0, width: '100%', fontSize: scaledFontSize },
-                      ]}
-                      value={address}
-                      autoCorrect={false}
-                      spellCheck={false}
-                      textContentType="none"
-                      onChangeText={(changedAddress) => {
-                        console.log({ changedAddress });
-                        this.setState({ address: changedAddress.trim() });
-                      }}
-                      onBlur={() => {
-                        const orgAddress = address;
-
-                        this.setState({ address: `${orgAddress} ` }, () => {
-                          setTimeout(() => {
-                            this.setState({ address: `${orgAddress}` });
-                          }, 100);
-                        });
-                      }}
-                      ref={(c) => {
-                        this.toRef = c;
-                      }}
-                      returnKeyType="done"
-                      onSubmitEditing={() => this.amountRef.focus()}
-                      underlineColorAndroid="transparent"
-                      allowFontScaling={false}
-                    />
-                  )}
-                </FontScale>
-                <View style={styles.formItemIcons}>
-                  <Icon
-                    iconStyle={styles.formItemIcon}
-                    type="material-community"
-                    name="qrcode"
-                    onPress={this._startQr}
-                    hitSlop={{
-                      top: 20,
-                      bottom: 20,
-                      left: 0,
-                      right: 20,
+            <Text style={styles.formLabel}>To</Text>
+            <View style={styles.formItemRow}>
+              <FontScale
+                style={{
+                  flex: 1,
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                }}
+                fontSizeMax={fontSize.base}
+                fontSizeMin={6}
+                text={address.trim()}
+                widthScale={0.9}
+                ref={(c) => {
+                  this.toScaleRef = c;
+                }}
+              >
+                {({ fontSize: scaledFontSize }) => (
+                  <TextInput
+                    keyboardType={Platform.OS === 'ios' ? 'default' : 'visible-password'}
+                    style={[
+                      styles.formItemInput,
+                      { flex: 0, width: '100%', fontSize: scaledFontSize },
+                    ]}
+                    value={address}
+                    autoCorrect={false}
+                    spellCheck={false}
+                    textContentType="none"
+                    onChangeText={(changedAddress) => {
+                      this.setState({ address: changedAddress.trim() });
                     }}
-                  />
-                </View>
-              </View>
-            </View>
+                    onBlur={() => {
+                      const orgAddress = address;
 
-            <View
-              style={styles.formItem}
-              ref={(c) => {
-                this.amountContRef = c;
-              }}
-              onFocus={(e) => {
-                this.elModal._setKeyboardOffset(this.refAmountBottom - this.refContHeight + 8);
-              }}
-              onLayout={(e) => {
-                this.refAmountBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
-              }}
-            >
-              <View>
-                <Text style={styles.formLabel}>Amount</Text>
-                <View style={styles.formItemRow}>
-                  <AmountInput
+                      this.setState({ address: `${orgAddress} ` }, () => {
+                        setTimeout(() => {
+                          this.setState({ address: `${orgAddress}` });
+                        }, 100);
+                      });
+                    }}
                     ref={(c) => {
-                      this.amountRef = c;
+                      this.toRef = c;
                     }}
-                    style={[styles.formItemInput, { paddingRight: 60 }]}
-                    onChangeAmount={this._onChangeAmount}
-                    onSubmitEditing={() => this.noteRef.focus()}
-                    exchangeRate={exchangeRate}
-                    inputInFiat={inputInFiat}
-                    amount={amount}
-                    exchangeTo={currency}
-                    exchangeFrom={ticker}
+                    returnKeyType="done"
+                    onSubmitEditing={() => this.amountRef.focus()}
+                    underlineColorAndroid="transparent"
+                    allowFontScaling={false}
                   />
-                </View>
-                <TouchableOpacity style={styles.currencyButton} onPress={this._toggleInputFiat}>
-                  <Text style={styles.currencyButtonText}>{inputInFiat ? currency : ticker}</Text>
-                </TouchableOpacity>
-              </View>
-              {renderAvailableBalance()}
-            </View>
-
-            <View
-              style={styles.formItem}
-              onFocus={(e) => {
-                this.elModal._setKeyboardOffset(this.refNoteBottom - this.refContHeight + 8);
-              }}
-              onLayout={(e) => {
-                this.refNoteBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
-              }}
-            >
-              <Text style={styles.formLabel}>Note</Text>
-              <View style={styles.formItemRow}>
-                <TextInput
-                  keyboardType={Platform.OS === 'ios' ? 'default' : 'visible-password'}
-                  autoCorrect={false}
-                  spellCheck={false}
-                  textContentType="none"
-                  style={styles.formItemInput}
-                  value={note}
-                  maxLength={26}
-                  onChangeText={note => this.setState({ note })}
-                  ref={c => (this.noteRef = c)}
-                  returnKeyType="done"
-                  onSubmitEditing={() => this.noteRef.blur()}
-                  underlineColorAndroid="transparent"
+                )}
+              </FontScale>
+              <View style={styles.formItemIcons}>
+                <Icon
+                  iconStyle={styles.formItemIcon}
+                  type="material-community"
+                  name="qrcode"
+                  onPress={this._startQr}
+                  hitSlop={{
+                    top: 20,
+                    bottom: 20,
+                    left: 0,
+                    right: 20,
+                  }}
                 />
               </View>
             </View>
-
-            {editAddress ? renderEditButton() : renderSendButton()}
           </View>
+
+          <View
+            style={styles.formItem}
+            ref={(c) => {
+              this.amountContRef = c;
+            }}
+            onFocus={() => {
+              dialogRef._setKeyboardOffset(this.refAmountBottom - this.refContHeight + 8);
+            }}
+            onLayout={(e) => {
+              this.refAmountBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
+            }}
+          >
+            <View>
+              <Text style={styles.formLabel}>Amount</Text>
+              <View style={styles.formItemRow}>
+                <AmountInput
+                  ref={(c) => {
+                    this.amountRef = c;
+                  }}
+                  style={[styles.formItemInput, { paddingRight: 60 }]}
+                  onChangeAmount={this._onChangeAmount}
+                  onSubmitEditing={() => this.noteRef.focus()}
+                  exchangeRate={exchangeRate}
+                  inputInFiat={inputInFiat}
+                  amount={amount}
+                  exchangeTo={currency}
+                  exchangeFrom={ticker}
+                />
+              </View>
+              <TouchableOpacity style={styles.currencyButton} onPress={this._toggleInputFiat}>
+                <Text style={styles.currencyButtonText}>{inputInFiat ? currency : ticker}</Text>
+              </TouchableOpacity>
+            </View>
+            {renderAvailableBalance()}
+          </View>
+
+          <View
+            style={styles.formItem}
+            onFocus={() => {
+              dialogRef._setKeyboardOffset(this.refNoteBottom - this.refContHeight + 8);
+            }}
+            onLayout={(e) => {
+              this.refNoteBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
+            }}
+          >
+            <Text style={styles.formLabel}>Note</Text>
+            <View style={styles.formItemRow}>
+              <TextInput
+                keyboardType={Platform.OS === 'ios' ? 'default' : 'visible-password'}
+                autoCorrect={false}
+                spellCheck={false}
+                textContentType="none"
+                style={styles.formItemInput}
+                value={note}
+                maxLength={26}
+                onChangeText={newNote => this.setState({ note: newNote })}
+                ref={(c) => {
+                  this.noteRef = c;
+                }}
+                returnKeyType="done"
+                onSubmitEditing={() => this.noteRef.blur()}
+                underlineColorAndroid="transparent"
+              />
+            </View>
+          </View>
+
+          {editAddress ? renderEditButton() : renderSendButton()}
         </View>
-      </DetailsModal>
+      </View>
     );
   }
 }
 
-Send.contextTypes = {
-  coinid: PropTypes.object,
-  type: PropTypes.string,
-  theme: PropTypes.string,
-  settingHelper: PropTypes.object,
-};
-
-Send.childContextTypes = {
-  theme: PropTypes.string,
-};
-
-Send.propTypes = {
-  theme: PropTypes.string,
-};
-
-Send.defaultProps = {
-  theme: 'light',
-};
+export default Send;

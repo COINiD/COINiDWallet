@@ -287,7 +287,7 @@ class Receive extends PureComponent {
           <Text style={styles.smallText}>Request custom amount</Text>
           <View
             style={styles.amountForm}
-            onFocus={(e) => {
+            onFocus={() => {
               dialogRef._setKeyboardOffset(this.refAmountBottom - this.refContHeight + 8);
             }}
             onLayout={(e) => {

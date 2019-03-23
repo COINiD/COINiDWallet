@@ -9,7 +9,7 @@ import { getBottomSpace } from 'react-native-iphone-x-helper';
 import {
   BatchSummary, ConnectionStatus, Balance, TransactionList, Text,
 } from '../components';
-import { Sign, Send } from '../dialogs';
+import { Sign } from '../dialogs';
 
 import projectSettings from '../config/settings';
 import { colors } from '../config/styling';
@@ -225,11 +225,37 @@ class InstalledWallet extends PureComponent {
   };
 
   _openSend = () => {
-    this.sendModal._open();
+    const { dialogNavigate } = this.context;
+    const { balance } = this.state;
+    const { navigation } = this.props;
+
+    dialogNavigate(
+      'Send',
+      {
+        onAddToBatch: this._onAddToBatch,
+        onRemoveFromBatch: this._onRemoveFromBatch,
+        balance,
+        navigation,
+      },
+      this.context,
+    );
   };
 
   _openSign = () => {
-    this.signModal._open();
+    const { dialogNavigate } = this.context;
+    const { balance, realBalance, paymentsInBatch } = this.state;
+    const { navigation } = this.props;
+
+    dialogNavigate(
+      'Sign',
+      {
+        payments: paymentsInBatch,
+        balance: realBalance,
+        navigation,
+        onQueuedTx: this._onQueuedTx,
+      },
+      this.context,
+    );
   };
 
   _updatePayments = (paymentsInBatch) => {
@@ -258,11 +284,11 @@ class InstalledWallet extends PureComponent {
       this._updatePayments(newPayments);
 
       if (this.sendModal) {
-        this.sendModal._close();
+        // this.sendModal._close();
       }
 
       if (newPayments.length && this.signModal) {
-        this.signModal._open();
+        // this.signModal._open();
       }
     }
   };
@@ -287,24 +313,24 @@ class InstalledWallet extends PureComponent {
         this._updatePayments(paymentsInBatch);
 
         if (this.sendModal) {
-          this.sendModal._close();
+          // this.sendModal._close();
         }
         if (this.signModal) {
-          this.signModal._open();
+          // this.signModal._open();
         }
       }
     } else {
       paymentsInBatch.push(paymentToBatch);
       this._updatePayments(paymentsInBatch);
       if (this.sendModal) {
-        this.sendModal._close();
+        // this.sendModal._close();
       }
     }
   };
 
   _onQueuedTx = () => {
     this._updatePayments([]);
-    setTimeout(this.signModal._close, 350);
+    // setTimeout(this.signModal._close, 350);
   };
 
   _toggleRange = () => {
@@ -342,9 +368,6 @@ class InstalledWallet extends PureComponent {
   };
 
   render() {
-    const { navigation, onBuild, onReady } = this.props;
-
-    const { navigate } = navigation;
     const {
       isConnected,
       isLoading,
@@ -352,7 +375,6 @@ class InstalledWallet extends PureComponent {
       realBalance,
       paymentsInBatch,
       styles,
-      balance,
     } = this.state;
 
     const {
@@ -410,31 +432,6 @@ class InstalledWallet extends PureComponent {
             />
           </View>
         </View>
-
-        <Sign
-          ref={(c) => {
-            this.signModal = c;
-          }}
-          payments={paymentsInBatch}
-          balance={realBalance}
-          onQueuedTx={this._onQueuedTx}
-          onOpened={onBuild}
-          onClosed={onReady}
-          sendModal={this.sendModal}
-        />
-
-        <Send
-          ref={(c) => {
-            this.sendModal = c;
-          }}
-          onAddToBatch={this._onAddToBatch}
-          onRemoveFromBatch={this._onRemoveFromBatch}
-          balance={balance}
-          navigation={navigate}
-          onOpened={onBuild}
-          onClosed={onReady}
-          signModal={this.signModal}
-        />
       </View>
     );
   }

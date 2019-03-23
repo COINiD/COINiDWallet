@@ -15,6 +15,8 @@ import SweepPrivateKey from '../dialogs/SweepPrivateKey';
 import SweepKeyDetails from '../dialogs/SweepKeyDetails';
 import Receive from '../dialogs/Receive';
 import TransactionDetails from '../dialogs/TransactionDetails';
+import Send from '../dialogs/Send';
+import Sign from '../dialogs/Sign';
 
 import WalletContext from './WalletContext';
 
@@ -75,6 +77,33 @@ export const dialogRoutes = {
     DialogComponent: TransactionDetails,
     defaultProps: {
       title: 'Transaction Details',
+      verticalPosition: 'flex-end',
+      avoidKeyboard: true,
+      avoidKeyboardOffset: -getBottomSpace(),
+    },
+  },
+  Send: {
+    DialogComponent: Send,
+    defaultProps: {
+      title: 'Send',
+      verticalPosition: 'flex-end',
+      avoidKeyboard: true,
+      avoidKeyboardOffset: -getBottomSpace(),
+    },
+  },
+  EditTransaction: {
+    DialogComponent: Send,
+    defaultProps: {
+      title: 'Edit transaction',
+      verticalPosition: 'flex-end',
+      avoidKeyboard: true,
+      avoidKeyboardOffset: -getBottomSpace(),
+    },
+  },
+  Sign: {
+    DialogComponent: Sign,
+    defaultProps: {
+      title: 'Sign Transactions',
       verticalPosition: 'flex-end',
       avoidKeyboard: true,
       avoidKeyboardOffset: -getBottomSpace(),

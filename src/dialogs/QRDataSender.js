@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { StyleSheet, View } from 'react-native';
 import QRDataTransferSender from 'react-native-qr-data-transfer-sender';
 
-import { DetailsModal, Text, Button } from '../components';
+import { Text, Button } from '../components';
 import { fontWeight } from '../config/styling';
 
 const styles = StyleSheet.create({

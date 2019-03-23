@@ -20,6 +20,8 @@ import { colors, fontWeight } from '../config/styling';
 import styleMerge from '../utils/styleMerge';
 import parentStyles from './styles/common';
 
+import WalletContext from '../contexts/WalletContext';
+
 const styles = styleMerge(
   parentStyles('light'),
   StyleSheet.create({
@@ -47,7 +49,16 @@ const styles = styleMerge(
   }),
 );
 
-export default class Sign extends Component {
+class Sign extends Component {
+  static contextType = WalletContext;
+
+  static propTypes = {
+    payments: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+    balance: PropTypes.number.isRequired,
+    navigation: PropTypes.shape({}).isRequired,
+    dialogRef: PropTypes.shape({}).isRequired,
+  };
+
   constructor(props, context) {
     super(props);
 
@@ -59,12 +70,6 @@ export default class Sign extends Component {
       subTotal: 0,
       fee: this.fee,
       ticker,
-    };
-  }
-
-  getChildContext() {
-    return {
-      theme: this.props.theme ? this.props.theme : this.context.theme,
     };
   }
 
@@ -166,31 +171,28 @@ export default class Sign extends Component {
     this._calculateTotal();
   };
 
-  _open = () => {
-    this.forceNoRender = false;
-    this.forceUpdate();
-    this.elModal._open();
-  };
-
   _close = () => {
-    this.forceNoRender = true;
-    this.elModal._close();
+    const { dialogRef } = this.props;
+    dialogRef._close();
   };
 
   _onPressItem = (item) => {
-    const { sendModal } = this.props;
     this._close();
-    sendModal._open(item);
-  };
 
-  _onOpened = () => {
-    const { onOpened } = this.props;
-    onOpened();
-  };
+    const { dialogNavigate } = this.context;
+    const { navigation, balance } = this.props;
 
-  _onClosed = () => {
-    const { onClosed } = this.props;
-    onClosed();
+    dialogNavigate(
+      'EditTransaction',
+      {
+        onAddToBatch: this._onAddToBatch,
+        onRemoveFromBatch: this._onRemoveFromBatch,
+        balance,
+        navigation,
+        editItem: item,
+      },
+      this.context,
+    );
   };
 
   _handleReturnData = (data) => {
@@ -276,44 +278,11 @@ export default class Sign extends Component {
     };
 
     return (
-      <DetailsModal
-        ref={(c) => {
-          this.elModal = c;
-        }}
-        title="Sign Transactions"
-        verticalPosition="flex-end"
-        onOpened={this._onOpened}
-        onClosed={this._onClosed}
-      >
-        <COINiDTransport
-          getData={this._getTransactionData}
-          handleReturnData={this._handleReturnData}
-        >
-          {renderTransportContent}
-        </COINiDTransport>
-      </DetailsModal>
+      <COINiDTransport getData={this._getTransactionData} handleReturnData={this._handleReturnData}>
+        {renderTransportContent}
+      </COINiDTransport>
     );
   }
 }
 
-Sign.contextTypes = {
-  coinid: PropTypes.object,
-  type: PropTypes.string,
-  theme: PropTypes.string,
-};
-
-Sign.childContextTypes = {
-  theme: PropTypes.string,
-};
-
-Sign.propTypes = {
-  payments: PropTypes.array,
-  balance: PropTypes.number,
-  theme: PropTypes.string,
-};
-
-Sign.defaultProps = {
-  payments: [],
-  balance: 0,
-  theme: 'light',
-};
+export default Sign;
