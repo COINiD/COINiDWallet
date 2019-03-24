@@ -100,6 +100,7 @@ class Setup extends PureComponent {
 
   static propTypes = {
     onReady: PropTypes.func.isRequired,
+    onBuild: PropTypes.func.isRequired,
   };
 
   constructor(props, context) {
@@ -117,7 +118,11 @@ class Setup extends PureComponent {
 
   _onSnapTo = () => {
     if (this.lottieAnim !== undefined) {
-      this.lottieAnim.play();
+      try {
+        this.lottieAnim.play();
+      } catch (err) {
+        console.log('Error playing lottie');
+      }
     }
   };
 
@@ -138,7 +143,9 @@ class Setup extends PureComponent {
   };
 
   _buildWallet = (data) => {
-    const { onReady } = this.props;
+    const { onReady, onBuild } = this.props;
+
+    onBuild();
 
     const createAccount = (pubKeyArray) => {
       let usedCount = 0;

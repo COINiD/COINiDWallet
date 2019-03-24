@@ -56,9 +56,7 @@ class Wallet extends PureComponent {
 
   get _content() {
     const { isLoading, isInstalled, hasBeenSetup } = this.state;
-    const {
-      hideSensitive, onBuild, onBuildReady, navigation,
-    } = this.props;
+    const { hideSensitive, onBuild, navigation } = this.props;
 
     if (isLoading) {
       return <Loading />;
@@ -79,8 +77,6 @@ class Wallet extends PureComponent {
     return (
       <InstalledWallet
         settingHelper={this.settingHelper}
-        onBuild={onBuild}
-        onReady={onBuildReady}
         navigation={navigation}
         hideSensitive={hideSensitive}
         hasBeenSetup={hasBeenSetup}
