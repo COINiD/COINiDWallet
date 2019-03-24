@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFill,
     zIndex: 10,
     padding: 8,
+    paddingBottom: getBottomSpace() + 8,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -42,7 +43,34 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class Modal extends PureComponent {
+class Modal extends PureComponent {
+  static propTypes = {
+    verticalPosition: PropTypes.string,
+    onClosed: PropTypes.func,
+    onOpened: PropTypes.func,
+    onLayout: PropTypes.func,
+    onOpen: PropTypes.func,
+    onClose: PropTypes.func,
+    avoidKeyboardOffset: PropTypes.number,
+    avoidKeyboard: PropTypes.bool,
+    children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+    removeWhenClosed: PropTypes.bool,
+    closeAndClear: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    verticalPosition: 'center',
+    onClosed: () => {},
+    onOpened: () => {},
+    onLayout: () => {},
+    onOpen: () => {},
+    onClose: () => {},
+    avoidKeyboardOffset: 0,
+    avoidKeyboard: false,
+    children: null,
+    removeWhenClosed: true,
+  };
+
   constructor(props) {
     super(props);
 
@@ -149,7 +177,8 @@ export default class Modal extends PureComponent {
   };
 
   _onBackPress = () => {
-    this._close();
+    const { closeAndClear } = this.props;
+    closeAndClear();
     return true;
   };
 
@@ -201,7 +230,7 @@ export default class Modal extends PureComponent {
         {
           translateY: animate.interpolate({
             inputRange: [0, 1],
-            outputRange: [Dimensions.get('window').height, -getBottomSpace()],
+            outputRange: [Dimensions.get('window').height, 0],
           }),
         },
       ],
@@ -215,7 +244,9 @@ export default class Modal extends PureComponent {
   };
 
   render() {
-    const { verticalPosition, onLayout, removeWhenClosed } = this.props;
+    const {
+      verticalPosition, onLayout, removeWhenClosed, closeAndClear,
+    } = this.props;
     const { isOpen, animate } = this.state;
 
     if (!isOpen && removeWhenClosed) {
@@ -238,7 +269,7 @@ export default class Modal extends PureComponent {
         ]}
         onLayout={onLayout}
       >
-        <TouchableWithoutFeedback onPress={this._close}>
+        <TouchableWithoutFeedback onPress={closeAndClear}>
           <Animated.View style={[styles.overlay, animatedStyle]} />
         </TouchableWithoutFeedback>
 
@@ -248,28 +279,4 @@ export default class Modal extends PureComponent {
   }
 }
 
-Modal.propTypes = {
-  verticalPosition: PropTypes.string,
-  onClosed: PropTypes.func,
-  onOpened: PropTypes.func,
-  onLayout: PropTypes.func,
-  onOpen: PropTypes.func,
-  onClose: PropTypes.func,
-  avoidKeyboardOffset: PropTypes.number,
-  avoidKeyboard: PropTypes.bool,
-  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
-  removeWhenClosed: PropTypes.bool,
-};
-
-Modal.defaultProps = {
-  verticalPosition: 'center',
-  onClosed: () => {},
-  onOpened: () => {},
-  onLayout: () => {},
-  onOpen: () => {},
-  onClose: () => {},
-  avoidKeyboardOffset: 0,
-  avoidKeyboard: false,
-  children: null,
-  removeWhenClosed: true,
-};
+export default Modal;

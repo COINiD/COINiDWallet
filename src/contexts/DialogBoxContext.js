@@ -41,7 +41,6 @@ export const dialogRoutes = {
     defaultProps: {
       title: 'Enter Public Key',
       avoidKeyboard: true,
-      avoidKeyboardOffset: -getBottomSpace(),
     },
   },
   SelectColdTransportType: {
@@ -71,7 +70,6 @@ export const dialogRoutes = {
       verticalPosition: 'flex-end',
       showMoreOptions: true,
       avoidKeyboard: true,
-      avoidKeyboardOffset: -getBottomSpace(),
     },
   },
   TransactionDetails: {
@@ -80,7 +78,6 @@ export const dialogRoutes = {
       title: 'Transaction Details',
       verticalPosition: 'flex-end',
       avoidKeyboard: true,
-      avoidKeyboardOffset: -getBottomSpace(),
     },
   },
   Send: {
@@ -89,7 +86,6 @@ export const dialogRoutes = {
       title: 'Send',
       verticalPosition: 'flex-end',
       avoidKeyboard: true,
-      avoidKeyboardOffset: -getBottomSpace(),
     },
   },
   EditTransaction: {
@@ -98,7 +94,6 @@ export const dialogRoutes = {
       title: 'Edit transaction',
       verticalPosition: 'flex-end',
       avoidKeyboard: true,
-      avoidKeyboardOffset: -getBottomSpace(),
     },
   },
   Sign: {
@@ -107,7 +102,6 @@ export const dialogRoutes = {
       title: 'Sign Transactions',
       verticalPosition: 'flex-end',
       avoidKeyboard: true,
-      avoidKeyboardOffset: -getBottomSpace(),
     },
   },
 };
@@ -218,6 +212,11 @@ class DialogBox extends PureComponent {
     this._changeDialog();
   };
 
+  _closeAndClear = () => {
+    this.dialogs = [];
+    this._changeDialog();
+  };
+
   _changeDialog = () => {
     Keyboard.dismiss();
 
@@ -230,6 +229,8 @@ class DialogBox extends PureComponent {
         this.setState({ currentDialog, props }, () => {
           this.modal._open();
         });
+      } else {
+        this.setState({ currentDialog, props: {} });
       }
     });
   };
@@ -304,6 +305,7 @@ class DialogBox extends PureComponent {
           }}
           onLayout={this._onLayout}
           onOuterLayout={this._onOuterLayout}
+          closeAndClear={this._closeAndClear}
           currentDialog={currentDialog}
           removeWhenClosed={false}
           onMoreOptions={() => {
