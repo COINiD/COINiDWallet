@@ -131,12 +131,15 @@ class COINiDTransport extends PureComponent {
       });
     }
 
-    Linking.openURL(url);
     onSent();
 
     if (skipReturnData) {
       this._handleOpenURL('coinid://');
     }
+
+    setTimeout(() => {
+      Linking.openURL(url);
+    }, 750);
   };
 
   _transportDataCold = (dataToTransport, skipReturnData, skipPreferred) => {

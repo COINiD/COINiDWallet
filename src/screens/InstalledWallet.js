@@ -211,9 +211,11 @@ class InstalledWallet extends PureComponent {
         address: receiveAddress,
         onOpen: () => {
           this._blurScreen(1, true, 'receive');
+          global.disableInactiveOverlay();
         },
         onClose: () => {
           this._blurScreen(0, true, 'receive');
+          global.enableInactiveOverlay();
         },
       },
       this.context,
