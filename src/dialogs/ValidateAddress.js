@@ -24,7 +24,6 @@ export default class ValidateAddress extends PureComponent {
 
   static propTypes = {
     address: PropTypes.string.isRequired,
-    dialogRef: PropTypes.shape({}).isRequired,
   };
 
   _getValidateData = () => {
@@ -33,6 +32,11 @@ export default class ValidateAddress extends PureComponent {
 
     const valData = coinid.buildValCoinIdData(address);
     return Promise.resolve(valData);
+  };
+
+  _handleReturnData = () => {
+    const { dialogNavigateToExisting } = this.context;
+    dialogNavigateToExisting('Receive');
   };
 
   render() {
@@ -57,7 +61,9 @@ export default class ValidateAddress extends PureComponent {
             In that case the receive address must not be used or shared!
           </Text>
           <Button
-            onPress={submit}
+            onPress={() => {
+              submit(undefined, true);
+            }}
             disabled={disableButton}
             isLoading={isSigning}
             loadingText={signingText}
@@ -77,7 +83,8 @@ export default class ValidateAddress extends PureComponent {
           this.transportRef = c;
         }}
         getData={this._getValidateData}
-        parentDialog="Receive"
+        handleReturnData={this._handleReturnData}
+        parentDialog="ValidateAddress"
       >
         {renderTransportContent}
       </COINiDTransport>
