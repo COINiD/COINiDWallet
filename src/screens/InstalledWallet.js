@@ -63,16 +63,12 @@ class InstalledWallet extends PureComponent {
   static propTypes = {
     navigation: PropTypes.shape({}).isRequired,
     hideSensitive: PropTypes.bool,
-    onBuild: PropTypes.func,
-    onReady: PropTypes.func,
     hasBeenSetup: PropTypes.bool,
   };
 
   static defaultProps = {
     hideSensitive: false,
     hasBeenSetup: false,
-    onReady: () => {},
-    onBuild: () => {},
   };
 
   constructor(props, context) {
