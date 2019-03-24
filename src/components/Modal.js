@@ -170,8 +170,8 @@ class Modal extends PureComponent {
 
     Animated.timing(animate, {
       toValue,
-      duration: 300,
-      easing: Easing.out(Easing.quad),
+      duration: 500,
+      easing: Easing.out(Easing.exp),
       useNativeDriver: true,
     }).start(cb);
   };
