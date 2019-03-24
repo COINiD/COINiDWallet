@@ -57,6 +57,7 @@ class Send extends PureComponent {
     navigation: PropTypes.shape({}).isRequired,
     dialogRef: PropTypes.shape({}).isRequired,
     editItem: PropTypes.shape({}),
+    fee: PropTypes.number,
     balance: PropTypes.number.isRequired,
     onAddToBatch: PropTypes.func.isRequired,
     onRemoveFromBatch: PropTypes.func.isRequired,
@@ -64,6 +65,7 @@ class Send extends PureComponent {
 
   static defaultProps = {
     editItem: {},
+    fee: 0,
   };
 
   constructor(props, context) {
@@ -86,17 +88,20 @@ class Send extends PureComponent {
       exchangeRate: 0,
       currency: '',
       ticker,
+      inputInFiat: false,
       address: '',
       note: '',
       amount: '',
       editAddress: '',
       editAmount: 0,
-      inputInFiat: false,
     };
 
     if (editItem.address) {
       this.state = {
-        ...editItem,
+        ...this.state,
+        address: editItem.address,
+        note: editItem.note,
+        amount: editItem.amount,
         editAddress: editItem.address,
         editAmount: editItem.amount,
       };
@@ -250,7 +255,7 @@ class Send extends PureComponent {
       currency,
     } = this.state;
 
-    const { balance, dialogRef } = this.props;
+    const { balance, dialogRef, fee } = this.props;
 
     let { inputInFiat } = this.state;
 
@@ -258,7 +263,9 @@ class Send extends PureComponent {
       inputInFiat = false;
     }
 
-    const availableBalance = balance + editAmount;
+    const availableBalance = Big(balance)
+      .plus(editAmount)
+      .minus(fee);
 
     const renderEditButton = () => (
       <View style={{ flexDirection: 'row' }}>
@@ -299,9 +306,17 @@ class Send extends PureComponent {
       return (
         <View style={{ flexDirection: 'row' }}>
           <Text style={styles.formInfo}>Available balance: </Text>
-          <Text style={[styles.formInfo, availableBalance < 0 ? styles.negativeBalance : null]}>
-            {getAmount()}
-          </Text>
+          <TouchableOpacity
+            onPress={() => {
+              if (availableBalance > 0) {
+                this.amountRef._updateAmount(availableBalance);
+              }
+            }}
+          >
+            <Text style={[styles.formInfo, availableBalance < 0 ? styles.negativeBalance : null]}>
+              {getAmount()}
+            </Text>
+          </TouchableOpacity>
         </View>
       );
     };

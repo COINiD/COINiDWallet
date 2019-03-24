@@ -246,19 +246,26 @@ class InstalledWallet extends PureComponent {
     const { balance, realBalance, paymentsInBatch } = this.state;
     const { navigation } = this.props;
 
+    if (paymentsInBatch.length === 0) {
+      return;
+    }
+
     dialogNavigate(
       'Sign',
       {
         payments: paymentsInBatch,
-        balance: realBalance,
+        balance,
+        realBalance,
         navigation,
         onQueuedTx: this._onQueuedTx,
+        onAddToBatch: this._onAddToBatch,
+        onRemoveFromBatch: this._onRemoveFromBatch,
       },
       this.context,
     );
   };
 
-  _updatePayments = (paymentsInBatch) => {
+  _updatePayments = (paymentsInBatch, cb) => {
     if (!Array.isArray(paymentsInBatch)) {
       return false;
     }
@@ -267,7 +274,7 @@ class InstalledWallet extends PureComponent {
 
     const balanceReserved = Number(paymentsInBatch.reduce((a, c) => a.plus(c.amount), Big(0)));
     const balance = Number(Big(realBalance).minus(balanceReserved));
-    this.setState({ paymentsInBatch, balanceReserved, balance });
+    this.setState({ paymentsInBatch: [...paymentsInBatch], balanceReserved, balance }, cb);
 
     const storage = this.coinid.getStorage();
     storage.set('paymentsInBatch', paymentsInBatch);
@@ -278,22 +285,23 @@ class InstalledWallet extends PureComponent {
   _onRemoveFromBatch = (editAddress) => {
     if (editAddress) {
       const { paymentsInBatch } = this.state;
+      const { dialogGoBack } = this.context;
 
       const newPayments = paymentsInBatch.filter(e => e.address !== editAddress);
 
-      this._updatePayments(newPayments);
-
-      if (this.sendModal) {
-        // this.sendModal._close();
-      }
-
-      if (newPayments.length && this.signModal) {
-        // this.signModal._open();
-      }
+      this._updatePayments(newPayments, () => {
+        if (newPayments.length) {
+          this._openSign();
+        } else {
+          dialogGoBack(999);
+        }
+      });
     }
   };
 
   _onAddToBatch = (paymentToBatch, editAddress) => {
+    const { dialogGoBack } = this.context;
+
     const { paymentsInBatch } = this.state;
     const paymentWithSameAddress = paymentsInBatch.filter(
       e => e.address === paymentToBatch.address,
@@ -302,35 +310,34 @@ class InstalledWallet extends PureComponent {
     if (paymentWithSameAddress.length && paymentWithSameAddress[0].address !== editAddress) {
       Alert.alert('A payment with this address have already been batched...');
     } else if (editAddress) {
-      const paymentToUpdate = paymentsInBatch.filter(e => e.address === editAddress);
+      const [paymentToUpdate] = paymentsInBatch.filter(e => e.address === editAddress);
+      const indexToUpdate = paymentsInBatch.indexOf(paymentToUpdate);
 
-      if (!paymentToUpdate.length) {
+      if (indexToUpdate === -1) {
         Alert.alert('Could not find payment to update...');
       } else {
-        paymentToUpdate[0].address = paymentToBatch.address;
-        paymentToUpdate[0].amount = paymentToBatch.amount;
-        paymentToUpdate[0].note = paymentToBatch.note;
-        this._updatePayments(paymentsInBatch);
-
-        if (this.sendModal) {
-          // this.sendModal._close();
-        }
-        if (this.signModal) {
-          // this.signModal._open();
-        }
+        paymentsInBatch[indexToUpdate] = {
+          ...paymentToBatch,
+        };
+        this._updatePayments(paymentsInBatch, () => {
+          this._openSign();
+        });
       }
     } else {
       paymentsInBatch.push(paymentToBatch);
       this._updatePayments(paymentsInBatch);
-      if (this.sendModal) {
-        // this.sendModal._close();
-      }
+
+      dialogGoBack(999);
     }
   };
 
   _onQueuedTx = () => {
+    const { dialogGoBack } = this.context;
+
     this._updatePayments([]);
-    // setTimeout(this.signModal._close, 350);
+    setTimeout(() => {
+      dialogGoBack(999);
+    }, 350);
   };
 
   _toggleRange = () => {

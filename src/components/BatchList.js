@@ -95,7 +95,7 @@ export default class BatchList extends React.PureComponent {
     this.props.onPress(item);
   };
 
-  _keyExtractor = (item, index) => item.address;
+  _keyExtractor = (item, index) => `${index}`;
 
   _renderItem = ({ item, index }) => (
     <BatchListItem
