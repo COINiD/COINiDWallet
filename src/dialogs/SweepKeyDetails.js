@@ -8,7 +8,6 @@ import {
   Button,
   CancelButton,
   RowInfo,
-  DetailsModal,
   Text,
   COINiDTransport,
   FeeSlider,
