@@ -28,7 +28,7 @@ export const dialogRoutes = {
   InputPublicKey: {
     DialogComponent: InputPublicKey,
     defaultProps: {
-      title: 'Enter Public Key',
+      title: 'Enter public Key',
       avoidKeyboard: true,
     },
   },
@@ -38,19 +38,19 @@ export const dialogRoutes = {
   },
   QRDataSender: {
     DialogComponent: QRDataSender,
-    defaultProps: { title: 'QR Transfer to Vault' },
+    defaultProps: { title: 'QR transfer to Vault' },
   },
   ValidateAddress: {
     DialogComponent: ValidateAddress,
-    defaultProps: { title: 'Validate Address' },
+    defaultProps: { title: 'Validate address' },
   },
   SweepPrivateKey: {
     DialogComponent: SweepPrivateKey,
-    defaultProps: { title: 'Sweep Private Key' },
+    defaultProps: { title: 'Sweep private key' },
   },
   SweepKeyDetails: {
     DialogComponent: SweepKeyDetails,
-    defaultProps: { title: 'Private Key Details' },
+    defaultProps: { title: 'Private key details' },
   },
   Receive: {
     DialogComponent: Receive,
@@ -64,7 +64,7 @@ export const dialogRoutes = {
   TransactionDetails: {
     DialogComponent: TransactionDetails,
     defaultProps: {
-      title: 'Transaction Details',
+      title: 'Transaction details',
       verticalPosition: 'flex-end',
       avoidKeyboard: true,
     },
@@ -88,7 +88,7 @@ export const dialogRoutes = {
   Sign: {
     DialogComponent: Sign,
     defaultProps: {
-      title: 'Sign Transactions',
+      title: 'Sign transactions',
       verticalPosition: 'flex-end',
       avoidKeyboard: true,
     },
