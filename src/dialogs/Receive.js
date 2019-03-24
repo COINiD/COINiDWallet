@@ -204,10 +204,10 @@ class Receive extends PureComponent {
     } = this.state;
 
     const getShareMessage = () => {
-      let message = `My ${coinTitle} Address: ${address}`;
+      let message = `My ${coinTitle} address: ${address}`;
 
       if (amount) {
-        message += `\nRequested Amount: ${amount} ${ticker}`;
+        message += `\nRequested amount: ${amount} ${ticker}`;
       }
 
       return message;
@@ -230,7 +230,9 @@ class Receive extends PureComponent {
 
     Share.open(options)
       .then(() => {
-        this.showStatus('QR code shared successfully');
+        if (Platform.OS === 'ios') {
+          this.showStatus('QR code shared successfully');
+        }
       })
       .catch(() => {});
   };
