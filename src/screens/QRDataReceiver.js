@@ -14,6 +14,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.black,
     position: 'relative',
   },
+  wrapper: {
+    flex: 1,
+    backgroundColor: colors.black,
+  },
   firstBlock: {
     marginLeft: 0,
   },
@@ -243,6 +247,26 @@ class QRDataReceiver extends PureComponent {
     </View>
   );
 
+  _renderNotAuthorized = () => (
+    <View
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <Text
+        style={{
+          textAlign: 'center',
+          fontSize: 16,
+          color: 'white',
+        }}
+      >
+        Camera not authorized
+      </Text>
+    </View>
+  );
+
   render() {
     const { cameraType } = this.state;
 
@@ -299,38 +323,41 @@ class QRDataReceiver extends PureComponent {
     };
 
     return (
-      <QRDataTransferReceiver
-        cameraType={cameraType}
-        renderCompletedItems={renderCompletedItems}
-        onComplete={this._dataReceived}
-        onError={this._receiveError}
-        customMarker={this._renderCustomMarker()}
-        cameraStyle={styles.container}
-        topViewStyle={styles.topView}
-        bottomViewStyle={styles.bottomView}
-        topContent={(
-          <React.Fragment>
+      <View style={styles.wrapper}>
+        <QRDataTransferReceiver
+          cameraType={cameraType}
+          renderCompletedItems={renderCompletedItems}
+          onComplete={this._dataReceived}
+          onError={this._receiveError}
+          customMarker={this._renderCustomMarker()}
+          cameraStyle={styles.container}
+          topViewStyle={styles.topView}
+          bottomViewStyle={styles.bottomView}
+          notAuthorizedView={this._renderNotAuthorized()}
+          topContent={(
+            <React.Fragment>
+              <Icon
+                containerStyle={styles.closeIconContainer}
+                name="close"
+                onPress={() => this._goBack(false)}
+                size={24}
+                reverse
+              />
+              <Text style={[styles.title, styles.textShadow]}>Scan COINiD Vault QR Transfer</Text>
+            </React.Fragment>
+)}
+          bottomContent={(
             <Icon
-              containerStyle={styles.closeIconContainer}
-              name="close"
-              onPress={() => this._goBack(false)}
-              size={24}
-              reverse
+              containerStyle={[styles.iconContainer, { transform: [{ rotate: '90deg' }] }]}
+              name="autorenew"
+              onPress={this._flipCamera}
+              size={32}
+              color="white"
+              underlayColor="transparent"
             />
-            <Text style={[styles.title, styles.textShadow]}>Scan COINiD Vault QR Transfer</Text>
-          </React.Fragment>
 )}
-        bottomContent={(
-          <Icon
-            containerStyle={[styles.iconContainer, { transform: [{ rotate: '90deg' }] }]}
-            name="autorenew"
-            onPress={this._flipCamera}
-            size={32}
-            color="white"
-            underlayColor="transparent"
-          />
-)}
-      />
+        />
+      </View>
     );
   }
 }
