@@ -2,7 +2,7 @@
 
 exports[`decodeQrRequest not parse qr result 1`] = `
 Object {
-  "address": undefined,
+  "address": "",
   "amount": "",
   "currency": "USD",
   "editAddress": "",

@@ -1,4 +1,0 @@
-app_identifier ( "org.coinid.wallet.tbtc") # The bundle identifier of your app
-
-itc_team_id("119545920") # iTunes Connect Team ID
-team_id("GC88SQF2BV") # Developer Portal Team ID

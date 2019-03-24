@@ -3,7 +3,7 @@ export default {
   appReturnScheme : 'coinid-tbtc',
   coldWalletMode: true,
   currency: 'USD',
-  availableCurrencies : ['USD', 'EUR'],
+  availableCurrencies : ['USD','EUR','JPY','GBP','CAD','CHF','KRW','NZD','SEK','NOK','DKK'],
   ranges: ['day', 'week', 'month', 'year'],
   // milliseconds
   refreshRates: {
@@ -11,9 +11,21 @@ export default {
     account: 600000, // 10 minutes
   },
   coldTransportTypes: [
-    { key: '', title: 'Show dialog', description: 'Show dialog and lets you select which transport type to use.' },
-    { key: 'qr', title: 'QR Codes', description: 'Uses QR Codes to communicate between wallet and offline device.' },
-    { key: 'ble', title: 'Bluetooth Low Energy', description: 'Uses BLE to communicate between wallet and offline device.' },
+    {
+      key: '',
+      title: 'Show dialog',
+      description: 'Show dialog and lets you select which transport type to use.',
+    },
+    {
+      key: 'qr',
+      title: 'QR Codes',
+      description: 'Uses QR Codes to communicate between wallet and offline device.',
+    },
+    {
+      key: 'ble',
+      title: 'Bluetooth Low Energy',
+      description: 'Uses BLE to communicate between wallet and offline device.',
+    },
   ],
   lockDurations: [
     { milliseconds: 0, title: 'Immediately' },
@@ -27,6 +39,9 @@ export default {
   aboutUrl: 'https://coinid.org',
   feedbackUrl: 'https://coinid.org/feedback',
   guidesUrl: 'https://coinid.org/guides',
+  telegramUrl: 'https://t.me/joinchat/IARCoBAdhQOIEN_7u941Qg',
+  twitterUrl: 'https://twitter.com/COINiDGroup',
+  instagramUrl: 'https://www.instagram.com/coinidgroup',
   offlineGuideUrl: {
     ios: 'https://coinid.org/guides/preparing-ios-cold-wallet',
     android: 'https://coinid.org/guides/preparing-android-cold-wallet',

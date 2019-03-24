@@ -1,6 +1,5 @@
 import COINiDPublic from '../src/libs/coinid-public';
 import storageHelper from '../src/utils/storageHelper';
-import settingHelper from '../src/utils/settingHelper';
 
 const coinArray = ['testnet', 'myriad', 'bitcoin', 'groestlcoin', 'groestlcoin-testnet'];
 
