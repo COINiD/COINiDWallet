@@ -11,6 +11,7 @@ YellowBox.ignoreWarnings([
   'Sending `didUpdateState`',
   'Warning: Async Storage',
   'Remote debugger is in a background',
+  'Setting a timer for a long period',
 ]);
 
 AppRegistry.registerComponent(appName, () => App);
