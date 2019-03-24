@@ -64,6 +64,8 @@
 	<string>Connect To COINiD Vault</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Scan Qr Code</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>$(PRODUCT_NAME) wants to save photos</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Entypo.ttf</string>

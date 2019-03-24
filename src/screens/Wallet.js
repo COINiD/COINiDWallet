@@ -8,6 +8,7 @@ import { InstalledWallet, Setup } from '.';
 import GlobalContext from '../contexts/GlobalContext';
 import WalletContext from '../contexts/WalletContext';
 import DialogBoxContext from '../contexts/DialogBoxContext';
+import StatusBoxContext from '../contexts/StatusBoxContext';
 
 import { colors } from '../config/styling';
 
@@ -150,13 +151,14 @@ class Wallet extends PureComponent {
     this.contextBridger = contextBridger;
   };
 
-  _renderContent = (globalContext, dialogBoxContext) => {
+  _renderContent = (globalContext, dialogBoxContext, statusBoxContext) => {
     const { styles } = this.state;
 
     const context = {
       ...this._getWalletContextValue(),
       globalContext,
       ...dialogBoxContext,
+      ...statusBoxContext,
     };
 
     if (this.contextBridger) {
@@ -172,13 +174,18 @@ class Wallet extends PureComponent {
 
   render() {
     return (
-      <DialogBoxContext.Consumer>
-        {dialogBoxContext => (
-          <GlobalContext.Consumer>
-            {globalContext => this._renderContent(globalContext, dialogBoxContext)}
-          </GlobalContext.Consumer>
+      <StatusBoxContext.Consumer>
+        {statusBoxContext => (
+          <DialogBoxContext.Consumer>
+            {dialogBoxContext => (
+              <GlobalContext.Consumer>
+                {globalContext => this._renderContent(globalContext, dialogBoxContext, statusBoxContext)
+                }
+              </GlobalContext.Consumer>
+            )}
+          </DialogBoxContext.Consumer>
         )}
-      </DialogBoxContext.Consumer>
+      </StatusBoxContext.Consumer>
     );
   }
 }

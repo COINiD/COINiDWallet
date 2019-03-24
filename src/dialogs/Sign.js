@@ -235,8 +235,6 @@ class Sign extends Component {
         disableButton = true;
       }
 
-      console.log({ payments });
-
       return (
         <View style={styles.modalContent}>
           <View style={styles.batchedHeaderContainer}>
