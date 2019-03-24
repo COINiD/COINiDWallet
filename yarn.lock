@@ -6715,7 +6715,7 @@ react-native-permissions@^1.1.1:
 
 "react-native-qr-data-transfer-receiver@https://github.com/COINiD/react-native-qr-data-transfer-receiver":
   version "1.0.0"
-  resolved "https://github.com/COINiD/react-native-qr-data-transfer-receiver#c3ad1fe68e0f48ee074c6d06d9315ec56588edf1"
+  resolved "https://github.com/COINiD/react-native-qr-data-transfer-receiver#f4916f44964449ae4f8aaad19eec339f89dcbb59"
   dependencies:
     md5 "^2.2.1"
     react-native-qrcode-scanner "^1.1.2"
