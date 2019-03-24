@@ -7,7 +7,6 @@ import ViewShot from 'react-native-view-shot';
 import QRCode from 'react-native-qrcode-svg';
 import { FontScale, Text } from '.';
 import { colors, fontSize } from '../config/styling';
-import StatusBoxContext from '../contexts/StatusBoxContext';
 
 const styles = StyleSheet.create({
   qrCode: {
