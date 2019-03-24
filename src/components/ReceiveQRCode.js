@@ -73,21 +73,26 @@ class ReceiveQRCode extends PureComponent {
     const { getViewShot, qrAddress, address } = this.props;
 
     return (
-      <TouchableOpacity onPress={() => this._copyAddress({ showStatus })} disabled={disableCopy}>
+      <>
         <View style={styles.qrCodeWrapper}>
-          <ViewShot
-            ref={getViewShot}
-            options={{
-              format: 'png',
-              result: Platform.OS === 'ios' ? 'tmpfile' : 'data-uri',
-              width: parseInt(320 / PixelRatio.get(), 10),
-              height: parseInt(320 / PixelRatio.get(), 10),
-            }}
+          <TouchableOpacity
+            onPress={() => this._copyAddress({ showStatus })}
+            disabled={disableCopy}
           >
-            <View style={styles.qrCode}>
-              <QRCode value={qrAddress} size={160} ecl="Q" />
-            </View>
-          </ViewShot>
+            <ViewShot
+              ref={getViewShot}
+              options={{
+                format: 'png',
+                result: Platform.OS === 'ios' ? 'tmpfile' : 'data-uri',
+                width: parseInt(320 / PixelRatio.get(), 10),
+                height: parseInt(320 / PixelRatio.get(), 10),
+              }}
+            >
+              <View style={styles.qrCode}>
+                <QRCode value={qrAddress} size={160} ecl="Q" />
+              </View>
+            </ViewShot>
+          </TouchableOpacity>
         </View>
 
         <FontScale fontSizeMax={fontSize.small} fontSizeMin={8} text={address} widthScale={0.9}>
@@ -97,7 +102,7 @@ class ReceiveQRCode extends PureComponent {
             </Text>
           )}
         </FontScale>
-      </TouchableOpacity>
+      </>
     );
   };
 
