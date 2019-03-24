@@ -204,17 +204,26 @@ class QRDataReceiver extends PureComponent {
       },
     } = this.props;
     onComplete(data);
-    this._goBack();
+    this._goBack(true);
   };
 
   _receiveError = () => {
-    this._goBack();
+    this._goBack(false);
   };
 
-  _goBack = () => {
+  _goBack = (sendComplete) => {
     const {
-      navigation: { goBack },
+      navigation: {
+        goBack,
+        state: {
+          params: { onPrematureExit },
+        },
+      },
     } = this.props;
+
+    if (!sendComplete) {
+      onPrematureExit();
+    }
     goBack();
   };
 
@@ -304,7 +313,7 @@ class QRDataReceiver extends PureComponent {
             <Icon
               containerStyle={styles.closeIconContainer}
               name="close"
-              onPress={this._goBack}
+              onPress={() => this._goBack(false)}
               size={24}
               reverse
             />

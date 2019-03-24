@@ -204,7 +204,11 @@ export default class TransactionDetails extends PureComponent {
     return (
       <React.Fragment>
         <View style={styles.separator} />
-        <COINiDTransport getData={this._getBumpFeeData} handleReturnData={this._handleReturnData}>
+        <COINiDTransport
+          getData={this._getBumpFeeData}
+          handleReturnData={this._handleReturnData}
+          parentDialog="TransactionDetails"
+        >
           {({
             isSigning, signingText, cancel, submit,
           }) => (

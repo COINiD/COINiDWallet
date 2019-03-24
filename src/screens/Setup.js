@@ -250,6 +250,7 @@ class Setup extends PureComponent {
             onSelectAddressType: this._onSelectAddressType,
           },
           this.context,
+          false,
         );
       }
     });
@@ -282,6 +283,7 @@ class Setup extends PureComponent {
         },
       },
       this.context,
+      false,
     );
   };
 
@@ -465,7 +467,11 @@ class Setup extends PureComponent {
 
     return (
       <View style={{ flex: 1 }}>
-        <COINiDTransport getData={this._getSetupData} handleReturnData={this._handleReturnData}>
+        <COINiDTransport
+          getData={this._getSetupData}
+          handleReturnData={this._handleReturnData}
+          parentDialog="none"
+        >
           {renderTransportContent}
         </COINiDTransport>
       </View>
