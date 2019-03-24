@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFill,
     zIndex: 10,
     padding: 8,
-    paddingBottom: getBottomSpace() + 8,
+    paddingBottom: getBottomSpace() + 8 + 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
