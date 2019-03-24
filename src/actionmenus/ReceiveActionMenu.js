@@ -11,15 +11,15 @@ class ReceiveActionMenu {
     return [
       {
         name: 'Share...',
-        callback: () => onShare(),
+        callback: () => setTimeout(onShare, 300),
       },
       {
         name: 'Validate Address...',
-        callback: () => onValidateAddress(),
+        callback: () => setTimeout(onValidateAddress, 300),
       },
       {
         name: 'Sweep Private Key...',
-        callback: () => onSweepPrivateKey(),
+        callback: () => setTimeout(onSweepPrivateKey, 300),
       },
       {
         name: 'Cancel',
