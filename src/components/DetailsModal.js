@@ -14,7 +14,34 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class DetailsModal extends PureComponent {
+class DetailsModal extends PureComponent {
+  static propTypes = {
+    title: PropTypes.string,
+    verticalPosition: PropTypes.string,
+    showMoreOptions: PropTypes.bool,
+    onMoreOptions: PropTypes.func,
+    onClosed: PropTypes.func,
+    onOpened: PropTypes.func,
+    onLayout: PropTypes.func,
+    onOuterLayout: PropTypes.func,
+    children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+    currentDialog: PropTypes.number,
+    closeAndClear: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    title: 'Untitled',
+    verticalPosition: 'center',
+    showMoreOptions: false,
+    onMoreOptions: () => {},
+    onClosed: () => {},
+    onOpened: () => {},
+    onLayout: () => {},
+    onOuterLayout: () => {},
+    children: null,
+    currentDialog: 0,
+  };
+
   _open = (cb) => {
     this.elModal._open(cb);
   };
@@ -48,7 +75,12 @@ export default class DetailsModal extends PureComponent {
 
   render() {
     const {
-      showMoreOptions, onMoreOptions, onLayout, onOuterLayout, title,
+      showMoreOptions,
+      onMoreOptions,
+      onLayout,
+      onOuterLayout,
+      title,
+      closeAndClear,
     } = this.props;
 
     return (
@@ -58,11 +90,12 @@ export default class DetailsModal extends PureComponent {
           this.elModal = c;
         }}
         onLayout={onOuterLayout}
+        closeAndClear={closeAndClear}
       >
         <View style={styles.dialog} onLayout={onLayout}>
           <DialogTitle
             title={title}
-            closeFunc={this._close}
+            closeFunc={closeAndClear}
             showMoreOptions={showMoreOptions}
             onMoreOptions={onMoreOptions}
           />
@@ -81,28 +114,4 @@ export default class DetailsModal extends PureComponent {
   }
 }
 
-DetailsModal.propTypes = {
-  title: PropTypes.string,
-  verticalPosition: PropTypes.string,
-  showMoreOptions: PropTypes.bool,
-  onMoreOptions: PropTypes.func,
-  onClosed: PropTypes.func,
-  onOpened: PropTypes.func,
-  onLayout: PropTypes.func,
-  onOuterLayout: PropTypes.func,
-  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
-  currentDialog: PropTypes.number,
-};
-
-DetailsModal.defaultProps = {
-  title: 'Untitled',
-  verticalPosition: 'center',
-  showMoreOptions: false,
-  onMoreOptions: () => {},
-  onClosed: () => {},
-  onOpened: () => {},
-  onLayout: () => {},
-  onOuterLayout: () => {},
-  children: null,
-  currentDialog: 0,
-};
+export default DetailsModal;
