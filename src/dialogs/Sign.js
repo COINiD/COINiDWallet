@@ -8,7 +8,6 @@ import {
   BatchList,
   RowInfo,
   FeeSlider,
-  DetailsModal,
   COINiDTransport,
   Button,
   CancelButton,
@@ -27,25 +26,23 @@ const styles = styleMerge(
   StyleSheet.create({
     summaryContainer: {
       width: '100%',
-      backgroundColor: 'rgba(255, 255, 255, 0.95)',
       zIndex: 100,
       position: 'relative',
       marginBottom: -16,
       paddingBottom: 16,
+      backgroundColor: colors.getTheme('light').seeThrough,
     },
     batchedHeaderContainer: {
-      marginTop: -16,
-      paddingTop: 16,
-      backgroundColor: 'rgba(255, 255, 255, 0.95)',
       width: '100%',
       zIndex: 100,
       position: 'relative',
+      backgroundColor: colors.getTheme('light').seeThrough,
     },
     batchedHeader: {
-      color: colors.getTheme('light').fadedText,
       marginBottom: 8,
       ...fontWeight.medium,
     },
+    totalError: { color: '#FA503C' },
   }),
 );
 
@@ -55,8 +52,12 @@ class Sign extends Component {
   static propTypes = {
     payments: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     balance: PropTypes.number.isRequired,
+    realBalance: PropTypes.number.isRequired,
     navigation: PropTypes.shape({}).isRequired,
     dialogRef: PropTypes.shape({}).isRequired,
+    onAddToBatch: PropTypes.func.isRequired,
+    onRemoveFromBatch: PropTypes.func.isRequired,
+    onQueuedTx: PropTypes.func.isRequired,
   };
 
   constructor(props, context) {
@@ -81,12 +82,14 @@ class Sign extends Component {
     this._calculateTotal();
   }
 
+  /*
   shouldComponentUpdate() {
     if (this.forceNoRender) {
       return false;
     }
     return true;
   }
+  */
 
   _calculateTotal = () => {
     const { payments } = this.props;
@@ -107,7 +110,7 @@ class Sign extends Component {
     let { total } = this.state;
     total = Number(total);
 
-    const { payments, balance } = this.props;
+    const { payments, realBalance } = this.props;
     const errors = [];
 
     if (!payments.length) {
@@ -131,7 +134,7 @@ class Sign extends Component {
       });
     }
 
-    if (total > balance) {
+    if (total > realBalance) {
       errors.push({
         type: 'balance',
         message: 'not enough funds',
@@ -171,27 +174,24 @@ class Sign extends Component {
     this._calculateTotal();
   };
 
-  _close = () => {
-    const { dialogRef } = this.props;
-    dialogRef._close();
-  };
-
   _onPressItem = (item) => {
-    this._close();
-
     const { dialogNavigate } = this.context;
-    const { navigation, balance } = this.props;
+    const {
+      navigation, balance, onAddToBatch, onRemoveFromBatch,
+    } = this.props;
 
     dialogNavigate(
       'EditTransaction',
       {
-        onAddToBatch: this._onAddToBatch,
-        onRemoveFromBatch: this._onRemoveFromBatch,
+        onAddToBatch,
+        onRemoveFromBatch,
         balance,
         navigation,
         editItem: item,
+        fee: this.fee,
       },
       this.context,
+      false,
     );
   };
 
@@ -201,7 +201,7 @@ class Sign extends Component {
     const [action, hex] = data.split('/');
 
     const refresh = () => {
-      this.forceNoRender = true;
+      // this.forceNoRender = true;
       onQueuedTx();
     };
 
@@ -235,6 +235,8 @@ class Sign extends Component {
         disableButton = true;
       }
 
+      console.log({ payments });
+
       return (
         <View style={styles.modalContent}>
           <View style={styles.batchedHeaderContainer}>
@@ -255,7 +257,7 @@ class Sign extends Component {
 
             <RowInfo
               style={[{ marginBottom: 24 }]}
-              childStyle={validationError.length ? { color: '#FA503C' } : {}}
+              childStyle={validationError.length ? styles.totalError : {}}
               title="Total"
             >
               {`${numFormat(total, ticker)} ${ticker}`}

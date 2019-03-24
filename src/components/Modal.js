@@ -45,6 +45,9 @@ const styles = StyleSheet.create({
 export default class Modal extends PureComponent {
   constructor(props) {
     super(props);
+
+    this.keyboardActive = false;
+
     this.state = {
       animate: new Animated.Value(0),
       isOpen: false,
@@ -58,6 +61,8 @@ export default class Modal extends PureComponent {
     if (Platform.OS === 'ios') {
       this.subscriptions.push(
         Keyboard.addListener('keyboardWillChangeFrame', this._onKeyboardChange),
+        Keyboard.addListener('keyboardDidShow', this._keyboardDidShow),
+        Keyboard.addListener('keyboardDidHide', this._keyboardDidHide),
       );
     }
   }
@@ -96,6 +101,11 @@ export default class Modal extends PureComponent {
     const { onClose, onClosed } = this.props;
     const { isOpen } = this.state;
 
+    if (this.keyboardActive) {
+      this._dismissKeyboard();
+      return;
+    }
+
     if (!isOpen) {
       if (typeof cb === 'function') {
         cb();
@@ -117,6 +127,14 @@ export default class Modal extends PureComponent {
         onClosed();
       });
     });
+  };
+
+  _keyboardDidShow = () => {
+    this.keyboardActive = true;
+  };
+
+  _keyboardDidHide = () => {
+    this.keyboardActive = false;
   };
 
   _animate = (toValue, cb) => {
@@ -147,20 +165,13 @@ export default class Modal extends PureComponent {
     }
   };
 
-  _renderView = () => {
-    const { children, avoidKeyboard, avoidKeyboardOffset } = this.props;
-    const { keyboardOffset, animate } = this.state;
+  _dismissKeyboard = () => {
+    Keyboard.dismiss();
+  };
 
-    const animatedStyle = {
-      transform: [
-        {
-          translateY: animate.interpolate({
-            inputRange: [0, 1],
-            outputRange: [Dimensions.get('window').height, -getBottomSpace()],
-          }),
-        },
-      ],
-    };
+  _renderView = () => {
+    const { avoidKeyboard, avoidKeyboardOffset } = this.props;
+    const { keyboardOffset } = this.state;
 
     if (Platform.OS === 'ios') {
       return (
@@ -173,12 +184,34 @@ export default class Modal extends PureComponent {
           keyboardVerticalOffset={avoidKeyboardOffset + keyboardOffset + getStatusBarHeight(true)}
           style={{ width: '100%' }}
         >
-          <Animated.View style={[styles.dialog, animatedStyle]}>{children}</Animated.View>
+          {this._renderDialog()}
         </KeyboardAvoidingView>
       );
     }
 
-    return <Animated.View style={[styles.dialog, animatedStyle]}>{children}</Animated.View>;
+    return this._renderDialog();
+  };
+
+  _renderDialog = () => {
+    const { children } = this.props;
+    const { animate } = this.state;
+
+    const animatedStyle = {
+      transform: [
+        {
+          translateY: animate.interpolate({
+            inputRange: [0, 1],
+            outputRange: [Dimensions.get('window').height, -getBottomSpace()],
+          }),
+        },
+      ],
+    };
+
+    return (
+      <TouchableWithoutFeedback onPress={this._dismissKeyboard}>
+        <Animated.View style={[styles.dialog, animatedStyle]}>{children}</Animated.View>
+      </TouchableWithoutFeedback>
+    );
   };
 
   render() {

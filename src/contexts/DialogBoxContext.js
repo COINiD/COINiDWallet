@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { Keyboard } from 'react-native';
 import PropTypes from 'prop-types';
 import { getBottomSpace } from 'react-native-iphone-x-helper';
 
@@ -212,6 +213,8 @@ class DialogBox extends PureComponent {
   };
 
   _changeDialog = () => {
+    Keyboard.dismiss();
+
     this.modal._close(() => {
       const { dialogs } = this;
       const currentDialog = dialogs.length - 1;

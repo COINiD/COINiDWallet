@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
 export default class RowInfo extends PureComponent {
   static propTypes = {
     title: PropTypes.string,
-    childStyle: PropTypes.oneOfType([ViewPropTypes.style, ReactText.propTypes.style]),
+    childStyle: ReactText.propTypes.style,
     titleStyle: ReactText.propTypes.style,
     multiLine: PropTypes.bool,
     ellipsizeMode: PropTypes.string,
