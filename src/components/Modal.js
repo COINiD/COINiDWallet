@@ -74,12 +74,11 @@ class Modal extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.keyboardActive = false;
-
     this.state = {
       animate: new Animated.Value(0),
       isOpen: false,
       keyboardOffset: 0,
+      keyboardActive: false,
     };
   }
 
@@ -89,10 +88,13 @@ class Modal extends PureComponent {
     if (Platform.OS === 'ios') {
       this.subscriptions.push(
         Keyboard.addListener('keyboardWillChangeFrame', this._onKeyboardChange),
-        Keyboard.addListener('keyboardDidShow', this._keyboardDidShow),
-        Keyboard.addListener('keyboardDidHide', this._keyboardDidHide),
       );
     }
+
+    this.subscriptions.push(
+      Keyboard.addListener('keyboardDidShow', this._keyboardDidShow),
+      Keyboard.addListener('keyboardDidHide', this._keyboardDidHide),
+    );
   }
 
   componentWillUnmount() {
@@ -127,9 +129,9 @@ class Modal extends PureComponent {
 
   _close = (cb) => {
     const { onClose, onClosed } = this.props;
-    const { isOpen } = this.state;
+    const { isOpen, keyboardActive } = this.state;
 
-    if (this.keyboardActive) {
+    if (keyboardActive) {
       this._dismissKeyboard();
       return;
     }
@@ -158,11 +160,15 @@ class Modal extends PureComponent {
   };
 
   _keyboardDidShow = () => {
-    this.keyboardActive = true;
+    this.setState({
+      keyboardActive: true,
+    });
   };
 
   _keyboardDidHide = () => {
-    this.keyboardActive = false;
+    this.setState({
+      keyboardActive: false,
+    });
   };
 
   _animate = (toValue, cb) => {
@@ -223,7 +229,7 @@ class Modal extends PureComponent {
 
   _renderDialog = () => {
     const { children } = this.props;
-    const { animate } = this.state;
+    const { animate, keyboardActive } = this.state;
 
     const animatedStyle = {
       transform: [
@@ -237,7 +243,7 @@ class Modal extends PureComponent {
     };
 
     return (
-      <TouchableWithoutFeedback onPress={this._dismissKeyboard}>
+      <TouchableWithoutFeedback onPress={this._dismissKeyboard} disabled={!keyboardActive}>
         <Animated.View style={[styles.dialog, animatedStyle]}>{children}</Animated.View>
       </TouchableWithoutFeedback>
     );
