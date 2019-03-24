@@ -10,8 +10,27 @@ import { getP2PCode } from '../utils/p2p-ble-common';
 
 import WalletContext from '../contexts/WalletContext';
 
-export default class COINiDTransport extends PureComponent {
+class COINiDTransport extends PureComponent {
   static contextType = WalletContext;
+
+  static propTypes = {
+    getData: PropTypes.func,
+    handleReturnData: PropTypes.func,
+    children: PropTypes.func,
+    onSent: PropTypes.func,
+    onBLEInit: PropTypes.func,
+    onBLEFail: PropTypes.func,
+    parentDialog: PropTypes.string.isRequired,
+  };
+
+  static defaultProps = {
+    getData: () => Promise.resolve(''),
+    handleReturnData: () => '',
+    children: () => {},
+    onSent: () => {},
+    onBLEInit: () => {},
+    onBLEFail: () => {},
+  };
 
   constructor(props) {
     super(props);
@@ -114,6 +133,10 @@ export default class COINiDTransport extends PureComponent {
 
     Linking.openURL(url);
     onSent();
+
+    if (skipReturnData) {
+      this._handleOpenURL('coinid://');
+    }
   };
 
   _transportDataCold = (dataToTransport, skipReturnData, skipPreferred) => {
@@ -124,7 +147,6 @@ export default class COINiDTransport extends PureComponent {
         settings: { preferredColdTransport },
       },
       dialogNavigate,
-      dialogGetCurrentDialog,
     } = this.context;
 
     const doTransportDataCold = (transportType, successCb) => {
@@ -166,19 +188,41 @@ export default class COINiDTransport extends PureComponent {
   };
 
   _transportDataQR = (url, skipReturnData, successCb) => {
-    const { onSent } = this.props;
-    const { navigation, dialogNavigate } = this.context;
+    const { onSent, parentDialog } = this.props;
+    const { navigation, dialogNavigate, dialogNavigateToExistingOrClose } = this.context;
+
+    this.setState({
+      isSigning: true,
+      signingText: 'Sending data with QR',
+    });
 
     dialogNavigate(
       'QRDataSender',
       {
         data: url,
+        onClose: () => {
+          this._cancel();
+        },
         onDone: () => {
           onSent();
+          dialogNavigateToExistingOrClose(parentDialog);
+
+          if (skipReturnData) {
+            successCb('coinid://');
+          }
+
           if (!skipReturnData) {
+            this.setState({
+              isSigning: true,
+              signingText: 'Receiving data with QR',
+            });
+
             navigation.navigate('QRDataReceiver', {
               onComplete: (data) => {
                 successCb(data);
+              },
+              onPrematureExit: () => {
+                this._cancel();
               },
             });
           }
@@ -190,9 +234,14 @@ export default class COINiDTransport extends PureComponent {
   };
 
   _transportDataBLE = (url, skipReturnData, successCb) => {
-    const { onSent, onBLEInit, onBLEFail } = this.props;
+    const { dialogNavigateToExistingOrClose } = this.context;
+    const {
+      onSent, onBLEInit, onBLEFail, parentDialog,
+    } = this.props;
     const code = getP2PCode();
     onBLEInit();
+
+    dialogNavigateToExistingOrClose(parentDialog);
 
     this.setState({
       isSigning: true,
@@ -319,20 +368,4 @@ export default class COINiDTransport extends PureComponent {
   }
 }
 
-COINiDTransport.propTypes = {
-  getData: PropTypes.func,
-  handleReturnData: PropTypes.func,
-  children: PropTypes.func,
-  onSent: PropTypes.func,
-  onBLEInit: PropTypes.func,
-  onBLEFail: PropTypes.func,
-};
-
-COINiDTransport.defaultProps = {
-  getData: () => Promise.resolve(''),
-  handleReturnData: () => '',
-  children: () => {},
-  onSent: () => {},
-  onBLEInit: () => {},
-  onBLEFail: () => {},
-};
+export default COINiDTransport;

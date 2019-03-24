@@ -525,6 +525,7 @@ export default class SweepKeyDetails extends PureComponent {
           }}
           getData={this._getTransportData}
           handleReturnData={this._handleReturnData}
+          parentDialog="SweepKeyDetails"
         >
           {arg => this._renderTransportContent(arg)}
         </COINiDTransport>

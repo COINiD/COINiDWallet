@@ -155,6 +155,12 @@ class DialogBox extends PureComponent {
     }
   };
 
+  _navigateToExistingOrClose = (route) => {
+    if (!this._navigateToExisting(route)) {
+      this._goBack(999);
+    }
+  };
+
   _navigateToExisting = (route) => {
     const [foundDialog] = this.dialogs.filter(e => e.route === route);
     const existIndex = this.dialogs.indexOf(foundDialog);
@@ -327,6 +333,8 @@ class DialogBoxProvider extends PureComponent {
     this._dialogBoxRef = c;
     this._dialogNavigate = this._dialogBoxRef._navigate;
     this._dialogNavigateToExisting = this._dialogBoxRef._navigateToExisting;
+    this._dialogNavigateToExistingOrClose = this._dialogBoxRef._navigateToExistingOrClose;
+
     this._dialogGoBack = this._dialogBoxRef._goBack;
     this._dialogGetCurrentDialog = this._dialogBoxRef._getCurrent;
   };
@@ -341,6 +349,7 @@ class DialogBoxProvider extends PureComponent {
           dialogGoBack: this._dialogGoBack,
           dialogGetCurrentDialog: this._dialogGetCurrentDialog,
           dialogNavigateToExisting: this._dialogNavigateToExisting,
+          dialogNavigateToExistingOrClose: this._dialogNavigateToExistingOrClose,
         }}
       >
         {children}

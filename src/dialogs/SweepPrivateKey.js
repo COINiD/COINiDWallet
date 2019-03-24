@@ -105,6 +105,7 @@ export default class SweepPrivateKey extends PureComponent {
         }}
         getData={this._getTransportData}
         handleReturnData={this._handleReturnData}
+        parentDialog="SweepPrivateKey"
       >
         {renderTransportContent}
       </COINiDTransport>

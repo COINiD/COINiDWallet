@@ -36,8 +36,6 @@ export default class ValidateAddress extends PureComponent {
   };
 
   render() {
-    const { dialogGoBack } = this.context;
-
     const renderTransportContent = ({
       isSigning, signingText, cancel, submit,
     }) => {
@@ -79,7 +77,7 @@ export default class ValidateAddress extends PureComponent {
           this.transportRef = c;
         }}
         getData={this._getValidateData}
-        onSent={dialogGoBack}
+        parentDialog="Receive"
       >
         {renderTransportContent}
       </COINiDTransport>

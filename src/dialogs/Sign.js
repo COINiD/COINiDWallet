@@ -280,7 +280,11 @@ class Sign extends Component {
     };
 
     return (
-      <COINiDTransport getData={this._getTransactionData} handleReturnData={this._handleReturnData}>
+      <COINiDTransport
+        getData={this._getTransactionData}
+        handleReturnData={this._handleReturnData}
+        parentDialog="Sign"
+      >
         {renderTransportContent}
       </COINiDTransport>
     );
