@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Animated, Easing, StyleSheet, View,
+  Animated, Easing, StyleSheet, View, TouchableOpacity,
 } from 'react-native';
 import { getBottomSpace } from 'react-native-iphone-x-helper';
+import { Icon } from 'react-native-elements';
 import Text from '../components/Text';
 import { colors, fontWeight, fontSize } from '../config/styling';
 
@@ -35,11 +36,24 @@ const styles = StyleSheet.create({
     shadowRadius: 24,
     shadowOffset: { height: 2, width: 0 },
     flexDirection: 'row',
+    paddingHorizontal: 16,
+  },
+  boxSpacedItems: {
+    justifyContent: 'space-between',
   },
   text: {
     ...fontWeight.medium,
     fontSize: fontSize.small,
     color: colors.white,
+  },
+  link: {
+    color: colors.getTheme('light').highlight,
+    marginRight: 1,
+  },
+  linkContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
@@ -47,10 +61,18 @@ class StatusBox extends PureComponent {
   static propTypes = {
     style: PropTypes.shape({}).isRequired,
     children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+    linkText: PropTypes.string,
+    linkIcon: PropTypes.string,
+    linkIconType: PropTypes.string,
+    onLinkPress: PropTypes.func,
   };
 
   static defaultProps = {
     children: null,
+    linkText: '',
+    linkIcon: '',
+    linkIconType: '',
+    onLinkPress: () => {},
   };
 
   _renderChildren = () => {
@@ -63,13 +85,64 @@ class StatusBox extends PureComponent {
     return children;
   };
 
+  _shouldRenderLink = () => {
+    const { linkText, linkIcon } = this.props;
+
+    return linkText || linkIcon;
+  };
+
+  _renderLink = () => {
+    const {
+      linkText, linkIcon, linkIconType, onLinkPress,
+    } = this.props;
+
+    const renderLinkText = () => {
+      if (!linkText) {
+        return null;
+      }
+
+      return <Text style={[styles.text, styles.link]}>{linkText}</Text>;
+    };
+
+    const renderLinkIcon = () => {
+      if (!linkIcon) {
+        return null;
+      }
+
+      return (
+        <Icon
+          name={linkIcon}
+          color={colors.getTheme('light').highlight}
+          size={26}
+          type={linkIconType}
+        />
+      );
+    };
+
+    return (
+      <TouchableOpacity style={styles.linkContainer} onPress={onLinkPress}>
+        {renderLinkText()}
+        {renderLinkIcon()}
+      </TouchableOpacity>
+    );
+  };
+
+  _renderBox = () => {
+    if (!this._shouldRenderLink()) {
+      return <View style={[styles.box]}>{this._renderChildren()}</View>;
+    }
+
+    return (
+      <View style={[styles.box, styles.boxSpacedItems]}>
+        {this._renderChildren()}
+        {this._renderLink()}
+      </View>
+    );
+  };
+
   render() {
     const { style } = this.props;
-    return (
-      <Animated.View style={[styles.container, style]}>
-        <View style={styles.box}>{this._renderChildren()}</View>
-      </Animated.View>
-    );
+    return <Animated.View style={[styles.container, style]}>{this._renderBox()}</Animated.View>;
   }
 }
 
@@ -109,15 +182,16 @@ class StatusBoxProvider extends PureComponent {
     };
   }
 
-  _showStatus = (statusContent) => {
+  _showStatus = (statusContent, statusProps) => {
     clearTimeout(this.timeout);
 
     this._animate(1, () => {
-      this.timeout = setTimeout(this._hideStatus, 1000);
+      this.timeout = setTimeout(this._hideStatus, 1600);
     });
 
     this.setState({
       statusContent,
+      statusProps,
     });
   };
 
@@ -138,12 +212,14 @@ class StatusBoxProvider extends PureComponent {
 
   render() {
     const { children } = this.props;
-    const { statusContent, statusStyle } = this.state;
+    const { statusContent, statusStyle, statusProps } = this.state;
 
     return (
-      <StatusContext.Provider value={{ showStatus: this._showStatus, textStyle: styles.text }}>
+      <StatusContext.Provider value={{ showStatus: this._showStatus }}>
         {children}
-        <StatusBox style={statusStyle}>{statusContent}</StatusBox>
+        <StatusBox style={statusStyle} {...statusProps}>
+          {statusContent}
+        </StatusBox>
       </StatusContext.Provider>
     );
   }
