@@ -234,29 +234,34 @@ class DialogBoxProvider extends PureComponent {
     children: null,
   };
 
+  constructor() {
+    super();
+
+    this.state = {
+      value: {},
+    };
+  }
+
   _setRef = (c) => {
     this._dialogBoxRef = c;
-    this._dialogNavigate = this._dialogBoxRef._navigate;
-    this._dialogNavigateToExisting = this._dialogBoxRef._navigateToExisting;
-    this._dialogNavigateToExistingOrClose = this._dialogBoxRef._navigateToExistingOrClose;
 
-    this._dialogGoBack = this._dialogBoxRef._goBack;
-    this._dialogGetCurrentDialog = this._dialogBoxRef._getCurrent;
+    this.setState({
+      value: {
+        dialogNavigate: this._dialogBoxRef._navigate,
+        dialogGoBack: this._dialogBoxRef._goBack,
+        dialogGetCurrentDialog: this._dialogBoxRef._getCurrent,
+        dialogNavigateToExisting: this._dialogBoxRef._navigateToExisting,
+        dialogNavigateToExistingOrClose: this._dialogBoxRef._navigateToExistingOrClose,
+      },
+    });
   };
 
   render() {
+    const { value } = this.state;
     const { children } = this.props;
 
     return (
-      <DialogContext.Provider
-        value={{
-          dialogNavigate: this._dialogNavigate,
-          dialogGoBack: this._dialogGoBack,
-          dialogGetCurrentDialog: this._dialogGetCurrentDialog,
-          dialogNavigateToExisting: this._dialogNavigateToExisting,
-          dialogNavigateToExistingOrClose: this._dialogNavigateToExistingOrClose,
-        }}
-      >
+      <DialogContext.Provider value={value}>
         {children}
         <DialogBox ref={this._setRef} />
       </DialogContext.Provider>

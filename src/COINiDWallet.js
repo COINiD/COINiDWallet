@@ -39,12 +39,14 @@ class COINiDWallet extends PureComponent {
     }
 
     const settingHelper = SettingHelper(projectSettings.coin);
+    const { showActionSheetWithOptions } = this.props;
 
     this.state = {
       hasCOINiD: false,
       isBLESupported: false,
       settingHelper,
       settings: settingHelper.getAll(),
+      showActionSheetWithOptions,
     };
   }
 
@@ -70,25 +72,9 @@ class COINiDWallet extends PureComponent {
     this.setState({ settings });
   };
 
-  _getGlobalContextValue = () => {
-    const { showActionSheetWithOptions } = this.props;
-
-    const {
-      hasCOINiD, isBLESupported, settings, settingHelper,
-    } = this.state;
-
-    return {
-      hasCOINiD,
-      isBLESupported,
-      settings,
-      settingHelper,
-      showActionSheetWithOptions,
-    };
-  };
-
   render() {
     return (
-      <GlobalContext.Provider value={this._getGlobalContextValue()}>
+      <GlobalContext.Provider value={this.state}>
         <View style={styles.container}>
           <RootNavigator />
           <InactiveOverlay />

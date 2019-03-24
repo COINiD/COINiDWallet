@@ -179,20 +179,24 @@ class StatusBoxProvider extends PureComponent {
       statusContent: null,
       animation,
       statusStyle,
+      value: { showStatus: this._showStatus },
     };
   }
 
   _showStatus = (statusContent, statusProps) => {
     clearTimeout(this.timeout);
 
-    this._animate(1, () => {
-      this.timeout = setTimeout(this._hideStatus, 1600);
-    });
-
-    this.setState({
-      statusContent,
-      statusProps,
-    });
+    this.setState(
+      {
+        statusContent,
+        statusProps,
+      },
+      () => {
+        this._animate(1, () => {
+          this.timeout = setTimeout(this._hideStatus, 1600);
+        });
+      },
+    );
   };
 
   _hideStatus = () => {
@@ -212,10 +216,12 @@ class StatusBoxProvider extends PureComponent {
 
   render() {
     const { children } = this.props;
-    const { statusContent, statusStyle, statusProps } = this.state;
+    const {
+      statusContent, statusStyle, statusProps, value,
+    } = this.state;
 
     return (
-      <StatusContext.Provider value={{ showStatus: this._showStatus }}>
+      <StatusContext.Provider value={value}>
         {children}
         <StatusBox style={statusStyle} {...statusProps}>
           {statusContent}

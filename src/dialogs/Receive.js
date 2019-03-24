@@ -77,9 +77,11 @@ class Receive extends PureComponent {
     const {
       coinid,
       globalContext: { settingHelper, showActionSheetWithOptions },
+      showStatus,
     } = context;
     const { ticker, coinTitle } = coinid;
 
+    this.showStatus = showStatus;
     this.settingHelper = settingHelper;
     this.exchangeHelper = ExchangeHelper(ticker);
     setMoreOptionsFunc(this._onMoreOptions);
@@ -197,7 +199,6 @@ class Receive extends PureComponent {
   };
 
   _share = async () => {
-    const { showStatus } = this.context;
     const {
       address, amount, coinTitle, ticker,
     } = this.state;
@@ -229,7 +230,7 @@ class Receive extends PureComponent {
 
     Share.open(options)
       .then(() => {
-        showStatus('QR code shared successfully');
+        this.showStatus('QR code shared successfully');
       })
       .catch(() => {});
   };
@@ -263,8 +264,6 @@ class Receive extends PureComponent {
       ticker, qrAddress, address, exchangeRate, currency, amount,
     } = this.state;
 
-    const { showStatus } = this.context;
-
     const { dialogRef } = this.props;
 
     let { inputInFiat } = this.state;
@@ -283,7 +282,7 @@ class Receive extends PureComponent {
             address={address}
             qrAddress={qrAddress}
             onShare={this._share}
-            showStatus={showStatus}
+            showStatus={this.showStatus}
           />
         </View>
 
