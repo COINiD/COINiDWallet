@@ -197,6 +197,7 @@ class Receive extends PureComponent {
   };
 
   _share = async () => {
+    const { showStatus } = this.context;
     const {
       address, amount, coinTitle, ticker,
     } = this.state;
@@ -226,7 +227,11 @@ class Receive extends PureComponent {
       type: 'image/png',
     };
 
-    Share.open(options);
+    Share.open(options)
+      .then(() => {
+        showStatus('QR code shared successfully');
+      })
+      .catch(() => {});
   };
 
   _onMoreOptions = () => {
@@ -258,6 +263,8 @@ class Receive extends PureComponent {
       ticker, qrAddress, address, exchangeRate, currency, amount,
     } = this.state;
 
+    const { showStatus } = this.context;
+
     const { dialogRef } = this.props;
 
     let { inputInFiat } = this.state;
@@ -275,6 +282,8 @@ class Receive extends PureComponent {
             }}
             address={address}
             qrAddress={qrAddress}
+            onShare={this._share}
+            showStatus={showStatus}
           />
         </View>
 

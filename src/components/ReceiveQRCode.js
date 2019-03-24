@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import {
   StyleSheet, View, Platform, TouchableOpacity, PixelRatio, Clipboard,
 } from 'react-native';
-import { Icon } from 'react-native-elements';
 import ViewShot from 'react-native-view-shot';
 import QRCode from 'react-native-qrcode-svg';
 import { FontScale, Text } from '.';
@@ -45,12 +44,15 @@ class ReceiveQRCode extends PureComponent {
     address: PropTypes.string,
     qrAddress: PropTypes.string,
     getViewShot: PropTypes.func,
+    onShare: PropTypes.func,
+    showStatus: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     address: '',
     qrAddress: '',
     getViewShot: () => {},
+    onShare: () => {},
   };
 
   constructor() {
@@ -61,24 +63,26 @@ class ReceiveQRCode extends PureComponent {
     };
   }
 
-  _copyAddress = ({ showStatus }) => {
-    const { address } = this.props;
+  _copyAddress = () => {
+    const { address, onShare, showStatus } = this.props;
     Clipboard.setString(address);
 
-    showStatus('Copied to clipboard');
+    showStatus('Copied to clipboard', {
+      linkIcon: Platform.OS === 'ios' ? 'share-apple' : 'share-google',
+      linkText: 'Share',
+      linkIconType: 'evilicon',
+      onLinkPress: onShare,
+    });
   };
 
-  _renderContent = ({ showStatus }) => {
+  _renderContent = () => {
     const { disableCopy } = this.state;
     const { getViewShot, qrAddress, address } = this.props;
 
     return (
       <>
         <View style={styles.qrCodeWrapper}>
-          <TouchableOpacity
-            onPress={() => this._copyAddress({ showStatus })}
-            disabled={disableCopy}
-          >
+          <TouchableOpacity onPress={() => this._copyAddress()} disabled={disableCopy}>
             <ViewShot
               ref={getViewShot}
               options={{
@@ -107,11 +111,7 @@ class ReceiveQRCode extends PureComponent {
   };
 
   render() {
-    return (
-      <React.Fragment>
-        <StatusBoxContext.Consumer>{this._renderContent}</StatusBoxContext.Consumer>
-      </React.Fragment>
-    );
+    return this._renderContent();
   }
 }
 
