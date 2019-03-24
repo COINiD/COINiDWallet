@@ -101,6 +101,8 @@ export default class SweepKeyDetails extends PureComponent {
   static propTypes = {
     dialogRef: PropTypes.shape({}).isRequired,
     inputAddressInfo: PropTypes.shape([]).isRequired,
+    dialogInnerHeight: PropTypes.number.isRequired,
+    dialogHeight: PropTypes.number.isRequired,
   };
 
   constructor(props, context) {
@@ -509,27 +511,16 @@ export default class SweepKeyDetails extends PureComponent {
 
   render() {
     return (
-      <DetailsModal
+      <COINiDTransport
         ref={(c) => {
-          this.refModal = c;
+          this.transportRef = c;
         }}
-        title="Private Key Details"
-        onClosed={this._onClosed}
-        onOpened={this._onOpened}
-        onLayout={this._onModalLayout}
-        onOuterLayout={this._onModalOuterLayout}
+        getData={this._getTransportData}
+        handleReturnData={this._handleReturnData}
+        parentDialog="SweepKeyDetails"
       >
-        <COINiDTransport
-          ref={(c) => {
-            this.transportRef = c;
-          }}
-          getData={this._getTransportData}
-          handleReturnData={this._handleReturnData}
-          parentDialog="SweepKeyDetails"
-        >
-          {arg => this._renderTransportContent(arg)}
-        </COINiDTransport>
-      </DetailsModal>
+        {arg => this._renderTransportContent(arg)}
+      </COINiDTransport>
     );
   }
 }
