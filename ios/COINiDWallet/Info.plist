@@ -32,7 +32,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>213</string>
+	<string>214</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
@@ -60,12 +60,20 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>For Permissions</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>Connect To COINiD Vault</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>For Permissions</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Scan Qr Code</string>
+	<key>NSMotionUsageDescription</key>
+	<string>For Permissions</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>$(PRODUCT_NAME) wants to save photos</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>For Permissions</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Entypo.ttf</string>
