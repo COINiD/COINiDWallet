@@ -56,7 +56,7 @@ export default class SweepPrivateKey extends PureComponent {
     const { dialogNavigate } = this.context;
 
     dialogNavigate(
-      'SweepPrivateKey',
+      'SweepKeyDetails',
       {
         inputAddressInfo,
       },
