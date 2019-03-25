@@ -16,9 +16,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: -16,
+    marginTop: -24,
   },
   section: {
-    marginTop: 16,
+    marginTop: 24,
   },
   headline: {
     fontSize: fontSize.h2,
@@ -38,7 +39,7 @@ const styles = StyleSheet.create({
   },
   list: {
     marginTop: 0,
-    marginBottom: 8,
+    marginBottom: 0,
     borderTopWidth: 0,
   },
   listItemContainer: {
@@ -68,8 +69,8 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   listHint: {
-    marginTop: -8,
-    marginBottom: 8,
+    marginTop: 8,
+    marginBottom: 0,
     fontSize: fontSize.small,
     color: colors.gray,
     ...fontWeight.normal,
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
     ...fontWeight.normal,
   },
   logo: {
-    marginTop: 16,
+    marginTop: 32,
     marginBottom: isIphoneX() ? 23 : 11,
     width: 94.47,
     height: 33,
