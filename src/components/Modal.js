@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFill,
     zIndex: 10,
     padding: 8,
+    paddingTop: 40 + 8,
     paddingBottom: getBottomSpace() + 8 + 1,
     alignItems: 'center',
     justifyContent: 'center',
@@ -177,7 +178,7 @@ class Modal extends PureComponent {
     Animated.timing(animate, {
       toValue,
       duration: 500,
-      easing: Easing.out(Easing.exp),
+      easing: Easing.bezier(0.25, 0.5, 0.25, 1),
       useNativeDriver: true,
     }).start(cb);
   };

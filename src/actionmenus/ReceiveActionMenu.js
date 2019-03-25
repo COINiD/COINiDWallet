@@ -15,11 +15,11 @@ class ReceiveActionMenu {
       },
       {
         name: 'Validate Address...',
-        callback: () => setTimeout(onValidateAddress, 300),
+        callback: () => setTimeout(onValidateAddress, 100),
       },
       {
         name: 'Sweep Private Key...',
-        callback: () => setTimeout(onSweepPrivateKey, 300),
+        callback: () => setTimeout(onSweepPrivateKey, 100),
       },
       {
         name: 'Cancel',
