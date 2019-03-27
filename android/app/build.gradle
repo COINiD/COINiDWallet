@@ -116,8 +116,10 @@ android {
         applicationId "org.coinid.wallet.tbtc"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
+        versionCode 7
         versionName "1.5.1"
+        renderscriptTargetApi 23
+        renderscriptSupportModeEnabled true
     }
     splits {
         abi {
@@ -160,6 +162,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-blur')
+    implementation project(':react-native-webview')
     implementation project(':lottie-react-native')
     implementation project(':@react-native-community_async-storage')
     implementation project(':react-native-camera')
@@ -173,7 +177,6 @@ dependencies {
     implementation project(':react-native-measure-text')
     implementation project(':react-native-keep-awake')
     implementation project(':react-native-exit-app')
-    implementation project(':react-native-blur')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules
