@@ -283,7 +283,7 @@ class InstalledWallet extends PureComponent {
   _onRemoveFromBatch = (editAddress) => {
     if (editAddress) {
       const { paymentsInBatch } = this.state;
-      const { dialogGoBack } = this.context;
+      const { dialogCloseAndClear } = this.context;
 
       const newPayments = paymentsInBatch.filter(e => e.address !== editAddress);
 
@@ -291,14 +291,14 @@ class InstalledWallet extends PureComponent {
         if (newPayments.length) {
           this._openSign();
         } else {
-          dialogGoBack(999);
+          dialogCloseAndClear();
         }
       });
     }
   };
 
   _onAddToBatch = (paymentToBatch, editAddress) => {
-    const { dialogGoBack } = this.context;
+    const { dialogCloseAndClear } = this.context;
 
     const { paymentsInBatch } = this.state;
     const paymentWithSameAddress = paymentsInBatch.filter(
@@ -325,16 +325,16 @@ class InstalledWallet extends PureComponent {
       paymentsInBatch.push(paymentToBatch);
       this._updatePayments(paymentsInBatch);
 
-      dialogGoBack(999);
+      dialogCloseAndClear();
     }
   };
 
   _onQueuedTx = () => {
-    const { dialogGoBack } = this.context;
+    const { dialogCloseAndClear } = this.context;
 
     this._updatePayments([]);
     setTimeout(() => {
-      dialogGoBack(999);
+      dialogCloseAndClear();
     }, 350);
   };
 
