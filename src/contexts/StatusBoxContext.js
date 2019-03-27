@@ -1,7 +1,13 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Animated, Easing, StyleSheet, View, TouchableOpacity,
+  Animated,
+  Easing,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { getBottomSpace } from 'react-native-iphone-x-helper';
 import { Icon } from 'react-native-elements';
@@ -142,6 +148,19 @@ class StatusBox extends PureComponent {
 
   render() {
     const { style } = this.props;
+
+    if (Platform.OS === 'ios') {
+      return (
+        <KeyboardAvoidingView
+          behavior="position"
+          style={{ zIndex: 1000 }}
+          keyboardVerticalOffset={16}
+        >
+          <Animated.View style={[styles.container, style]}>{this._renderBox()}</Animated.View>
+        </KeyboardAvoidingView>
+      );
+    }
+
     return <Animated.View style={[styles.container, style]}>{this._renderBox()}</Animated.View>;
   }
 }
