@@ -9,20 +9,25 @@ import { QRCode } from '../contexts/QRCodeContext';
 
 import { colors, fontSize } from '../config/styling';
 
+const QR_SIZE = 188;
+
 const styles = StyleSheet.create({
   qrCode: {
-    padding: 8,
     backgroundColor: colors.white,
-    height: 160,
-    width: 160,
+    flex: 1,
   },
   qrCodeWrapper: {
     marginTop: 4,
     marginBottom: 16,
-    height: 160,
+    height: QR_SIZE,
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
+  },
+  qrCodeOuter: {
+    height: QR_SIZE,
+    width: QR_SIZE,
+    padding: 8,
   },
   addressText: {
     fontSize: fontSize.small,
@@ -85,7 +90,9 @@ class ReceiveQRCode extends PureComponent {
                 height: parseInt(320 / PixelRatio.get(), 10),
               }}
             >
-              <QRCode value={qrAddress} ecl="L" style={styles.qrCode} />
+              <View style={styles.qrCodeOuter}>
+                <QRCode value={qrAddress} ecl="L" style={styles.qrCode} />
+              </View>
             </ViewShot>
           </TouchableOpacity>
         </View>

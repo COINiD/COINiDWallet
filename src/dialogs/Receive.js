@@ -28,6 +28,7 @@ const styles = styleMerge(
       borderBottomColor: colors.gray,
       flexDirection: 'row',
       paddingTop: 6,
+      marginBottom: 8,
     },
     amountInput: {
       color: colors.black,
