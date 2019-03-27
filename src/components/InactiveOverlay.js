@@ -332,6 +332,7 @@ export default class InactiveOverlay extends PureComponent {
   // animation when screen no longer inactive.
   _leaveAnimation = () => {
     const { isVisible, opacity } = this.state;
+
     this._showSensitive();
 
     if (isVisible) {
@@ -432,7 +433,9 @@ export default class InactiveOverlay extends PureComponent {
     }
 
     setTimeout(() => {
-      this.lockAnim.play();
+      if (this.lockAnim) {
+        this.lockAnim.play();
+      }
       setTimeout(resolve, 100);
     }, 300);
   });
