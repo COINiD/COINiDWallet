@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00647EA7A9344D29BE7D3420 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2DF18ECBC1944528B5EC3170 /* SimpleLineIcons.ttf */; };
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
@@ -57,7 +56,6 @@
 		7EA6790926D4444A82C3EEDD /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D91C04CB0AC84BE8870F1F1A /* Octicons.ttf */; };
 		820541FEE3B44FD98242B700 /* libRNSVG-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B58F90035E6A426696998BC6 /* libRNSVG-tvOS.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
-		87D16EB4F14E4194B728FA33 /* libRNBlur.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E66C0F3BEF114F8EBA855660 /* libRNBlur.a */; };
 		89CF59DA247240F6A63FC895 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E7F90249A4E24DBFAAF0B56A /* EvilIcons.ttf */; };
 		8BE22EDB9D5C4BB193B3FD27 /* libLottieReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5E11FDE7D4421889F58F68 /* libLottieReactNative.a */; };
 		9187A09437F74BF580E32BD6 /* libRNCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58B204EB4E2941DE91EB24E1 /* libRNCamera.a */; };
@@ -78,6 +76,8 @@
 		ED2971652150620600B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED2971642150620600B7C4FE /* JavaScriptCore.framework */; };
 		F25D262923CF4F8A87525051 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E3E449A82D114341A4DFA4F3 /* Entypo.ttf */; };
 		FC0A601388D7497F95296C58 /* libLottie.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA44723C2E864C269FECC10A /* libLottie.a */; };
+		7B2A6B13C8984793BEA68C88 /* libRNCWebView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DB8EDD1F0E4A4AE6A69C8AC6 /* libRNCWebView.a */; };
+		66268F671894458DA4EE6ED4 /* libRNBlur.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E23D64270E3B4AE5BBDA836D /* libRNBlur.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -361,20 +361,6 @@
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RNViewShot;
 		};
-		7C38ED3C22428AB6002D6152 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 23B2BCDC205E404E9DF6F7DF /* RNBlur.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = A68BD7BC1BC31318005F02DF;
-			remoteInfo = RNBlur;
-		};
-		7C38ED3E22428AB6002D6152 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 23B2BCDC205E404E9DF6F7DF /* RNBlur.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 64D1BD361EEFE88700F3F219;
-			remoteInfo = "RNBlur-tvOS";
-		};
 		7C38ED4722428AB6002D6152 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0A5B20F693CB48C0A683117D /* KCKeepAwake.xcodeproj */;
@@ -557,7 +543,6 @@
 		14B75A44C2254B4EB56A224F /* Inter-UI-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-UI-MediumItalic.ttf"; path = "../src/assets/fonts/Inter-UI-MediumItalic.ttf"; sourceTree = "<group>"; };
 		156E490BA4034BBD9AE8AEED /* Inter-UI-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-UI-Regular.ttf"; path = "../src/assets/fonts/Inter-UI-Regular.ttf"; sourceTree = "<group>"; };
 		1FA66896FA3C49C9B5F4F637 /* RNShare.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNShare.xcodeproj; path = "../node_modules/react-native-share/ios/RNShare.xcodeproj"; sourceTree = "<group>"; };
-		23B2BCDC205E404E9DF6F7DF /* RNBlur.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNBlur.xcodeproj; path = "../node_modules/react-native-blur/ios/RNBlur.xcodeproj"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* COINiDWallet-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "COINiDWallet-tvOS.app"; path = "tBTC COINiD.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* COINiDWallet-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "COINiDWallet-tvOSTests.xctest"; path = "tBTC COINiD.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -608,7 +593,6 @@
 		E1DE80214B304A699EA9EB9E /* RNViewShot.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNViewShot.xcodeproj; path = "../node_modules/react-native-view-shot/ios/RNViewShot.xcodeproj"; sourceTree = "<group>"; };
 		E3E449A82D114341A4DFA4F3 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		E5AA84F8F0C84EE29C0F3D65 /* libRNCAsyncStorage.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNCAsyncStorage.a; sourceTree = "<group>"; };
-		E66C0F3BEF114F8EBA855660 /* libRNBlur.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBlur.a; sourceTree = "<group>"; };
 		E7F90249A4E24DBFAAF0B56A /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		E842AD0D26D646D78FEB8430 /* libRNMeasureText.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNMeasureText.a; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -616,6 +600,10 @@
 		F24A7AFFB6984900AED1A30E /* Lottie.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = Lottie.framework; path = System/Library/Frameworks/Lottie.framework; sourceTree = SDKROOT; };
 		F63E4E9FC0DC4E3DAC6E915D /* libReactNativePermissions.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativePermissions.a; sourceTree = "<group>"; };
 		FED8CFEA6C3F47079F132042 /* RNCamera.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNCamera.xcodeproj; path = "../node_modules/react-native-camera/ios/RNCamera.xcodeproj"; sourceTree = "<group>"; };
+		9EE03C71ADCC4D51B9A9FA2B /* RNCWebView.xcodeproj */ = {isa = PBXFileReference; name = "RNCWebView.xcodeproj"; path = "../node_modules/react-native-webview/ios/RNCWebView.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		DB8EDD1F0E4A4AE6A69C8AC6 /* libRNCWebView.a */ = {isa = PBXFileReference; name = "libRNCWebView.a"; path = "libRNCWebView.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		14D8898DD9844B1C9A891332 /* RNBlur.xcodeproj */ = {isa = PBXFileReference; name = "RNBlur.xcodeproj"; path = "../node_modules/react-native-blur/ios/RNBlur.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		E23D64270E3B4AE5BBDA836D /* libRNBlur.a */ = {isa = PBXFileReference; name = "libRNBlur.a"; path = "libRNBlur.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -644,7 +632,6 @@
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
-				87D16EB4F14E4194B728FA33 /* libRNBlur.a in Frameworks */,
 				0BD6606887A0495594DDCA85 /* libRNExitApp.a in Frameworks */,
 				CD371F9C0B294F0780D7ACDA /* libKCKeepAwake.a in Frameworks */,
 				4918FCA7D1074D339C8BBFDD /* libRNMeasureText.a in Frameworks */,
@@ -660,6 +647,8 @@
 				9187A09437F74BF580E32BD6 /* libRNCamera.a in Frameworks */,
 				9E2AA5CCF48F4C4E9F8B104D /* libRNCAsyncStorage.a in Frameworks */,
 				8BE22EDB9D5C4BB193B3FD27 /* libLottieReactNative.a in Frameworks */,
+				7B2A6B13C8984793BEA68C88 /* libRNCWebView.a in Frameworks */,
+				66268F671894458DA4EE6ED4 /* libRNBlur.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -914,15 +903,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		7C38ED3522428AB6002D6152 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				7C38ED3D22428AB6002D6152 /* libRNBlur.a */,
-				7C38ED3F22428AB6002D6152 /* libRNBlur.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		7C38ED4222428AB6002D6152 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1039,7 +1019,6 @@
 				832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */,
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
-				23B2BCDC205E404E9DF6F7DF /* RNBlur.xcodeproj */,
 				3592030289724E10A78FF3AC /* RNExitApp.xcodeproj */,
 				0A5B20F693CB48C0A683117D /* KCKeepAwake.xcodeproj */,
 				AA8EFF59D6F24C8C8EDB58A5 /* RNMeasureText.xcodeproj */,
@@ -1055,6 +1034,8 @@
 				FED8CFEA6C3F47079F132042 /* RNCamera.xcodeproj */,
 				469499DB94C94051B79CA276 /* RNCAsyncStorage.xcodeproj */,
 				6305C1724C8147E6BF63EEEE /* LottieReactNative.xcodeproj */,
+				9EE03C71ADCC4D51B9A9FA2B /* RNCWebView.xcodeproj */,
+				14D8898DD9844B1C9A891332 /* RNBlur.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1288,10 +1269,6 @@
 				{
 					ProductGroup = 7C38F2232242D7BA002D6152 /* Products */;
 					ProjectRef = 3734F72CF0D84D958F6E1874 /* ReactNativePermissions.xcodeproj */;
-				},
-				{
-					ProductGroup = 7C38ED3522428AB6002D6152 /* Products */;
-					ProjectRef = 23B2BCDC205E404E9DF6F7DF /* RNBlur.xcodeproj */;
 				},
 				{
 					ProductGroup = 7C38F2952242DA80002D6152 /* Products */;
@@ -1611,20 +1588,6 @@
 			remoteRef = 7C38ED3122428AB5002D6152 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		7C38ED3D22428AB6002D6152 /* libRNBlur.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRNBlur.a;
-			remoteRef = 7C38ED3C22428AB6002D6152 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		7C38ED3F22428AB6002D6152 /* libRNBlur.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRNBlur.a;
-			remoteRef = 7C38ED3E22428AB6002D6152 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		7C38ED4822428AB6002D6152 /* libKCKeepAwake.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1911,7 +1874,6 @@
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
 					"$(SRCROOT)/../node_modules/react-native-measure-text/ios",
 					"$(SRCROOT)/../node_modules/react-native-p2p-transfer-ble-central/ios/RCTP2PTransferBLECentralModule",
@@ -1926,6 +1888,8 @@
 					"$(SRCROOT)/../node_modules/react-native-camera/ios/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/lottie-react-native/src/ios/LottieReactNative",
+					"$(SRCROOT)/../node_modules/react-native-webview/ios",
+					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 				);
 				INFOPLIST_FILE = COINiDWalletTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -1936,12 +1900,13 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/tBTC COINiD\"",
+					"\"$(SRCROOT)/BTC COINiD\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.coinid.wallet.tbtc;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.coinid.wallet.tbtc";
 				PRODUCT_NAME = "tBTC COINiD";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/COINiDWallet.app/COINiDWallet";
 			};
@@ -1955,7 +1920,6 @@
 				DEVELOPMENT_TEAM = GC88SQF2BV;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
 					"$(SRCROOT)/../node_modules/react-native-measure-text/ios",
 					"$(SRCROOT)/../node_modules/react-native-p2p-transfer-ble-central/ios/RCTP2PTransferBLECentralModule",
@@ -1970,6 +1934,8 @@
 					"$(SRCROOT)/../node_modules/react-native-camera/ios/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/lottie-react-native/src/ios/LottieReactNative",
+					"$(SRCROOT)/../node_modules/react-native-webview/ios",
+					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 				);
 				INFOPLIST_FILE = COINiDWalletTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -1980,12 +1946,13 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/tBTC COINiD\"",
+					"\"$(SRCROOT)/BTC COINiD\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.coinid.wallet.tbtc;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.coinid.wallet.tbtc";
 				PRODUCT_NAME = "tBTC COINiD";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/COINiDWallet.app/COINiDWallet";
 			};
@@ -1996,12 +1963,11 @@
 			buildSettings = {
 				APP_RETURN_SCHEME = "coinid-tbtc";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 4;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = GC88SQF2BV;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
 					"$(SRCROOT)/../node_modules/react-native-measure-text/ios",
 					"$(SRCROOT)/../node_modules/react-native-p2p-transfer-ble-central/ios/RCTP2PTransferBLECentralModule",
@@ -2016,19 +1982,22 @@
 					"$(SRCROOT)/../node_modules/react-native-camera/ios/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/lottie-react-native/src/ios/LottieReactNative",
+					"$(SRCROOT)/../node_modules/react-native-webview/ios",
+					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 				);
 				INFOPLIST_FILE = COINiDWallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/tBTC COINiD\"",
+					"\"$(SRCROOT)/BTC COINiD\"",
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.coinid.wallet.tbtc;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.coinid.wallet.tbtc";
 				PRODUCT_NAME = "tBTC COINiD";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -2039,11 +2008,10 @@
 			buildSettings = {
 				APP_RETURN_SCHEME = "coinid-tbtc";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = GC88SQF2BV;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
 					"$(SRCROOT)/../node_modules/react-native-measure-text/ios",
 					"$(SRCROOT)/../node_modules/react-native-p2p-transfer-ble-central/ios/RCTP2PTransferBLECentralModule",
@@ -2058,19 +2026,22 @@
 					"$(SRCROOT)/../node_modules/react-native-camera/ios/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/lottie-react-native/src/ios/LottieReactNative",
+					"$(SRCROOT)/../node_modules/react-native-webview/ios",
+					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 				);
 				INFOPLIST_FILE = COINiDWallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/tBTC COINiD\"",
+					"\"$(SRCROOT)/BTC COINiD\"",
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.coinid.wallet.tbtc;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.coinid.wallet.tbtc";
 				PRODUCT_NAME = "tBTC COINiD";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -2090,7 +2061,6 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
 					"$(SRCROOT)/../node_modules/react-native-measure-text/ios",
 					"$(SRCROOT)/../node_modules/react-native-p2p-transfer-ble-central/ios/RCTP2PTransferBLECentralModule",
@@ -2105,6 +2075,8 @@
 					"$(SRCROOT)/../node_modules/react-native-camera/ios/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/lottie-react-native/src/ios/LottieReactNative",
+					"$(SRCROOT)/../node_modules/react-native-webview/ios",
+					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 				);
 				INFOPLIST_FILE = "COINiDWallet-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2114,12 +2086,13 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/tBTC COINiD\"",
+					"\"$(SRCROOT)/BTC COINiD\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.coinid.wallet.tbtc;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.coinid.wallet.tbtc";
 				PRODUCT_NAME = "tBTC COINiD";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -2141,7 +2114,6 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
 					"$(SRCROOT)/../node_modules/react-native-measure-text/ios",
 					"$(SRCROOT)/../node_modules/react-native-p2p-transfer-ble-central/ios/RCTP2PTransferBLECentralModule",
@@ -2156,6 +2128,8 @@
 					"$(SRCROOT)/../node_modules/react-native-camera/ios/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/lottie-react-native/src/ios/LottieReactNative",
+					"$(SRCROOT)/../node_modules/react-native-webview/ios",
+					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 				);
 				INFOPLIST_FILE = "COINiDWallet-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2165,12 +2139,13 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/tBTC COINiD\"",
+					"\"$(SRCROOT)/BTC COINiD\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.coinid.wallet.tbtc;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.coinid.wallet.tbtc";
 				PRODUCT_NAME = "tBTC COINiD";
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -2191,7 +2166,6 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
 					"$(SRCROOT)/../node_modules/react-native-measure-text/ios",
 					"$(SRCROOT)/../node_modules/react-native-p2p-transfer-ble-central/ios/RCTP2PTransferBLECentralModule",
@@ -2206,6 +2180,8 @@
 					"$(SRCROOT)/../node_modules/react-native-camera/ios/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/lottie-react-native/src/ios/LottieReactNative",
+					"$(SRCROOT)/../node_modules/react-native-webview/ios",
+					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 				);
 				INFOPLIST_FILE = "COINiDWallet-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -2215,12 +2191,13 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/tBTC COINiD\"",
+					"\"$(SRCROOT)/BTC COINiD\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.coinid.wallet.tbtc;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.coinid.wallet.tbtc";
 				PRODUCT_NAME = "tBTC COINiD";
 				SDKROOT = appletvos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/COINiDWallet-tvOS.app/COINiDWallet-tvOS";
@@ -2241,7 +2218,6 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-keep-awake/ios",
 					"$(SRCROOT)/../node_modules/react-native-measure-text/ios",
 					"$(SRCROOT)/../node_modules/react-native-p2p-transfer-ble-central/ios/RCTP2PTransferBLECentralModule",
@@ -2256,6 +2232,8 @@
 					"$(SRCROOT)/../node_modules/react-native-camera/ios/**",
 					"$(SRCROOT)/../node_modules/@react-native-community/async-storage/ios",
 					"$(SRCROOT)/../node_modules/lottie-react-native/src/ios/LottieReactNative",
+					"$(SRCROOT)/../node_modules/react-native-webview/ios",
+					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 				);
 				INFOPLIST_FILE = "COINiDWallet-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -2265,12 +2243,13 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/tBTC COINiD\"",
+					"\"$(SRCROOT)/BTC COINiD\"",
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.coinid.wallet.tbtc;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.coinid.wallet.tbtc";
 				PRODUCT_NAME = "tBTC COINiD";
 				SDKROOT = appletvos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/COINiDWallet-tvOS.app/COINiDWallet-tvOS";
