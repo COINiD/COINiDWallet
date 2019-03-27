@@ -4,14 +4,17 @@ import {
   StyleSheet, View, Platform, TouchableOpacity, PixelRatio, Clipboard,
 } from 'react-native';
 import ViewShot from 'react-native-view-shot';
-import QRCode from 'react-native-qrcode-svg';
 import { FontScale, Text } from '.';
+import { QRCode } from '../contexts/QRCodeContext';
+
 import { colors, fontSize } from '../config/styling';
 
 const styles = StyleSheet.create({
   qrCode: {
     padding: 8,
     backgroundColor: colors.white,
+    height: 160,
+    width: 160,
   },
   qrCodeWrapper: {
     marginTop: 4,
@@ -54,14 +57,6 @@ class ReceiveQRCode extends PureComponent {
     onShare: () => {},
   };
 
-  constructor() {
-    super();
-
-    this.state = {
-      disableCopy: false,
-    };
-  }
-
   _copyAddress = () => {
     const { address, onShare, showStatus } = this.props;
     Clipboard.setString(address);
@@ -75,13 +70,12 @@ class ReceiveQRCode extends PureComponent {
   };
 
   _renderContent = () => {
-    const { disableCopy } = this.state;
-    const { getViewShot, qrAddress, address } = this.props;
+    const { getViewShot, address, qrAddress } = this.props;
 
     return (
       <>
         <View style={styles.qrCodeWrapper}>
-          <TouchableOpacity onPress={() => this._copyAddress()} disabled={disableCopy}>
+          <TouchableOpacity onPress={() => this._copyAddress()}>
             <ViewShot
               ref={getViewShot}
               options={{
@@ -91,9 +85,7 @@ class ReceiveQRCode extends PureComponent {
                 height: parseInt(320 / PixelRatio.get(), 10),
               }}
             >
-              <View style={styles.qrCode}>
-                <QRCode value={qrAddress} size={160} ecl="Q" />
-              </View>
+              <QRCode value={qrAddress} ecl="L" style={styles.qrCode} />
             </ViewShot>
           </TouchableOpacity>
         </View>

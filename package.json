@@ -55,6 +55,7 @@
     "react-native-svg-charts": "https://github.com/mundiallover/react-native-svg-charts",
     "react-native-vector-icons": "^4.4.2",
     "react-native-view-shot": "^2.5.0",
+    "react-native-webview": "^5.4.4",
     "react-navigation": "^2.12.1",
     "readable-stream": "^1.0.33",
     "socket.io-client": "^2.2.0",
