@@ -1,14 +1,10 @@
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import {
   StyleSheet, View, ScrollView, KeyboardAvoidingView, Platform, Image,
 } from 'react-native';
-import { List, ListItem } from 'react-native-elements';
 import { isIphoneX } from 'react-native-iphone-x-helper';
-import { Text } from '.';
-
-import {
-  colors, fontSize, fontWeight, fontStack,
-} from '../config/styling';
+import SettingsSection from './SettingsSection';
 
 const imageCOINiDLogo = require('../assets/images/coinid-logo.png');
 
@@ -18,69 +14,12 @@ const styles = StyleSheet.create({
     margin: -16,
     marginTop: -24,
   },
-  section: {
-    marginTop: 24,
-  },
-  headline: {
-    fontSize: fontSize.h2,
-    color: colors.black,
-    ...fontWeight.bold,
-    paddingVertical: 8,
-  },
-  rightTitle: {
-    color: colors.gray,
-  },
   scrollWrapper: {
     flex: 1,
   },
   scrollContainer: {
     padding: 16,
     minHeight: '100%',
-  },
-  list: {
-    marginTop: 0,
-    marginBottom: 0,
-    borderTopWidth: 0,
-  },
-  listItemContainer: {
-    paddingTop: 0,
-    paddingBottom: 0,
-    paddingRight: 0,
-    height: 56,
-    justifyContent: 'center',
-    borderBottomColor: colors.getBorder(),
-    borderBottomWidth: 0.5,
-  },
-  listItemTitle: {
-    marginLeft: 0,
-    marginRight: 14,
-    fontFamily: fontStack.primary,
-    fontSize: fontSize.base,
-    color: colors.black,
-    ...fontWeight.medium,
-  },
-  listItemRightTitle: {
-    color: colors.gray,
-  },
-  listItemWrapper: {
-    marginLeft: 0,
-  },
-  listItemDisabled: {
-    opacity: 0.5,
-  },
-  listHint: {
-    marginTop: 8,
-    marginBottom: 0,
-    fontSize: fontSize.small,
-    color: colors.gray,
-    ...fontWeight.normal,
-  },
-  listHeader: {
-    marginTop: 0,
-    marginBottom: 4,
-    fontSize: fontSize.small,
-    color: colors.black,
-    ...fontWeight.normal,
   },
   logo: {
     marginTop: 32,
@@ -93,15 +32,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
   },
-  highlightText: {
-    color: colors.getTheme('light').highlight,
-  },
-  warningText: {
-    color: colors.getTheme('light').warning,
-  },
 });
 
 class SettingsRoute extends PureComponent {
+  static propTypes = {
+    navigation: PropTypes.shape({}).isRequired,
+    screenProps: PropTypes.shape({}).isRequired,
+  };
+
   componentDidMount() {
     const { navigation } = this.props;
     this.focusListener = navigation.addListener('willFocus', this._onFocus);
@@ -111,52 +49,33 @@ class SettingsRoute extends PureComponent {
     this.focusListener.remove();
   }
 
-  _onFocus = () => {
+  _getPropsInfo = () => {
     const {
       navigation,
       navigation: {
         state: { routeName },
       },
-      screenProps: { onRouteChange },
+      screenProps: { onRouteChange, settingsTree },
     } = this.props;
+
+    return {
+      navigation,
+      routeName,
+      onRouteChange,
+      settingsTree,
+    };
+  };
+
+  _onFocus = () => {
+    const { navigation, routeName, onRouteChange } = this._getPropsInfo();
 
     onRouteChange({ routeName, navigation });
   };
 
-  renderListItems = items => items.map((item, i) => (
-    <ListItem
-      containerStyle={styles.listItemContainer}
-      wrapperStyle={styles.listItemWrapper}
-      titleStyle={[
-        styles.listItemTitle,
-        item.isLink ? styles.highlightText : null,
-        item.isWarning ? styles.warningText : null,
-      ]}
-      titleContainerStyle={styles.listItemTitleContainer}
-      rightTitleStyle={[styles.listItemTitle, styles.rightTitle]}
-      rightTitleContainerStyle={styles.listItemRightTitleContainer}
-      disabledStyle={styles.listItemDisabled}
-      chevronColor={colors.black}
-      key={i}
-      {...item}
-    />
-  ));
-
-  renderSections = sections => sections.map((section, i) => (
-    <View style={styles.section} key={i}>
-      {section.headline && <Text style={styles.headline}>{section.headline}</Text>}
-      <List containerStyle={styles.list}>{this.renderListItems(section.items)}</List>
-      {section.listHint && <Text style={styles.listHint}>{section.listHint}</Text>}
-    </View>
-  ));
+  _renderSections = sections => sections.map((section, i) => <SettingsSection key={i} {...section} />);
 
   render() {
-    const {
-      navigation: {
-        state: { routeName },
-      },
-      screenProps: { settingsTree },
-    } = this.props;
+    const { routeName, settingsTree } = this._getPropsInfo();
 
     return (
       <KeyboardAvoidingView
@@ -168,7 +87,7 @@ class SettingsRoute extends PureComponent {
       >
         <View style={styles.scrollWrapper}>
           <ScrollView contentContainerStyle={styles.scrollContainer}>
-            {this.renderSections(settingsTree[routeName])}
+            {this._renderSections(settingsTree[routeName])}
             <View style={styles.logoWrapper}>
               <Image style={styles.logo} source={imageCOINiDLogo} resizeMode="contain" />
             </View>

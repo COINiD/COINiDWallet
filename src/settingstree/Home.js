@@ -121,6 +121,14 @@ const Home = (state) => {
         },
       ],
     },
+    {
+      items: [
+        {
+          title: 'About',
+          onPress: () => gotoRoute('About'),
+        },
+      ],
+    },
   ];
 };
 

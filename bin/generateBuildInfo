@@ -1,0 +1,28 @@
+#!/usr/bin/env node
+const { execSync } = require('child_process');
+const { version } = require('../package.json');
+
+const rootDir = `${__dirname}/..`;
+
+const commit = execSync(`cd ${rootDir}; git rev-parse --short HEAD`, {
+  stdio: ['ignore', 'pipe', 'ignore'],
+  encoding: 'utf8',
+}).slice(0, -1);
+
+const gitStatusRet = execSync(`cd ${rootDir}; git status -s`, {
+  stdio: ['ignore', 'pipe', 'ignore'],
+  encoding: 'utf8',
+}).slice(0, -1);
+
+const dirty = !!gitStatusRet.match(/src/);
+
+const time = Math.floor(Date.now() / 1000);
+
+const info = {
+  commit,
+  version,
+  time,
+  dirty,
+};
+
+console.log(JSON.stringify(info));

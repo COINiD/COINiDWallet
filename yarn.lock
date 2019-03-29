@@ -6826,7 +6826,7 @@ react-native-vector-icons@^4.4.2:
     prop-types "^15.5.10"
     yargs "^8.0.2"
 
-react-native-version@^2.4.1:
+react-native-version@^2.7.0:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/react-native-version/-/react-native-version-2.7.0.tgz#ca0a06712ff82addafcc5a3c686cc9c8c8a0ccec"
   integrity sha512-oZpoawYhu4PfkTf4hN0pG4vrywlWwh2GuQ9hxDYWdGZuKn9RpmbhYaOdjh6RZ7/1DKimm5ruZ7MZ7wYjehbJTw==

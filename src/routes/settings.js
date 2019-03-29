@@ -24,6 +24,10 @@ export const settingRoutes = {
     screen: SettingsRoute,
     title: 'Remove account',
   },
+  About: {
+    screen: SettingsRoute,
+    title: 'About',
+  },
 };
 
 export const getSettingsNavigator = cardStyle => createStackNavigator(settingRoutes, {

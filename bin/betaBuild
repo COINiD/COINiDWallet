@@ -87,6 +87,9 @@ const pause = text => {
 };
 
 execSync(`${rootDir}/bin/changeCoin tbtc;`, { stdio: 'inherit' });
+execSync(`${rootDir}/bin/generateBuildInfo > ${rootDir}/src/config/build.json;`, {
+  stdio: 'inherit',
+});
 
 if (runTests()) {
   if (coins.length) {

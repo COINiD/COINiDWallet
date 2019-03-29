@@ -1,11 +1,12 @@
 {
   "name": "COINiDWallet",
-  "version": "0.0.1",
+  "version": "1.5.5",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
-    "postinstall": "node node_modules/rn-nodeify/cmd.js --install stream,buffer,events,assert,crypto,vm --hack"
+    "postinstall": "node node_modules/rn-nodeify/cmd.js --install stream,buffer,events,assert,crypto,vm --hack",
+    "postversion": "react-native-version; bin/generateBuildInfo > src/config/build.json"
   },
   "rnpm": {
     "assets": [
@@ -80,7 +81,7 @@
     "mock-async-storage": "^2.0.4",
     "mock-socket": "^8.0.5",
     "react-dom": "^16.7.0",
-    "react-native-version": "^2.4.1",
+    "react-native-version": "^2.7.0",
     "react-test-renderer": "16.8.3",
     "rn-nodeify": "^10.0.0"
   },

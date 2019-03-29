@@ -54,7 +54,8 @@ class Settings extends PureComponent {
     const { goBack } = navigation;
     const { slides, screenAnimator, screenLayout } = navigation.state.params;
 
-    const hasAnyWallets = slides.filter(e => e.coinid.account !== undefined).length > 0;
+    const activeWallets = slides.filter(e => e.coinid.account !== undefined);
+    const hasAnyWallets = activeWallets.length > 0;
     const hasHotWallet = slides[0].coinid.account !== undefined;
 
     this.state = {
@@ -64,6 +65,7 @@ class Settings extends PureComponent {
       isHome: true,
       hasAnyWallets,
       hasHotWallet,
+      activeWallets,
       slides,
       gotoRoute: this._gotoRoute,
       goBack,
