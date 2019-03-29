@@ -30,11 +30,6 @@ export default class SelectAddressType extends PureComponent {
     };
   }
 
-  _close = (cb) => {
-    const { dialogRef } = this.props;
-    dialogRef._close(cb);
-  };
-
   _continue = () => {
     const { onSelectAddressType } = this.props;
     const { selectedIndex } = this.state;
@@ -43,9 +38,7 @@ export default class SelectAddressType extends PureComponent {
     const { supportedAddressTypes } = coinid.network;
 
     const addressType = supportedAddressTypes[selectedIndex];
-    this._close(() => {
-      onSelectAddressType(addressType);
-    });
+    onSelectAddressType(addressType);
   };
 
   _onIndexChange = (selectedIndex) => {

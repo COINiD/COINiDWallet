@@ -130,12 +130,7 @@ class Modal extends PureComponent {
 
   _close = (cb) => {
     const { onClose, onClosed } = this.props;
-    const { isOpen, keyboardActive } = this.state;
-
-    if (keyboardActive) {
-      this._dismissKeyboard();
-      return;
-    }
+    const { isOpen } = this.state;
 
     if (!isOpen) {
       if (typeof cb === 'function') {

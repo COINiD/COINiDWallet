@@ -144,11 +144,6 @@ export default class SweepKeyDetails extends PureComponent {
     clearTimeout(this.queuedFetch);
   }
 
-  _close = (cb) => {
-    const { dialogRef } = this.props;
-    dialogRef._close(cb);
-  };
-
   _onSettingsUpdated = (settings) => {
     const { currency } = settings;
     this.setState({ currency });
@@ -177,6 +172,7 @@ export default class SweepKeyDetails extends PureComponent {
 
   _handleReturnData = (data) => {
     const [action, hex] = data.split('/');
+    const { dialogCloseAndClear } = this.context;
 
     if (action === 'SWPTX' && hex) {
       this.coinid
@@ -188,7 +184,7 @@ export default class SweepKeyDetails extends PureComponent {
             'From sweeped private key',
           );
 
-          this._close();
+          dialogCloseAndClear();
         })
         .catch((err) => {
           Alert.alert(`${err}`);

@@ -52,11 +52,6 @@ export default class InputPublicKey extends PureComponent {
     };
   }
 
-  _close = () => {
-    const { dialogRef } = this.props;
-    dialogRef._close();
-  };
-
   _verifyPublicKey = (data) => {
     const pubKeyData = data.split('/')[1];
     const pubKeyArray = this.coinid.createPubKeyArrayFromDataString(pubKeyData);
@@ -72,7 +67,7 @@ export default class InputPublicKey extends PureComponent {
   _continue = () => {
     const { publicKey } = this.state;
     const { onContinue } = this.props;
-    const { type } = this.context;
+    const { type, dialogCloseAndClear } = this.context;
     const data = `coinid://PUB/${publicKey}`;
 
     try {
@@ -83,7 +78,7 @@ export default class InputPublicKey extends PureComponent {
         this.settingHelper.update('usePasscode', false); // disable passcode if creating hot wallet via publickey
       }
 
-      this._close();
+      dialogCloseAndClear();
     } catch (err) {
       Alert.alert('Pubkey invalid', `${err}`);
     }

@@ -26,6 +26,7 @@ class DialogBox extends PureComponent {
     };
 
     this.moreOptionCallbacks = {};
+    this.keyboardActive = false;
 
     this.dialogs = [];
   }
@@ -35,6 +36,27 @@ class DialogBox extends PureComponent {
       theme: 'light',
     };
   }
+
+  componentDidMount() {
+    this.subscriptions = [];
+
+    this.subscriptions.push(
+      Keyboard.addListener('keyboardDidShow', this._keyboardDidShow),
+      Keyboard.addListener('keyboardDidHide', this._keyboardDidHide),
+    );
+  }
+
+  componentWillUnmount() {
+    this.subscriptions.forEach(sub => sub.remove());
+  }
+
+  _keyboardDidShow = () => {
+    this.keyboardActive = true;
+  };
+
+  _keyboardDidHide = () => {
+    this.keyboardActive = false;
+  };
 
   _updateSetContextBridger = (context) => {
     const { setContextBridger } = context;
@@ -118,16 +140,20 @@ class DialogBox extends PureComponent {
   };
 
   _closeAndClear = () => {
+    if (this.keyboardActive) {
+      Keyboard.dismiss();
+      return;
+    }
+
     this.dialogs = [];
     this._changeDialog();
   };
 
   _changeDialog = () => {
-    Keyboard.dismiss();
-
     this.modal._close(() => {
       const { dialogs } = this;
       const currentDialog = dialogs.length - 1;
+
       if (currentDialog >= 0) {
         const { props } = dialogs[currentDialog];
 

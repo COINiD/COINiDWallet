@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
     height: QR_SIZE,
     width: QR_SIZE,
     padding: 8,
+    backgroundColor: colors.white,
   },
   addressText: {
     fontSize: fontSize.small,

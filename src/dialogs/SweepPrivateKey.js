@@ -34,11 +34,6 @@ export default class SweepPrivateKey extends PureComponent {
     };
   }
 
-  _close = (cb) => {
-    const { dialogRef } = this.props;
-    dialogRef._close(cb);
-  };
-
   _getTransportData = () => {
     const { address } = this.props;
 

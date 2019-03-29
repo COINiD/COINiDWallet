@@ -102,19 +102,12 @@ class SelectColdTransportType extends PureComponent {
     });
   }
 
-  _close = (cb) => {
-    const { dialogRef } = this.props;
-    dialogRef._close(cb);
-  };
-
   _continue = () => {
     const { selectedIndex, selectData } = this.state;
     const { key } = selectData[selectedIndex];
     const { onSelected } = this.props;
 
-    this._close(() => {
-      onSelected(key);
-    });
+    onSelected(key);
   };
 
   render() {

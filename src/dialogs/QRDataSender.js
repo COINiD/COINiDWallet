@@ -44,17 +44,9 @@ export default class QRDataSender extends PureComponent {
     this.state = {};
   }
 
-  _close = (cb) => {
-    const { dialogRef } = this.props;
-    dialogRef._close(cb);
-  };
-
   _done = () => {
     const { onDone } = this.props;
-
-    this._close(() => {
-      onDone();
-    });
+    onDone();
   };
 
   _onLayoutTop = ({ nativeEvent }) => {
