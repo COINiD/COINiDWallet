@@ -29,7 +29,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "tBTC COINiD.app"
+               BuildableName = "XMY COINiD.app"
                BlueprintName = "COINiDWallet"
                ReferencedContainer = "container:COINiDWallet.xcodeproj">
             </BuildableReference>
@@ -43,7 +43,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "tBTC COINiD.xctest"
+               BuildableName = "XMY COINiD.xctest"
                BlueprintName = "COINiDWalletTests"
                ReferencedContainer = "container:COINiDWallet.xcodeproj">
             </BuildableReference>
@@ -61,7 +61,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "tBTC COINiD.app"
+            BuildableName = "XMY COINiD.app"
             BlueprintName = "COINiDWallet"
             ReferencedContainer = "container:COINiDWallet.xcodeproj">
          </BuildableReference>
@@ -84,7 +84,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "tBTC COINiD.app"
+            BuildableName = "XMY COINiD.app"
             BlueprintName = "COINiDWallet"
             ReferencedContainer = "container:COINiDWallet.xcodeproj">
          </BuildableReference>
@@ -103,7 +103,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "tBTC COINiD.app"
+            BuildableName = "XMY COINiD.app"
             BlueprintName = "COINiDWallet"
             ReferencedContainer = "container:COINiDWallet.xcodeproj">
          </BuildableReference>
