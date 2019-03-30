@@ -1,0 +1,53 @@
+#!/usr/bin/env node
+const fs = require('fs');
+const { execSync } = require('child_process');
+const { version } = require('../package.json');
+
+const rootDir = `${__dirname}/..`;
+
+const getCommit = () => {
+  try {
+    return execSync(`cd ${rootDir}; git rev-parse --short HEAD`, {
+      stdio: ['ignore', 'pipe', 'ignore'],
+      encoding: 'utf8',
+    }).slice(0, -1);
+  } catch (err) {
+    return '';
+  }
+};
+
+const getTag = () => {
+  try {
+    return execSync(`cd ${rootDir}; git describe --tags`, {
+      stdio: ['ignore', 'pipe', 'ignore'],
+      encoding: 'utf8',
+    }).slice(0, -1);
+  } catch (err) {
+    return '';
+  }
+};
+
+const getDirty = () => {
+  const gitStatusRet = execSync(`cd ${rootDir}; git status -s`, {
+    stdio: ['ignore', 'pipe', 'ignore'],
+    encoding: 'utf8',
+  }).slice(0, -1);
+
+  return !!gitStatusRet.match(/src/);
+};
+
+const commit = getCommit();
+const tag = getTag();
+const dirty = getDirty();
+
+const time = Math.floor(Date.now() / 1000);
+
+const info = {
+  commit,
+  version,
+  time,
+  dirty,
+  tag,
+};
+
+fs.writeFileSync(`${rootDir}/src/config/build.json`, JSON.stringify(info));
