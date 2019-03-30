@@ -72,13 +72,14 @@ export default class InputPublicKey extends PureComponent {
 
     try {
       this._verifyPublicKey(data.split('://')[1]);
+
       onContinue(data);
 
       if (type === 'hot') {
         this.settingHelper.update('usePasscode', false); // disable passcode if creating hot wallet via publickey
       }
 
-      dialogCloseAndClear();
+      dialogCloseAndClear(true);
     } catch (err) {
       Alert.alert('Pubkey invalid', `${err}`);
     }

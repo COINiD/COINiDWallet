@@ -76,7 +76,7 @@ class DialogBox extends PureComponent {
 
   _navigateToExistingOrClose = (route) => {
     if (!this._navigateToExisting(route)) {
-      this._closeAndClear();
+      this._closeAndClear(true);
     }
   };
 
@@ -139,14 +139,19 @@ class DialogBox extends PureComponent {
     this._changeDialog();
   };
 
-  _closeAndClear = () => {
+  _closeAndClear = (skipReturnOnKeyboard) => {
     if (this.keyboardActive) {
       Keyboard.dismiss();
-      return;
+
+      if (!skipReturnOnKeyboard) {
+        return false;
+      }
     }
 
     this.dialogs = [];
     this._changeDialog();
+
+    return true;
   };
 
   _changeDialog = () => {
