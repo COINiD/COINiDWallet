@@ -119,8 +119,11 @@ class COINiDTransport extends PureComponent {
   };
 
   _transportDataHot = (dataToTransport, skipReturnData) => {
-    const { onSent } = this.props;
+    const { onSent, parentDialog } = this.props;
     const url = this._getCOINiDUrl(dataToTransport);
+    const { dialogNavigateToExistingOrClose } = this.context;
+
+    dialogNavigateToExistingOrClose(parentDialog);
 
     if (!skipReturnData) {
       this._addUrlListener();
