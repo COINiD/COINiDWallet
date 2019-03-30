@@ -3,26 +3,31 @@ package org.coinid.wallet.tbtc;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.corbt.keepawake.KCKeepAwakePackage;
-import io.github.airamrguez.RNMeasureTextPackage;
-import com.oblador.vectoricons.VectorIconsPackage;
-import org.devio.rn.splashscreen.SplashScreenReactPackage;
-import org.reactnative.camera.RNCameraPackage;
-import org.coinid.rctp2ptransfercentral.RCTP2PTransferBLECentralPackage;
-import com.horcrux.svg.SvgPackage;
-import com.bitgo.randombytes.RandomBytesPackage;
-import com.github.wumke.RNExitApp.RNExitAppPackage;
 import com.cmcewen.blurview.BlurViewPackage;
+import com.reactnativecommunity.webview.RNCWebViewPackage;
 import com.airbnb.android.react.lottie.LottiePackage;
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
+import org.reactnative.camera.RNCameraPackage;
+import com.horcrux.svg.SvgPackage;
+import com.oblador.vectoricons.VectorIconsPackage;
+import fr.greweb.reactnativeviewshot.RNViewShotPackage;
+import org.devio.rn.splashscreen.SplashScreenReactPackage;
+import cl.json.RNSharePackage;
+import com.bitgo.randombytes.RandomBytesPackage;
+import org.coinid.rctp2ptransfercentral.RCTP2PTransferBLECentralPackage;
+import io.github.airamrguez.RNMeasureTextPackage;
+import com.corbt.keepawake.KCKeepAwakePackage;
+import com.github.wumke.RNExitApp.RNExitAppPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 
+import cl.json.ShareApplication;
 import java.util.Arrays;
 import java.util.List;
 
-public class MainApplication extends Application implements ReactApplication {
+public class MainApplication extends Application implements ReactApplication, ShareApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
     @Override
@@ -34,17 +39,21 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new KCKeepAwakePackage(),
-            new RNMeasureTextPackage(),
-            new VectorIconsPackage(),
-            new SplashScreenReactPackage(),
-            new RNCameraPackage(),
-            new RCTP2PTransferBLECentralPackage(),
-            new SvgPackage(),
-            new RandomBytesPackage(),
-            new RNExitAppPackage(),
             new BlurViewPackage(),
-            new LottiePackage()
+            new RNCWebViewPackage(),
+            new LottiePackage(),
+            new AsyncStoragePackage(),
+            new RNCameraPackage(),
+            new SvgPackage(),
+            new VectorIconsPackage(),
+            new RNViewShotPackage(),
+            new SplashScreenReactPackage(),
+            new RNSharePackage(),
+            new RandomBytesPackage(),
+            new RCTP2PTransferBLECentralPackage(),
+            new RNMeasureTextPackage(),
+            new KCKeepAwakePackage(),
+            new RNExitAppPackage()
       );
     }
 
@@ -63,5 +72,10 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, false);
+  }
+
+  @Override
+  public String getFileProviderAuthority() {
+    return BuildConfig.APPLICATION_ID + ".provider";
   }
 }

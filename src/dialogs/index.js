@@ -2,7 +2,6 @@ export { default as Sign } from './Sign';
 export { default as Receive } from './Receive';
 export { default as Send } from './Send';
 export { default as SelectAddressType } from './SelectAddressType';
-export { default as MoreOptions } from './MoreOptions';
 export { default as ValidateAddress } from './ValidateAddress';
 export { default as SweepPrivateKey } from './SweepPrivateKey';
 export { default as SweepKeyDetails } from './SweepKeyDetails';

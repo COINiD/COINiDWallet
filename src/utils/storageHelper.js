@@ -16,8 +16,8 @@ const reset = namespace => AsyncStorage.getAllKeys().then((keys) => {
   return AsyncStorage.multiRemove(filteredKeys);
 });
 
-export default (namespace => ({
+export default namespace => ({
   get: key => getStorageItem(namespace, key),
   set: (key, value) => setStorageItem(namespace, key, value),
   reset: () => reset(namespace),
-}));
+});

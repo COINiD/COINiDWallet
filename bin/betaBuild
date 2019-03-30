@@ -86,6 +86,11 @@ const pause = text => {
   execSync(`read -p "${text}" nothing;`, { stdio: 'inherit' });
 };
 
+execSync(`${rootDir}/bin/changeCoin tbtc;`, { stdio: 'inherit' });
+execSync(`${rootDir}/bin/createBuildJSON;`, {
+  stdio: 'inherit',
+});
+
 if (runTests()) {
   if (coins.length) {
     platforms.forEach(platform => doBuilds(platform));

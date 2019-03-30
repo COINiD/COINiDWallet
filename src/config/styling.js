@@ -19,6 +19,7 @@ export const colors = {
   darkGray: '#2A2937',
   yellow: '#FFCA7A',
   purple: '#617AF7',
+  otherGray: '#2F2E33',
 
   getHot: () => colors.yellow,
   getCold: () => colors.lighterBlue,
@@ -35,7 +36,7 @@ export const colors = {
   getAlphaBg: () => 'rgba(0,0,0,0.8)',
 
   getTheme: (theme) => {
-    if (theme == 'light') {
+    if (theme === 'light') {
       return {
         background: colors.white,
         text: colors.black,

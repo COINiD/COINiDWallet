@@ -1,10 +1,10 @@
 {
-	"coinTicker": "grs",
-	"coinName": "groestlcoin",
-	"appReturnScheme": "coinid-grs",
-	"iosIdentifier": "org.coinid.wallet.grs",
-	"androidPackageName": "org.coinid.wallet.grs",
-	"displayName": "GRS COINiD",
-	"availableCurrencies": "['BTC', 'USD', 'EUR']",
-	"isTestnet": "false"
+  "coinTicker": "grs",
+  "coinName": "groestlcoin",
+  "appReturnScheme": "coinid-grs",
+  "iosIdentifier": "org.coinid.wallet.grs",
+  "androidPackageName": "org.coinid.wallet.grs",
+  "displayName": "GRS COINiD",
+  "availableCurrencies": "['BTC','USD','EUR','JPY','GBP','CAD','CHF','KRW','NZD','SEK','NOK','DKK']",
+  "isTestnet": "false"
 }

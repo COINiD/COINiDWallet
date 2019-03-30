@@ -1,12 +1,10 @@
-'use strict';
-
 /**
  * Helper for loading and saving settings.
  */
 
 import { EventEmitter } from 'events';
 import storageHelper from './storageHelper';
-import Settings from '../config/settings';
+import projectSettings from '../config/settings';
 
 class SettingHelper extends EventEmitter {
   constructor(coin) {
@@ -18,28 +16,24 @@ class SettingHelper extends EventEmitter {
     this.storage = storageHelper(this.storageNS);
     this.defaultSettings = {
       coldWalletMode: true,
-      currencies: Settings.availableCurrencies,
-      currency: Settings.currency,
+      currency: projectSettings.currency,
       range: 0,
       usePasscode: true,
       lockAfterDuration: 60000,
       preferredColdTransport: '',
     };
     this.settings = { ...this.defaultSettings };
+    this.load();
   }
 
   load = () => {
-    const getDefaultIfEmpty = (key, data) =>
-      data !== null ? data : this.defaultSettings[key];
+    const getDefaultIfEmpty = (key, data) => (data !== null ? data : this.defaultSettings[key]);
 
-    var p = Object.entries(this.defaultSettings).map(([key, value]) =>
-      this.storage.get(key).then(data => getDefaultIfEmpty(key, data))
-    );
+    const p = Object.entries(this.defaultSettings).map(([key]) => this.storage.get(key).then(data => getDefaultIfEmpty(key, data)));
 
     return Promise.all(p).then(
       ([
         coldWalletMode,
-        currencies,
         currency,
         range,
         usePasscode,
@@ -48,7 +42,6 @@ class SettingHelper extends EventEmitter {
       ]) => {
         this.settings = {
           coldWalletMode,
-          currencies,
           currency,
           range,
           usePasscode,
@@ -57,20 +50,18 @@ class SettingHelper extends EventEmitter {
         };
 
         this.emit('updated', this.settings);
-      }
+      },
     );
   };
 
   update = (key, value) => {
-    this.settings[key] = value;
+    this.settings = { ...this.settings, [key]: value };
     this.save();
     this.emit('updated', this.settings);
   };
 
   save = () => {
-    var p = Object.entries(this.settings).map(([key, value]) => {
-      return this.storage.set(key, value);
-    });
+    const p = Object.entries(this.settings).map(([key, value]) => this.storage.set(key, value));
 
     return Promise.all(p);
   };
@@ -79,14 +70,18 @@ class SettingHelper extends EventEmitter {
     this.storage.reset();
   };
 
-  getAll = () => {
-    return this.settings;
+  toggle = (key) => {
+    this.update(key, !this.get(key));
   };
+
+  getAll = () => this.settings;
+
+  get = key => this.settings[key];
 }
 
-let settingHelpersCache = {}; // for local caching so we dont create several for same coin.
+const settingHelpersCache = {}; // for local caching so we dont create several for same coin.
 
-module.exports = function(coin) {
+module.exports = (coin) => {
   if (settingHelpersCache[coin] === undefined) {
     settingHelpersCache[coin] = new SettingHelper(coin);
   }

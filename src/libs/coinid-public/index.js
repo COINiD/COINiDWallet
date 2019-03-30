@@ -149,7 +149,6 @@ class COINiDPublic extends EventEmitter {
         this.txQueueArr = txQueueArr;
         this.balance = balance;
         this.pubKeyData = pubKeyData;
-        console.log({ pubKeyData });
 
         this.onBlockHeight(blockHeight);
 

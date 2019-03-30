@@ -17,8 +17,9 @@ jest.mock('Alert', () => ({ alert: jest.fn() }));
 jest.mock('AsyncStorage', () => new MockAsyncStorage());
 
 jest.mock('NativeAnimatedHelper');
-
 jest.mock('NativeModules', () => ({
+  RNViewShot: {},
+  RNShare: {},
   P2PTransferBLECentralModule: {
     addListener: jest.fn(),
   },

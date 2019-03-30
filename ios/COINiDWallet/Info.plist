@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.4.5</string>
+	<string>1.6.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -32,16 +32,23 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>201</string>
+	<string>307</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
+	<false />
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>coinid</string>
 		<string>itms-apps</string>
+		<string>telegram</string>
+		<string>slack</string>
+		<string>facebook</string>
+		<string>twitter</string>
+		<string>instagram</string>
+		<string>whatsapp</string>
+		<string>mailto</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
-	<true/>
+	<true />
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>
@@ -49,7 +56,7 @@
 			<key>localhost</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
+				<true />
 			</dict>
 		</dict>
 	</dict>
@@ -62,15 +69,13 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Scan Qr Code</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>To find out your location</string>
+	<string>For Permissions</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>For Permissions</string>
 	<key>NSMotionUsageDescription</key>
 	<string>For Permissions</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>For Permissions</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>For Permissions</string>
+	<string>$(PRODUCT_NAME) wants to save photos</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>For Permissions</string>
 	<key>UIAppFonts</key>
@@ -99,12 +104,10 @@
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
-	<key>UIMainStoryboardFile</key>
-	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
-	<array/>
+	<array />
 	<key>UIRequiresFullScreen</key>
-	<true/>
+	<true />
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleLightContent</string>
 	<key>UISupportedInterfaceOrientations</key>
@@ -112,6 +115,6 @@
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
+	<false />
 </dict>
 </plist>

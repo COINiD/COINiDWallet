@@ -1,10 +1,10 @@
 {
-	"coinTicker": "btc",
-	"coinName": "bitcoin",
-	"appReturnScheme": "coinid-btc",
-	"iosIdentifier": "org.coinid.wallet.btc",
-	"androidPackageName": "org.coinid.wallet.btc",
-	"displayName": "BTC COINiD",
-	"availableCurrencies": "['USD', 'EUR']",
-	"isTestnet": "false"
+  "coinTicker": "btc",
+  "coinName": "bitcoin",
+  "appReturnScheme": "coinid-btc",
+  "iosIdentifier": "org.coinid.wallet.btc",
+  "androidPackageName": "org.coinid.wallet.btc",
+  "displayName": "BTC COINiD",
+  "availableCurrencies": "['USD','EUR','JPY','GBP','CAD','CHF','KRW','NZD','SEK','NOK','DKK']",
+  "isTestnet": "false"
 }
