@@ -175,7 +175,7 @@ class AmountInput extends PureComponent {
         onChangeText={this._onChangeAmountText}
         maxLength={this._getAmountMaxLength(amount)}
         onSubmitEditing={this._onSubmitEditing}
-        keyboardType="numeric"
+        keyboardType="decimal-pad"
         returnKeyType="done"
         textContentType="none"
         underlineColorAndroid="transparent"
