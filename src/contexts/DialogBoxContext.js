@@ -241,7 +241,9 @@ class DialogBox extends PureComponent {
           }}
           onLayout={this._onLayout}
           onOuterLayout={this._onOuterLayout}
-          closeAndClear={this._closeAndClear}
+          closeAndClear={() => {
+            this._closeAndClear();
+          }}
           currentDialog={currentDialog}
           removeWhenClosed={false}
           onMoreOptions={() => {

@@ -291,7 +291,7 @@ class InstalledWallet extends PureComponent {
         if (newPayments.length) {
           this._openSign();
         } else {
-          dialogCloseAndClear();
+          dialogCloseAndClear(true);
         }
       });
     }
@@ -325,7 +325,7 @@ class InstalledWallet extends PureComponent {
       paymentsInBatch.push(paymentToBatch);
       this._updatePayments(paymentsInBatch);
 
-      dialogCloseAndClear();
+      dialogCloseAndClear(true);
     }
   };
 
@@ -334,7 +334,7 @@ class InstalledWallet extends PureComponent {
 
     this._updatePayments([]);
     setTimeout(() => {
-      dialogCloseAndClear();
+      dialogCloseAndClear(true);
     }, 350);
   };
 

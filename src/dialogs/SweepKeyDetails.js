@@ -184,7 +184,7 @@ export default class SweepKeyDetails extends PureComponent {
             'From sweeped private key',
           );
 
-          dialogCloseAndClear();
+          dialogCloseAndClear(true);
         })
         .catch((err) => {
           Alert.alert(`${err}`);
