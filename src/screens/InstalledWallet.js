@@ -9,7 +9,6 @@ import { getBottomSpace } from 'react-native-iphone-x-helper';
 import {
   BatchSummary, ConnectionStatus, Balance, TransactionList, Text,
 } from '../components';
-import { Sign } from '../dialogs';
 
 import projectSettings from '../config/settings';
 import { colors } from '../config/styling';
@@ -220,6 +219,16 @@ class InstalledWallet extends PureComponent {
       },
       this.context,
     );
+  };
+
+  _openSignMessage = () => {
+    const { dialogNavigate } = this.context;
+    dialogNavigate('SignMessage', {}, this.context);
+  };
+
+  _openVerifyMessage = () => {
+    const { dialogNavigate } = this.context;
+    dialogNavigate('VerifyMessage', {}, this.context);
   };
 
   _openSend = () => {

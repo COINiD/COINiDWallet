@@ -24,6 +24,10 @@ export const settingRoutes = {
     screen: SettingsRoute,
     title: 'Remove account',
   },
+  SignMessage: {
+    screen: SettingsRoute,
+    title: 'Sign message',
+  },
   About: {
     screen: SettingsRoute,
     title: 'About',

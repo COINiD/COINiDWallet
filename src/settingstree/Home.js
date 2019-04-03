@@ -51,7 +51,14 @@ const getPasscodeTimingTitle = (state) => {
 
 const Home = (state) => {
   const {
-    gotoRoute, hasCOINiD, hasHotWallet, hasAnyWallets, settingHelper, settings,
+    gotoRoute,
+    hasCOINiD,
+    hasHotWallet,
+    hasAnyWallets,
+    settingHelper,
+    settings,
+    activeWallets,
+    goBack,
   } = state;
 
   return [
@@ -89,6 +96,42 @@ const Home = (state) => {
           onPress: () => gotoRoute('PreferredCurrency'),
           rightTitle: `${getPreferredCurrencyTitle(state)}`,
         },
+      ],
+    },
+    {
+      items: [
+        {
+          title: 'Sign message',
+          onPress: () => {
+            if (activeWallets.length === 1) {
+              const [{ snapTo, openSignMessage }] = activeWallets;
+
+              goBack();
+              snapTo();
+              openSignMessage();
+            } else {
+              gotoRoute('SignMessage');
+            }
+          },
+          disabled: !activeWallets.length,
+        },
+        {
+          title: 'Verify message',
+          onPress: () => {
+            if (activeWallets.length > 0) {
+              const [{ snapTo, openVerifyMessage }] = activeWallets;
+
+              goBack();
+              snapTo();
+              openVerifyMessage();
+            }
+          },
+          disabled: !activeWallets.length,
+        },
+      ],
+    },
+    {
+      items: [
         {
           title: 'Remove account',
           onPress: () => gotoRoute('Reset'),

@@ -3,6 +3,7 @@ import Passcode from './Passcode';
 import OfflineTransport from './OfflineTransport';
 import PreferredCurrency from './PreferredCurrency';
 import Reset from './Reset';
+import SignMessage from './SignMessage';
 import About from './About';
 
 const SettingsTree = state => ({
@@ -11,6 +12,7 @@ const SettingsTree = state => ({
   OfflineTransport: OfflineTransport(state),
   PreferredCurrency: PreferredCurrency(state),
   Reset: Reset(state),
+  SignMessage: SignMessage(state),
   About: About(state),
 });
 

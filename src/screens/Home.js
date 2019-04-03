@@ -14,7 +14,6 @@ import { Text } from '../components';
 import { Wallet } from '.';
 import StatusBoxContext from '../contexts/StatusBoxContext';
 import DialogBoxContext from '../contexts/DialogBoxContext';
-
 import COINiDPublic from '../libs/coinid-public';
 import storageHelper from '../utils/storageHelper';
 
@@ -133,6 +132,15 @@ class Home extends PureComponent {
         theme: 'light',
         dotColor: colors.getHot(),
         settingHelper: this.settingHelper,
+        snapTo: () => {
+          this._snapToItem(0);
+        },
+        openSignMessage: () => {
+          this._openSignMessage(0);
+        },
+        openVerifyMessage: () => {
+          this._openVerifyMessage(0);
+        },
       },
       {
         coinid: this.coldCOINiD,
@@ -141,6 +149,15 @@ class Home extends PureComponent {
         theme: 'dark',
         dotColor: colors.getCold(),
         settingHelper: this.settingHelper,
+        snapTo: () => {
+          this._snapToItem(1);
+        },
+        openSignMessage: () => {
+          this._openSignMessage(1);
+        },
+        openVerifyMessage: () => {
+          this._openVerifyMessage(1);
+        },
       },
     ];
 
@@ -234,7 +251,7 @@ class Home extends PureComponent {
 
   _renderItem = ({ item, index }) => {
     const { navigation } = this.props;
-    const { hideSensitive } = this.state;
+    const { slides, hideSensitive } = this.state;
 
     return (
       <View style={{ flex: 1, width: sliderWidth }}>
@@ -264,6 +281,18 @@ class Home extends PureComponent {
     });
   };
 
+  _openSignMessage = (index) => {
+    if (this.walletComponents[index] && this.walletComponents[index]._openSignMessage) {
+      this.walletComponents[index]._openSignMessage();
+    }
+  };
+
+  _openVerifyMessage = (index) => {
+    if (this.walletComponents[index] && this.walletComponents[index]._openVerifyMessage) {
+      this.walletComponents[index]._openVerifyMessage();
+    }
+  };
+
   _onSnapToItem = (index) => {
     this.pagination.setActiveDotIndex(index);
     this._updateActiveTitle(index);
@@ -283,6 +312,10 @@ class Home extends PureComponent {
       }
       this.prevIndex = index;
     }
+  };
+
+  _snapToItem = (index) => {
+    this.carusel.snapToItem(index);
   };
 
   _onWalletReset = (index) => {
