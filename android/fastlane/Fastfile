@@ -16,11 +16,19 @@ platform :android do
     FileUtils.mkdir_p("#{shRootDir}/#{buildDir}/latest") unless File.directory?("#{shRootDir}/#{buildDir}/latest")
     FileUtils.mkdir_p("#{shRootDir}/#{buildDir}/#{options[:time]}") unless File.directory?("#{shRootDir}/#{buildDir}/#{options[:time]}")
 
+    if options[:tag]
+      FileUtils.mkdir_p("#{shRootDir}/#{buildDir}/release-#{options[:tag]}") unless File.directory?("#{shRootDir}/#{buildDir}/release-#{options[:tag]}")
+    end
+
     sh("#{shRootDir}/bin/changeCoin #{options[:ticker]}")
     gradle(task: 'clean assembleRelease')
 
     FileUtils.mv("#{shRootDir}/android/app/build/outputs/apk/release/app-release.apk", "#{shRootDir}/#{buildDir}/latest/latest-coinid-wallet-#{options[:coin].downcase}.apk")
     FileUtils.cp("#{shRootDir}/#{buildDir}/latest/latest-coinid-wallet-#{options[:coin].downcase}.apk", "#{shRootDir}/#{buildDir}/#{options[:time]}/#{options[:time]}-coinid-wallet-#{options[:coin].downcase}.apk")
+
+    if options[:tag]
+      FileUtils.cp("#{shRootDir}/#{buildDir}/latest/latest-coinid-wallet-#{options[:coin].downcase}.apk", "#{shRootDir}/#{buildDir}/release-#{options[:tag]}/#{options[:tag]}-coinid-wallet-#{options[:coin].downcase}.apk")
+    end
 
     upload_to_play_store(
       package_name: (options[:package_name]).to_s,

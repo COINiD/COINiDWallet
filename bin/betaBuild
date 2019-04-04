@@ -29,9 +29,9 @@ let coins = [
   },
 ];
 
-let platforms = ['ios', 'android'];
-
 const rootDir = `${__dirname}/..`;
+
+let platforms = ['ios', 'android'];
 const [, , prefix, selPlatform, selCoin] = process.argv;
 
 if (selPlatform) {
@@ -50,6 +50,23 @@ if (prefix !== undefined && prefix) {
   time = `${prefix}-${time}`;
 }
 
+const getTag = () => {
+  try {
+    return execSync(`cd ${rootDir}; git describe --tags`, {
+      stdio: ['ignore', 'pipe', 'ignore'],
+      encoding: 'utf8',
+    }).slice(0, -1);
+  } catch (err) {
+    return '';
+  }
+};
+
+const tag = getTag();
+
+if (tag) {
+  console.log('Found tag ' + tag);
+}
+
 const runTests = () => {
   try {
     execSync(`cd ${rootDir}; yarn test`, { stdio: 'inherit' });
@@ -64,7 +81,7 @@ const doBuilds = platform => {
   for (let i = 0; i < coins.length; i += 1) {
     const { ticker, coin, packageName } = coins[i];
     execSync(
-      `cd ${rootDir}/${platform}; fastlane coin_beta ticker:${ticker} coin:${coin} time:${time} package_name:${packageName}`,
+      `cd ${rootDir}/${platform}; fastlane coin_beta ticker:${ticker} coin:${coin} time:${time} tag:${tag} package_name:${packageName}`,
       { stdio: 'inherit' },
     );
   }
@@ -100,6 +117,10 @@ if (runTests()) {
 
       createSHA256SUMS(time);
       createSHA256SUMS('latest');
+
+      if (tag) {
+        createSHA256SUMS(`release-${tag}`);
+      }
     }
   }
 } else {
