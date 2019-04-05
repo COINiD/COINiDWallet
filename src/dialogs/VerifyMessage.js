@@ -33,7 +33,11 @@ export default class SignMessage extends PureComponent {
 
     const { coinid } = context;
     this.coinid = coinid;
-    this.state = { address: '', message: '', signature: '' };
+    this.state = {
+      address: '',
+      message: '',
+      signature: '',
+    };
   }
 
   _verifyMessage = () => {
@@ -70,32 +74,6 @@ export default class SignMessage extends PureComponent {
             this.refContHeight = e.nativeEvent.layout.height;
           }}
         >
-          <View
-            style={styles.formItem}
-            onFocus={() => {
-              dialogRef._setKeyboardOffset(this.refSignatureBottom - this.refContHeight + 8);
-            }}
-            onLayout={(e) => {
-              this.refSignatureBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
-            }}
-          >
-            <Text style={styles.formLabel}>Signature</Text>
-            <View style={styles.formItemRow}>
-              <TextInput
-                keyboardType={Platform.OS === 'ios' ? 'default' : 'visible-password'}
-                autoCorrect={false}
-                spellCheck={false}
-                value={signature}
-                textContentType="none"
-                style={styles.formItemInput}
-                onChangeText={(newSignature) => {
-                  this.setState({ signature: newSignature });
-                }}
-                underlineColorAndroid="transparent"
-              />
-            </View>
-          </View>
-
           <View
             style={styles.formItem}
             onFocus={() => {
@@ -146,6 +124,32 @@ export default class SignMessage extends PureComponent {
                 }}
                 ref={(c) => {
                   this.messageRef = c;
+                }}
+                underlineColorAndroid="transparent"
+              />
+            </View>
+          </View>
+
+          <View
+            style={styles.formItem}
+            onFocus={() => {
+              dialogRef._setKeyboardOffset(this.refSignatureBottom - this.refContHeight + 8);
+            }}
+            onLayout={(e) => {
+              this.refSignatureBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
+            }}
+          >
+            <Text style={styles.formLabel}>Signature</Text>
+            <View style={styles.formItemRow}>
+              <TextInput
+                keyboardType={Platform.OS === 'ios' ? 'default' : 'visible-password'}
+                autoCorrect={false}
+                spellCheck={false}
+                value={signature}
+                textContentType="none"
+                style={styles.formItemInput}
+                onChangeText={(newSignature) => {
+                  this.setState({ signature: newSignature });
                 }}
                 underlineColorAndroid="transparent"
               />
