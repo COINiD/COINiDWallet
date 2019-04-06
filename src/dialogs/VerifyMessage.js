@@ -10,8 +10,6 @@ import WalletContext from '../contexts/WalletContext';
 import styleMerge from '../utils/styleMerge';
 import parentStyles from './styles/common';
 
-const bitcoinMessage = require('bitcoinjs-message');
-
 const styles = styleMerge(
   parentStyles('light'),
   StyleSheet.create({
@@ -43,19 +41,13 @@ export default class SignMessage extends PureComponent {
   _verifyMessage = () => {
     const { message, address, signature } = this.state;
     const { dialogCloseAndClear } = this.context;
-    const { network } = this.coinid;
 
     try {
-      const verify = bitcoinMessage.verify(message, address, signature, network);
+      const verify = this.coinid.verifyMessage(message, address, signature);
 
       if (verify) {
         Alert.alert('Verify message', 'Message successfully verified');
         dialogCloseAndClear();
-      } else {
-        Alert.alert(
-          'Verification error',
-          'Message could not be verified with the supplied signature and address',
-        );
       }
     } catch (err) {
       Alert.alert('Verification error', `${err}`);

@@ -25,6 +25,8 @@ import {
 } from './utils';
 
 const bitcoin = require('bitcoinjs-lib');
+const bitcoinMessage = require('bitcoinjs-message');
+
 const bip32utils = require('./bip32-utils-extension');
 const Blockchain = require('./blockchain');
 
@@ -807,6 +809,20 @@ class COINiDPublic extends EventEmitter {
       return true;
     } catch (err) {
       return false;
+    }
+  };
+
+  verifyMessage = (message, address, signature) => {
+    try {
+      const verify = bitcoinMessage.verify(message, address, signature, this.network);
+
+      if (!verify) {
+        throw 'Message could not be verified with the supplied signature and address';
+      }
+
+      return true;
+    } catch (err) {
+      throw err;
     }
   };
 
