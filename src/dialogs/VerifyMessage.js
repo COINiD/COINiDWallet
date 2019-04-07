@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Alert, StyleSheet, View, TextInput, Platform,
+  Alert, StyleSheet, View, TextInput, Platform, Clipboard,
 } from 'react-native';
 import { Button, Text } from '../components';
+import VerifyMessageActionMenu from '../actionmenus/VerifyMessageActionMenu';
 
 import WalletContext from '../contexts/WalletContext';
 
@@ -24,19 +25,65 @@ export default class SignMessage extends PureComponent {
 
   static propTypes = {
     dialogRef: PropTypes.shape({}).isRequired,
+    setMoreOptionsFunc: PropTypes.func.isRequired,
   };
 
   constructor(props, context) {
     super(props);
 
-    const { coinid } = context;
+    const { setMoreOptionsFunc } = props;
+
+    const {
+      coinid,
+      globalContext: { showActionSheetWithOptions },
+    } = context;
     this.coinid = coinid;
+
+    setMoreOptionsFunc(this._onMoreOptions);
+
     this.state = {
       address: '',
       message: '',
       signature: '',
+      showActionSheetWithOptions,
     };
   }
+
+  _onMoreOptions = () => {
+    const { showActionSheetWithOptions } = this.state;
+
+    const actionMenu = new VerifyMessageActionMenu({
+      showActionSheetWithOptions,
+      onParseClipboard: this._parseClipboard,
+    });
+
+    actionMenu.show();
+  };
+
+  _parseClipboard = async () => {
+    const coinTitle = this.coinid.coinTitle.toUpperCase();
+
+    const re = new RegExp(
+      `-----BEGIN ${coinTitle} SIGNED MESSAGE-----\n(.*?)\n-----BEGIN SIGNATURE-----\n(?!-----BEGIN SIGNATURE-----)([^\n]*)\n([^\n]*)\n-----END ${coinTitle} SIGNED MESSAGE-----`,
+      's',
+    );
+
+    try {
+      const clipboardData = await Clipboard.getString();
+      const [, message, address, signature] = re.exec(clipboardData);
+
+      this.setState({
+        message,
+        address,
+        signature,
+      });
+    } catch (err) {
+      Alert.alert(
+        'Parsing error',
+        'Could not parse clipboard data, make sure it is formatted correctly.',
+      );
+    }
+  };
 
   _verifyMessage = () => {
     const { message, address, signature } = this.state;

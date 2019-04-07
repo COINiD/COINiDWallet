@@ -109,6 +109,7 @@ export const dialogRoutes = {
       title: 'Verify message',
       verticalPosition: 'flex-end',
       avoidKeyboard: true,
+      showMoreOptions: true,
     },
   },
 };
