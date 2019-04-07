@@ -45,5 +45,9 @@
   "wrongAddressPayments": [
     { "amount": 0.002, "address": "2N2c2wfH4LcxhRjGXxggzmDL2iXsVBQEjwsK", "note": "" },
     { "amount": 0.0043, "address": "2NCLeVvnAoXZou3LrZv9bJMcykSrXnjcRR1", "note": "" }
-  ]
+  ],
+  "message": "This is a test message",
+  "anotherMessage": "This is another test message",
+  "messageAddress": "2N7UPz9tH9hkmAoKnR1VhkgBq9TyyHVL68t",
+  "messageSignature": "H1ox+mmOF5Wh0LK8RgRtL5YSoSHt3l03qjEEMVLlJzCkEvUzfbEBClNji+OeJ65NepKHDB3vm99DHGqa5vTi/8w="
 }

@@ -30,5 +30,9 @@
     { "amount": 0.002, "address": "MNMer2wBZNHXpqXJKfwqFzHxNhUNa3PFvPG", "note": "" },
     { "amount": 0.0043, "address": "4mBf9jhXHGNP2PY22uoGo4FQL5dErYxcJr", "note": "" },
     { "amount": 0.0001, "address": "my1q9y7mc2mt0nkn6lekxjt2fcqtxvhjpxu5thhhqj", "note": "" }
-  ]
+  ],
+  "message": "This is a test message",
+  "anotherMessage": "This is another test message",
+  "messageAddress": "4oV111FHy1kR739yXdVv2fp9WhvrhfN4eT",
+  "messageSignature": "IFK83t6NlHfb0SPHhdnTdmL0hBFbJf+TEQ4ZVzFT4Kz6GHfTJyrQtOwfIO6ipBMdpd+sO9in21K2NNCST2Vtz9Y="
 }
