@@ -12,6 +12,10 @@ coinArray.forEach(coin => {
       correctPayments,
       insufficientPayments,
       wrongAddressPayments,
+      messageSignature,
+      messageAddress,
+      message,
+      anotherMessage,
     } = require(`./data/${coin}.json`);
 
     var i = 0;
@@ -83,6 +87,34 @@ coinArray.forEach(coin => {
 
       it('generates a correct P2WPKH addresses', () => {
         expect(coinid.P2WPKH.getAllAddresses()).toMatchSnapshot();
+      });
+
+      it('can create message signing data', () => {
+        const address = coinid.P2SHP2WPKH.getReceiveAddress();
+        const message = 'This is a test message';
+        const messageData = coinid.P2SHP2WPKH.buildMsgCoinIdData(address, message);
+
+        expect(messageData).toMatchSnapshot();
+      });
+
+      it('fails to generate message with invalid address', () => {
+        const address = coinid.P2PKH.getReceiveAddress();
+        const message = 'This is a test message that will fail';
+
+        expect(() => {
+          coinid.P2SHP2WPKH.buildMsgCoinIdData(address, message);
+        }).toThrowErrorMatchingSnapshot();
+      });
+
+      it('can verify message', () => {
+        const verify = coinid.P2PKH.verifyMessage(message, messageAddress, messageSignature);
+        expect(verify).toEqual(true);
+      });
+
+      it('fails to verify invalid signature', () => {
+        expect(() => {
+          coinid.P2PKH.verifyMessage(anotherMessage, messageAddress, messageSignature);
+        }).toThrowErrorMatchingSnapshot();
       });
 
     });

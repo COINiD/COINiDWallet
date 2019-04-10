@@ -77,6 +77,9 @@ class Wallet extends PureComponent {
 
     return (
       <InstalledWallet
+        ref={(c) => {
+          this.walletRef = c;
+        }}
         settingHelper={this.settingHelper}
         navigation={navigation}
         hideSensitive={hideSensitive}
@@ -94,6 +97,18 @@ class Wallet extends PureComponent {
   _onSnapFrom = () => {
     if (this.walletRef && this.walletRef._onSnapFrom) {
       this.walletRef._onSnapFrom();
+    }
+  };
+
+  _openSignMessage = () => {
+    if (this.walletRef && this.walletRef._openSignMessage) {
+      this.walletRef._openSignMessage();
+    }
+  };
+
+  _openVerifyMessage = () => {
+    if (this.walletRef && this.walletRef._openVerifyMessage) {
+      this.walletRef._openVerifyMessage();
     }
   };
 

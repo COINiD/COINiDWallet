@@ -11,6 +11,8 @@ import Receive from '../dialogs/Receive';
 import TransactionDetails from '../dialogs/TransactionDetails';
 import Send from '../dialogs/Send';
 import Sign from '../dialogs/Sign';
+import SignMessage from '../dialogs/SignMessage';
+import VerifyMessage from '../dialogs/VerifyMessage';
 
 export const dialogRoutes = {
   COINiDNotFound: {
@@ -91,6 +93,23 @@ export const dialogRoutes = {
       title: 'Sign transactions',
       verticalPosition: 'flex-end',
       avoidKeyboard: true,
+    },
+  },
+  SignMessage: {
+    DialogComponent: SignMessage,
+    defaultProps: {
+      title: 'Sign message',
+      verticalPosition: 'flex-end',
+      avoidKeyboard: true,
+    },
+  },
+  VerifyMessage: {
+    DialogComponent: VerifyMessage,
+    defaultProps: {
+      title: 'Verify message',
+      verticalPosition: 'flex-end',
+      avoidKeyboard: true,
+      showMoreOptions: true,
     },
   },
 };

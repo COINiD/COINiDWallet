@@ -1,6 +1,6 @@
 {
   "name": "COINiDWallet",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
@@ -21,7 +21,7 @@
     "bip21": "^2.0.2",
     "bip32-utils": "^0.11.1",
     "bitcoinjs-lib": "https://github.com/wlc-/bitcoinjs-lib",
-    "bitcoinjs-message": "^2.0.0",
+    "bitcoinjs-message": "https://github.com/COINiD/bitcoinjs-message.git#coinid-version",
     "buffer": "^4.9.1",
     "buffer-reverse": "^1.0.1",
     "coinid-address-functions": "https://github.com/wlc-/coinid-address-functions.git",
