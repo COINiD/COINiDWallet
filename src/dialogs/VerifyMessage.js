@@ -93,7 +93,7 @@ export default class SignMessage extends PureComponent {
       const verify = this.coinid.verifyMessage(message, address, signature);
 
       if (verify) {
-        Alert.alert('Verify message', 'Message successfully verified');
+        Alert.alert('Verify message', `Message verified to be from ${address}`);
         dialogCloseAndClear();
       }
     } catch (err) {
