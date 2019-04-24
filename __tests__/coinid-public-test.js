@@ -1,7 +1,14 @@
 import COINiDPublic from '../src/libs/coinid-public';
 import storageHelper from '../src/utils/storageHelper';
 
-const coinArray = ['testnet', 'myriad', 'bitcoin', 'groestlcoin', 'groestlcoin-testnet'];
+const coinArray = [
+  'testnet',
+  'myriad',
+  'bitcoin',
+  'groestlcoin',
+  'groestlcoin-testnet',
+  'litecoin',
+];
 
 coinArray.forEach(coin => {
   describe(coin, () => {
