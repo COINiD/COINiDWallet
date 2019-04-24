@@ -3,6 +3,11 @@ const { execSync } = require('child_process');
 
 let coins = [
   {
+    ticker: 'ltc',
+    coin: 'Litecoin',
+    packageName: 'org.coinid.wallet.ltc',
+  },
+  {
     ticker: 'btc',
     coin: 'Bitcoin',
     packageName: 'org.coinid.wallet.btc',
