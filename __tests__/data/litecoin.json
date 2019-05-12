@@ -1,0 +1,52 @@
+{
+  "coin": "litecoin",
+  "pubKeyData": {
+    "P2SHP2WPKH": "49-*2-*0-$Ltub2YYTvNKyh8yoLhi8YEkh7KYvhqT7SMwqKj5pEMWmyZCBP2BBdJMu4EaiDXyABkTipLRwPjegNtGLcAFUMp3aqmeCraBEEbWxbetKiovu3NN",
+    "P2PKH": "44-*2-*0-$Ltub2Yi8jGL6LBQNb9fC8gcXew1E6KwGqfTehtpEvDSNVPzrV4HrkKtdX9XD8tvtkzzyVN7JCnXLMvo1US2PxPAfmPXSqUMSSfQJGiq75kSL4gp",
+    "P2WPKH": "84-*2-*0-$Ltub2YThPUFnFPWAFhXHxd8Dwdymw6nJ1cNQJz9Aqrhc5Qo4j9o7sWm35JZ1bGmNnm27b5QbWdk1eRR7yaqGKatArT4noKt8kDWhg7eex9qR5q4"
+  },
+  "unspent": [
+    {
+      "unPublished": 0,
+      "hash": "4c103a492b65aaca41bb3b782c4f590e56d5b269d41ad48121ea2502d86463a0",
+      "index": 2,
+      "address": "MFpj8BGSz9FfDwqYqW5B1Uj2rcFpCkJ6r1",
+      "value": 0.00369796,
+      "valueSat": 369796
+    },
+    {
+      "unPublished": 0,
+      "hash": "4c103a492b65aaca41bb3b782c4f590e56d5b269d41ad48121ea2502d86463a0",
+      "index": 1,
+      "address": "LayEZf3R4BSisvw5RMXmTmFVE1dh7L4DRQ",
+      "value": 0.0043,
+      "valueSat": 430000
+    },
+    {
+      "unPublished": 0,
+      "hash": "4c103a492b65aaca41bb3b782c4f590e56d5b269d41ad48121ea2502d86463a0",
+      "index": 0,
+      "address": "ltc1qurwy5cfvm2scam2wcdgluyas8c3r2jhx327mgp",
+      "value": 0.002,
+      "valueSat": 200000
+    }
+  ],
+  "balance": 0.00999796,
+  "correctPayments": [
+    { "amount": 0.0043, "address": "MFpj8BGSz9FfDwqYqW5B1Uj2rcFpCkJ6r1", "note": "" },
+    { "amount": 0.0001, "address": "LayEZf3R4BSisvw5RMXmTmFVE1dh7L4DRQ", "note": "" },
+    { "amount": 0.0003, "address": "ltc1qurwy5cfvm2scam2wcdgluyas8c3r2jhx327mgp", "note": "" }
+  ],
+  "insufficientPayments": [
+    { "amount": 1.002, "address": "MFpj8BGSz9FfDwqYqW5B1Uj2rcFpCkJ6r1", "note": "" },
+    { "amount": 0.0043, "address": "LayEZf3R4BSisvw5RMXmTmFVE1dh7L4DRQ", "note": "" }
+  ],
+  "wrongAddressPayments": [
+    { "amount": 0.002, "address": "MFpj8BGSz9FfDwqYqW5B1Uj2rcFpCkJ6r1", "note": "" },
+    { "amount": 0.0043, "address": "LLayEZf3R4BSisvw5RMXmTmFVE1dh7L4DR", "note": "" }
+  ],
+  "message": "This is a test message",
+  "anotherMessage": "This is another test message",
+  "messageAddress": "M8D3K64DHZbR7GiSP9HCHfQCdkHLC8arZY",
+  "messageSignature": "IKagAYLVC2nVu5DUhOB44v5bM5rX8tiFVVLzxGqVudcADnQmXLoKC/SUmNs/9gHez5hR0XyiQ7tcUTkKZFadEDc="
+}

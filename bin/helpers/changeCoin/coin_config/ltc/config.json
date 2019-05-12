@@ -1,0 +1,10 @@
+{
+  "coinTicker": "ltc",
+  "coinName": "litecoin",
+  "appReturnScheme": "coinid-ltc",
+  "iosIdentifier": "org.coinid.wallet.ltc",
+  "androidPackageName": "org.coinid.wallet.ltc",
+  "displayName": "LTC COINiD",
+  "availableCurrencies": "['BTC','USD','EUR','JPY','GBP','CAD','CHF','KRW','NZD','SEK','NOK','DKK']",
+  "isTestnet": "false"
+}

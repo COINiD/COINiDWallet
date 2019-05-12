@@ -189,6 +189,69 @@ exports[`groestlcoin-testnet COINiDPublic throws error when address not valid 1`
 
 exports[`groestlcoin-testnet COINiDPublic throws error when having insufficient funds 1`] = `undefined`;
 
+exports[`litecoin COINiDPublic can create message signing data 1`] = `"MSG/LTC:49-*2-*0-*0*5+M8D3K6:49-*2-*0-*0*5:This%20is%20a%20test%20message"`;
+
+exports[`litecoin COINiDPublic can create transaction data 1`] = `"TX/LTC:49-*2-*0-*0*0+MFPJ8B:49-*2-*0-*0*0+:0100000002A06364D80225EA2181D41AD469B2D5560E594F2C783BBB41CAAA652B493A104C020000000000000000A06364D80225EA2181D41AD469B2D5560E594F2C783BBB41CAAA652B493A104C01000000000000000004B08F06000000000017A91456EA622C3E690DC1D12F906BC24B09477021E8008710270000000000001976A914ACB9615B28EA42727AA4821CB111E06C39BB59F688AC3075000000000000160014E0DC4A612CDAA18EED4EC351FE13B03E22354AE6780705000000000017A9147C08656C706FB5FEFBE882B60722E5068E3F48398700000000:3:369796+430000"`;
+
+exports[`litecoin COINiDPublic fails to generate message with invalid address 1`] = `undefined`;
+
+exports[`litecoin COINiDPublic fails to verify invalid signature 1`] = `undefined`;
+
+exports[`litecoin COINiDPublic generates a correct P2PKH addresses 1`] = `
+Array [
+  "LayEZf3R4BSisvw5RMXmTmFVE1dh7L4DRQ",
+  "LZFEw5SwKHkU5DBQ9RhE3UXoERskLE5b4a",
+  "LesYxRFHnijzdMfqvMsDjB8FaF995e8ryL",
+  "LWnEw4evgkxPkP4hxRXATkEW2jRCJZyFdr",
+  "Lg6rxBUbArebuZohcguzSwY7xhLczRHXTg",
+  "LN7ZY2bJgzKEUy8cfotReSaY4m9yWtb97p",
+  "LQSDMpBLXHqKLrzdrP4GNSgbFWhz8eVCoN",
+  "LNGnpPkbjLZgb8Q3MvfheK2bKkedxiXYJr",
+  "LM949diYWY3mnAJBjoMHcjNz7yTguRSbMk",
+  "LPLggwYb5xhZyijrbCM61Qs2hZmdGACoWs",
+  "LdbXrv6fDvXZw5qtCuWwWWP8nCYHUcFKV5",
+  "LZyzitzqz9FTdyu5KH13psX5x6ECc92mwP",
+]
+`;
+
+exports[`litecoin COINiDPublic generates a correct P2SHP2WPKH addresses 1`] = `
+Array [
+  "MFpj8BGSz9FfDwqYqW5B1Uj2rcFpCkJ6r1",
+  "MWDBs52cXvsVst2UY2gF74QWLRgGuTXLFp",
+  "MPzCZiV7MKTuM2NwxiYtgzuuN5MUmZi7Sx",
+  "MNMydRCcY494Hpa8fFvFmMr9hwqWbjU9TL",
+  "MJB6UG7H7Poxm1FQVVfwfkPGRCca9XMKxP",
+  "M8D3K64DHZbR7GiSP9HCHfQCdkHLC8arZY",
+  "MWgzFS85HMdtxgbthsLjyi9vvCD9eeEm4G",
+  "MCmgbxfphGjHrX1pFfQfxQ1M1BiR7DT4CE",
+  "MX3fjq93wDXZoBv3Sbjx1H64hLLqcQ7epQ",
+  "MAuv6Q2zbM4uU6pLAGqgwqXYRieUVLVq3N",
+  "MATZNucBiG9w2EmWkLSbRUuNJQjmjzE3wd",
+  "MKCz5bRm4Fu1qoWygt1mWcSdmfWjPMeNx1",
+]
+`;
+
+exports[`litecoin COINiDPublic generates a correct P2WPKH addresses 1`] = `
+Array [
+  "ltc1qurwy5cfvm2scam2wcdgluyas8c3r2jhx327mgp",
+  "ltc1qsazyderuwtsrf2660nek9vm8vd7ncd53vcwz6g",
+  "ltc1qm06vmz6zc2ppgyjn3zl9lx375ayuwf9ktdfka9",
+  "ltc1qz7gg84r2srztd9807fj2a29jqdmp7wnw4emwpv",
+  "ltc1qy964y5lhd8w9t5ca73ym9kaha2ek3m0jdvhqss",
+  "ltc1qq6hmxp8u9yq07f9hg394jsz5ekt6jdjghjswnf",
+  "ltc1qev3alkj3r65yu4akayezzzua6da9ds8vgnevnr",
+  "ltc1qh0na7t0p4ckfshfxn45d6d8mx00n6pvz79ydku",
+  "ltc1qmwgrzvs95qadc9s37kt8yjtm8j59q58ru96gfl",
+  "ltc1q58nq3p9ty6ghp2kg5nq8arg6hhdecne839uvu5",
+  "ltc1qrexu5lrgpk5n4pseklywdq3ap8eskawzgk6a6j",
+  "ltc1qn5yn8jjhe52vygsnshla8sjyfqatjems3d0wd6",
+]
+`;
+
+exports[`litecoin COINiDPublic throws error when address not valid 1`] = `"LLayEZf3R4BSisvw5RMXmTmFVE1dh7L4DR has no matching Script"`;
+
+exports[`litecoin COINiDPublic throws error when having insufficient funds 1`] = `undefined`;
+
 exports[`myriad COINiDPublic can create message signing data 1`] = `"MSG/XMY:49-*90-*0-*0*5+4OV111:49-*90-*0-*0*5:This%20is%20a%20test%20message"`;
 
 exports[`myriad COINiDPublic can create transaction data 1`] = `"TX/XMY:49-*90-*0-*0*2+4FY57D:49-*90-*0-*0*2:01000000010D4E4F1E87B9F1D14727A9472640F74F4A18BA448CB063ED3574D21FCF74673800000000000000000004400D0300000000001976A9149E9DCD04CF375691FDFA2D19A52AE404B9EF03DE88ACB08F06000000000017A914594F6D51146D61F84C7027A466069E47DE69712C871027000000000000160014293DBC2B6B7CED3D7F363496A4E00B332F209B94E9645E2C0100000017A914556AA879860E42C377B13639C27350469972A71B8700000000:3:5039991221"`;
