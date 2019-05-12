@@ -97,27 +97,23 @@ export default class TransactionDetails extends PureComponent {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.info) {
-      const { info, currency } = nextProps;
-      const { tx, address, balanceChanged } = info;
+  componentDidMount() {
+    const { info, currency } = this.props;
+    const { tx, address, balanceChanged } = info;
 
-      if (info !== this.props.info || currency !== this.props.currency) {
-        this.setState({
-          fiatAmount: '',
-          fiatAmountOnDate: '',
-          maxFeeIncrease: 0, // getMaxFeeIncrease(tx, this.coinid.unspent),
-        });
+    this.setState({
+      fiatAmount: '',
+      fiatAmountOnDate: '',
+      maxFeeIncrease: 0, // getMaxFeeIncrease(tx, this.coinid.unspent),
+    });
 
-        this._refreshFiatAmount(balanceChanged, currency);
+    this._refreshFiatAmount(balanceChanged, currency);
 
-        if (tx.time) {
-          this._refreshFiatAmountOnDate(balanceChanged, currency, tx.time);
-        }
-
-        this.noteHelper.loadNote(tx, address).then(note => this.setState({ note }));
-      }
+    if (tx.time) {
+      this._refreshFiatAmountOnDate(balanceChanged, currency, tx.time);
     }
+
+    this.noteHelper.loadNote(tx, address).then(note => this.setState({ note }));
   }
 
   _refreshFiatAmount = (amount, currency) => {
