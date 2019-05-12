@@ -14,8 +14,9 @@ import {
   ExpandableView,
   FontScale,
 } from '../components';
+import ConvertCurrency from '../components/ConvertCurrency';
+
 import { numFormat } from '../utils/numFormat';
-import ExchangeHelper from '../utils/exchangeHelper';
 import { getByteCount } from '../libs/coinid-public/utils';
 import {
   colors, fontWeight, fontSize, gridMultiplier,
@@ -107,26 +108,18 @@ export default class SweepKeyDetails extends PureComponent {
   constructor(props, context) {
     super(props);
 
-    const {
-      coinid,
-      globalContext: { settingHelper },
-    } = context;
+    const { coinid } = context;
 
     this.coinid = coinid;
     const { ticker } = this.coinid;
 
     const { inputAddressInfo } = this.props;
 
-    this.settingHelper = settingHelper;
-    this.exchangeHelper = ExchangeHelper(ticker);
-
     this.state = {
       inputAddressInfo,
       groupBalance: {},
       balance: 0,
       ticker,
-      exchangeRate: 0,
-      currency: '',
       fee: 0,
       isLoadingHistory: true,
     };
@@ -134,27 +127,11 @@ export default class SweepKeyDetails extends PureComponent {
 
   componentDidMount() {
     this._fetchUnspentInputs(false);
-
-    this._onSettingsUpdated(this.settingHelper.getAll());
-    this.settingHelper.on('updated', this._onSettingsUpdated);
   }
 
   componentWillUnmount() {
-    this.settingHelper.removeListener('updated', this._onSettingsUpdated);
     clearTimeout(this.queuedFetch);
   }
-
-  _onSettingsUpdated = (settings) => {
-    const { currency } = settings;
-    this.setState({ currency });
-    this._refreshExchangeRate(currency);
-  };
-
-  _refreshExchangeRate = (currency) => {
-    this.exchangeHelper.convert(1, currency).then((exchangeRate) => {
-      this.setState({ exchangeRate });
-    });
-  };
 
   _getTransportData = () => {
     const { fee } = this.state;
@@ -404,7 +381,7 @@ export default class SweepKeyDetails extends PureComponent {
     isSigning, signingText, cancel, submit,
   }) => {
     const {
-      balance, ticker, exchangeRate, currency, fee, isLoadingHistory,
+      balance, ticker, fee, isLoadingHistory,
     } = this.state;
 
     const total = Big(balance).minus(fee);
@@ -432,7 +409,6 @@ export default class SweepKeyDetails extends PureComponent {
     }
 
     const balanceText = `${numFormat(balance, ticker)} ${ticker}`;
-    const fiatText = `${numFormat(Big(balance).times(exchangeRate), currency)} ${currency}`;
 
     return (
       <View style={styles.modalContent}>
@@ -449,19 +425,23 @@ export default class SweepKeyDetails extends PureComponent {
             </Text>
           )}
         </FontScale>
-        <FontScale
-          fontSizeMax={fontSize.h2}
-          fontSizeMin={fontSize.h2 / 4}
-          lineHeightMax={fontSize.h2 * 1.2}
-          text={fiatText}
-          widthScale={0.6}
-        >
-          {({ fontSize: variableFontSize, lineHeight }) => (
-            <Text style={[styles.fiatBalance, { fontSize: variableFontSize, lineHeight }]}>
-              {fiatText}
-            </Text>
+        <ConvertCurrency value={balance} ticker={ticker}>
+          {({ fiatText }) => (
+            <FontScale
+              fontSizeMax={fontSize.h2}
+              fontSizeMin={fontSize.h2 / 4}
+              lineHeightMax={fontSize.h2 * 1.2}
+              text={fiatText}
+              widthScale={0.6}
+            >
+              {({ fontSize: variableFontSize, lineHeight }) => (
+                <Text style={[styles.fiatBalance, { fontSize: variableFontSize, lineHeight }]}>
+                  {fiatText}
+                </Text>
+              )}
+            </FontScale>
           )}
-        </FontScale>
+        </ConvertCurrency>
 
         <ExpandableView
           initialIsExpanded={false}

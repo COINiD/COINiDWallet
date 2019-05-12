@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import moment from 'moment';
 import Big from 'big.js';
+import ConvertCurrency from '../components/ConvertCurrency';
 
 import {
   Text,
@@ -15,7 +16,6 @@ import {
   CancelButton,
   FontScale,
 } from '../components';
-import ExchangeHelper from '../utils/exchangeHelper';
 import { numFormat } from '../utils/numFormat';
 import { getConfirmationsFromBlockHeight } from '../libs/coinid-public/transactionHelper';
 import {
@@ -86,10 +86,7 @@ export default class TransactionDetails extends PureComponent {
     this.coinid = coinid;
     this.noteHelper = noteHelper;
 
-    this.exchangeHelper = ExchangeHelper(ticker);
-
     this.state = {
-      fiatAmount: '',
       note: '',
       ticker,
       maxFeeIncrease: 0,
@@ -98,33 +95,15 @@ export default class TransactionDetails extends PureComponent {
   }
 
   componentDidMount() {
-    const { info, currency } = this.props;
-    const { tx, address, balanceChanged } = info;
+    const { info } = this.props;
+    const { tx, address } = info;
 
     this.setState({
-      fiatAmount: '',
-      fiatAmountOnDate: '',
       maxFeeIncrease: 0, // getMaxFeeIncrease(tx, this.coinid.unspent),
     });
 
-    this._refreshFiatAmount(balanceChanged, currency);
-
-    if (tx.time) {
-      this._refreshFiatAmountOnDate(balanceChanged, currency, tx.time);
-    }
-
     this.noteHelper.loadNote(tx, address).then(note => this.setState({ note }));
   }
-
-  _refreshFiatAmount = (amount, currency) => {
-    this.exchangeHelper.convert(amount, currency).then(fiatAmount => this.setState({ fiatAmount }));
-  };
-
-  _refreshFiatAmountOnDate = (amount, currency, time) => {
-    this.exchangeHelper
-      .convertOnTime(amount, currency, time)
-      .then(fiatAmountOnDate => this.setState({ fiatAmountOnDate }));
-  };
 
   _handleReturnData = (data) => {
     if (data) {
@@ -251,9 +230,7 @@ export default class TransactionDetails extends PureComponent {
     if (!info) return null;
 
     const { tx, address, balanceChanged } = info;
-    const {
-      fiatAmount, fiatAmountOnDate, note, ticker, recommendedConfirmations,
-    } = this.state;
+    const { note, ticker, recommendedConfirmations } = this.state;
     const { time, fees, size } = tx;
     const date = !time ? '-' : moment.unix(time).format('H:mm:ss - MMM D, YYYY');
 
@@ -280,16 +257,20 @@ export default class TransactionDetails extends PureComponent {
               </Text>
             )}
           </FontScale>
-          <FontScale
-            fontSizeMax={fontSize.h2}
-            fontSizeMin={fontSize.h2 / 3}
-            text={`${numFormat(fiatAmount, currency)} ${currency}`}
-            widthScale={0.65}
-          >
-            {({ fontSize: variableFontSize, text }) => (
-              <Text style={[styles.fiatText, { fontSize: variableFontSize }]}>{text}</Text>
+          <ConvertCurrency value={balanceChanged} ticker={ticker}>
+            {({ fiatText }) => (
+              <FontScale
+                fontSizeMax={fontSize.h2}
+                fontSizeMin={fontSize.h2 / 3}
+                text={`${fiatText}`}
+                widthScale={0.65}
+              >
+                {({ fontSize: variableFontSize }) => (
+                  <Text style={[styles.fiatText, { fontSize: variableFontSize }]}>{fiatText}</Text>
+                )}
+              </FontScale>
             )}
-          </FontScale>
+          </ConvertCurrency>
         </View>
         <ScrollView
           style={{
@@ -370,9 +351,11 @@ export default class TransactionDetails extends PureComponent {
           <View style={styles.separator} />
           <RowInfo title="Fee">{`${numFormat(fees, ticker)} ${ticker}`}</RowInfo>
           <RowInfo title="Size">{`${size} bytes`}</RowInfo>
-          <RowInfo title={`${currency} on completion`}>
-            {`${numFormat(fiatAmountOnDate, currency)} ${currency}`}
-          </RowInfo>
+          <ConvertCurrency value={balanceChanged} ticker={ticker} time={time}>
+            {({ fiatText }) => (
+              <RowInfo title={`${currency} on completion`}>{`${fiatText}`}</RowInfo>
+            )}
+          </ConvertCurrency>
           <View style={styles.separator} />
           <RowInfo title="Included in TXID" multiLine selectable>
             {tx.txid}

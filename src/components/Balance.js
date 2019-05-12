@@ -2,7 +2,8 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, View, Text as DefaultText } from 'react-native';
 import { Text, FontScale } from '.';
-import ExchangeHelper from '../utils/exchangeHelper';
+import ConvertCurrency from './ConvertCurrency';
+
 import { numFormat } from '../utils/numFormat';
 
 import { colors, fontWeight, fontSize } from '../config/styling';
@@ -39,72 +40,44 @@ export default class Balance extends PureComponent {
   constructor(props, context) {
     super(props);
 
-    const { coinid, settingHelper, theme } = context;
+    const { coinid, theme } = context;
     const { ticker } = coinid;
 
     const styles = themedStyleGenerator(theme);
 
-    this.settingHelper = settingHelper;
-    this.exchangeHelper = ExchangeHelper(ticker);
-
     this.state = {
-      fiatBalance: 0.0,
-      currency: undefined,
       ticker,
       styles,
     };
   }
 
-  componentDidMount() {
-    this._onSettingsUpdated(this.settingHelper.getAll());
+  _renderBalance = ({ fiatText }) => {
+    const { styles } = this.state;
 
-    this.settingHelper.on('updated', this._onSettingsUpdated);
-    this.exchangeHelper.on('syncedexchange', this._onSyncedExchange);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { balance } = nextProps;
-    const { balance: oldBalance } = this.props;
-
-    if (balance !== oldBalance) {
-      this._refreshFiatBalance(balance);
-    }
-  }
-
-  componentWillUnmount() {
-    this.settingHelper.removeListener('updated', this._onSettingsUpdated);
-  }
-
-  _refreshFiatBalance = (balance) => {
-    this.exchangeHelper.convert(balance, this.currentCurrency).then((fiatBalance) => {
-      this.setState({ fiatBalance });
-    });
-  };
-
-  _onSettingsUpdated = (settings) => {
-    const { currency } = settings;
-    this.setState({ currency });
-    this.currentCurrency = currency;
-
-    this._refreshFiatBalance(this.props.balance);
-  };
-
-  _onSyncedExchange = () => {
-    this._refreshFiatBalance(this.props.balance);
+    return (
+      <FontScale
+        fontSizeMax={28}
+        fontSizeMin={10}
+        lineHeightMax={33}
+        text={fiatText}
+        widthScale={0.6}
+      >
+        {({ fontSize, lineHeight }) => (
+          <View style={{ alignSelf: 'flex-start' }}>
+            <Text style={[styles.currencyText, { fontSize, lineHeight }]} allowFontScaling={false}>
+              {fiatText}
+            </Text>
+          </View>
+        )}
+      </FontScale>
+    );
   };
 
   render() {
-    const {
-      fiatBalance, currency, ticker, styles,
-    } = this.state;
+    const { ticker, styles } = this.state;
     const { balance, style } = this.props;
 
-    if (currency === undefined) {
-      return null;
-    }
-
     const balanceText = `${numFormat(balance, ticker)} ${ticker}`;
-    const currencyText = `${numFormat(fiatBalance, currency)} ${currency}`;
 
     return (
       <View style={[styles.container, style]}>
@@ -127,24 +100,9 @@ export default class Balance extends PureComponent {
           )}
         </FontScale>
 
-        <FontScale
-          fontSizeMax={28}
-          fontSizeMin={10}
-          lineHeightMax={33}
-          text={currencyText}
-          widthScale={0.6}
-        >
-          {({ fontSize, lineHeight }) => (
-            <View style={{ alignSelf: 'flex-start' }}>
-              <Text
-                style={[styles.currencyText, { fontSize, lineHeight }]}
-                allowFontScaling={false}
-              >
-                {currencyText}
-              </Text>
-            </View>
-          )}
-        </FontScale>
+        <ConvertCurrency value={balance} ticker={ticker}>
+          {this._renderBalance}
+        </ConvertCurrency>
       </View>
     );
   }
@@ -160,10 +118,8 @@ Balance.contextTypes = {
 Balance.propTypes = {
   amount: PropTypes.number,
   coin: PropTypes.string,
-  currency: PropTypes.string,
 };
 
 Balance.defaultProps = {
   amount: 0,
-  currency: 'USD',
 };
