@@ -82,6 +82,7 @@ class Receive extends PureComponent {
     } = context;
     const { ticker, coinTitle } = coinid;
 
+    this.coinid = coinid;
     this.showStatus = showStatus;
     this.settingHelper = settingHelper;
     this.exchangeHelper = ExchangeHelper(ticker);
@@ -90,7 +91,7 @@ class Receive extends PureComponent {
     this.state = {
       address,
       ticker,
-      qrAddress: address,
+      qrAddress: this._buildQrURI({ address, amount: 0 }),
       exchangeRate: 0,
       currency: '',
       amount: 0,
@@ -147,9 +148,7 @@ class Receive extends PureComponent {
   _buildQrURI = ({
     address, amount, label, message,
   }) => {
-    const {
-      coinid: { qrScheme },
-    } = this.context;
+    const { qrScheme } = this.coinid;
     let tmpl = [`${qrScheme}:`, address, '?']; // https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki
 
     if (amount) {
@@ -262,6 +261,10 @@ class Receive extends PureComponent {
     return true;
   };
 
+  _getViewShot = (c) => {
+    this.viewShot = c;
+  };
+
   render() {
     const {
       ticker, qrAddress, address, exchangeRate, currency, amount,
@@ -279,9 +282,7 @@ class Receive extends PureComponent {
       <View style={styles.container}>
         <View style={styles.modalContent}>
           <ReceiveQRCode
-            getViewShot={(c) => {
-              this.viewShot = c;
-            }}
+            getViewShot={this._getViewShot}
             address={address}
             qrAddress={qrAddress}
             onShare={this._share}
