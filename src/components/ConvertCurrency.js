@@ -22,7 +22,7 @@ class ConvertCurrency extends PureComponent {
 
     if (!exchangeRate) {
       const fiatValue = 0;
-      const fiatText = `Loading... ${currency}`;
+      const fiatText = 'Loading...';
       return children({ fiatValue, currency, fiatText });
     }
 
