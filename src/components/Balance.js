@@ -100,9 +100,7 @@ export default class Balance extends PureComponent {
           )}
         </FontScale>
 
-        <ConvertCurrency value={balance} ticker={ticker}>
-          {this._renderBalance}
-        </ConvertCurrency>
+        <ConvertCurrency value={balance}>{this._renderBalance}</ConvertCurrency>
       </View>
     );
   }

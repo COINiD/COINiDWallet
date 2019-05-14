@@ -6,10 +6,11 @@ import {
 import Share from 'react-native-share';
 import { Text, AmountInput, ReceiveQRCode } from '../components';
 import { colors, fontSize, fontWeight } from '../config/styling';
-import ExchangeHelper from '../utils/exchangeHelper';
+
 import ReceiveActionMenu from '../actionmenus/ReceiveActionMenu';
 
 import WalletContext from '../contexts/WalletContext';
+import { withExchangeRateContext } from '../contexts/ExchangeRateContext';
 
 import styleMerge from '../utils/styleMerge';
 import parentStyles from './styles/common';
@@ -69,6 +70,7 @@ class Receive extends PureComponent {
     address: PropTypes.string.isRequired,
     dialogRef: PropTypes.shape({}).isRequired,
     setMoreOptionsFunc: PropTypes.func.isRequired,
+    exchangeRateContext: PropTypes.shape({}).isRequired,
   };
 
   constructor(props, context) {
@@ -77,23 +79,19 @@ class Receive extends PureComponent {
     const { address, setMoreOptionsFunc } = props;
     const {
       coinid,
-      globalContext: { settingHelper, showActionSheetWithOptions },
+      globalContext: { showActionSheetWithOptions },
       showStatus,
     } = context;
     const { ticker, coinTitle } = coinid;
 
     this.coinid = coinid;
     this.showStatus = showStatus;
-    this.settingHelper = settingHelper;
-    this.exchangeHelper = ExchangeHelper(ticker);
     setMoreOptionsFunc(this._onMoreOptions);
 
     this.state = {
       address,
       ticker,
       qrAddress: this._buildQrURI({ address, amount: 0 }),
-      exchangeRate: 0,
-      currency: '',
       amount: 0,
       coinTitle,
       showActionSheetWithOptions,
@@ -103,9 +101,6 @@ class Receive extends PureComponent {
   componentDidMount() {
     const { address } = this.props;
     this._handleNewData({ address });
-
-    this._onSettingsUpdated(this.settingHelper.getAll());
-    this.settingHelper.on('updated', this._onSettingsUpdated);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -116,22 +111,6 @@ class Receive extends PureComponent {
       this._handleNewData({ address });
     }
   }
-
-  componentWillUnmount() {
-    this.settingHelper.removeListener('updated', this._onSettingsUpdated);
-  }
-
-  _onSettingsUpdated = (settings) => {
-    const { currency } = settings;
-    this.setState({ currency });
-    this._refreshExchangeRate(currency);
-  };
-
-  _refreshExchangeRate = (currency) => {
-    this.exchangeHelper.convert(1, currency).then((exchangeRate) => {
-      this.setState({ exchangeRate });
-    });
-  };
 
   _handleNewData = (newData) => {
     const { address: oldAddress, amount: oldAmount } = this.state;
@@ -251,7 +230,9 @@ class Receive extends PureComponent {
   };
 
   _toggleInputFiat = () => {
-    const { inputInFiat, exchangeRate } = this.state;
+    const { inputInFiat } = this.state;
+    const { exchangeRateContext } = this.props;
+    const { exchangeRate } = exchangeRateContext;
 
     if (!exchangeRate) {
       return false;
@@ -267,10 +248,11 @@ class Receive extends PureComponent {
 
   render() {
     const {
-      ticker, qrAddress, address, exchangeRate, currency, amount,
+      ticker, qrAddress, address, amount,
     } = this.state;
 
-    const { dialogRef } = this.props;
+    const { dialogRef, exchangeRateContext } = this.props;
+    const { currency, exchangeRate } = exchangeRateContext;
 
     let { inputInFiat } = this.state;
 
@@ -325,4 +307,4 @@ class Receive extends PureComponent {
   }
 }
 
-export default Receive;
+export default withExchangeRateContext()(Receive);

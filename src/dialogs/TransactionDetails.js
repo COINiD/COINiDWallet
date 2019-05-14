@@ -94,15 +94,16 @@ export default class TransactionDetails extends PureComponent {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { info } = this.props;
     const { tx, address } = info;
 
+    const note = await this.noteHelper.loadNote(tx, address);
+
     this.setState({
       maxFeeIncrease: 0, // getMaxFeeIncrease(tx, this.coinid.unspent),
+      note,
     });
-
-    this.noteHelper.loadNote(tx, address).then(note => this.setState({ note }));
   }
 
   _handleReturnData = (data) => {
@@ -257,7 +258,7 @@ export default class TransactionDetails extends PureComponent {
               </Text>
             )}
           </FontScale>
-          <ConvertCurrency value={balanceChanged} ticker={ticker}>
+          <ConvertCurrency value={balanceChanged}>
             {({ fiatText }) => (
               <FontScale
                 fontSizeMax={fontSize.h2}
@@ -351,7 +352,7 @@ export default class TransactionDetails extends PureComponent {
           <View style={styles.separator} />
           <RowInfo title="Fee">{`${numFormat(fees, ticker)} ${ticker}`}</RowInfo>
           <RowInfo title="Size">{`${size} bytes`}</RowInfo>
-          <ConvertCurrency value={balanceChanged} ticker={ticker} time={time}>
+          <ConvertCurrency value={balanceChanged} time={time}>
             {({ fiatText }) => (
               <RowInfo title={`${currency} on completion`}>{`${fiatText}`}</RowInfo>
             )}

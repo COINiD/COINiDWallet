@@ -425,7 +425,7 @@ export default class SweepKeyDetails extends PureComponent {
             </Text>
           )}
         </FontScale>
-        <ConvertCurrency value={balance} ticker={ticker}>
+        <ConvertCurrency value={balance}>
           {({ fiatText }) => (
             <FontScale
               fontSizeMax={fontSize.h2}

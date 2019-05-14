@@ -9,6 +9,7 @@ import GlobalContext from '../contexts/GlobalContext';
 import WalletContext from '../contexts/WalletContext';
 import DialogBoxContext from '../contexts/DialogBoxContext';
 import StatusBoxContext from '../contexts/StatusBoxContext';
+import { ExchangeRateContextProvider } from '../contexts/ExchangeRateContext';
 
 import { colors } from '../config/styling';
 
@@ -76,15 +77,17 @@ class Wallet extends PureComponent {
     }
 
     return (
-      <InstalledWallet
-        ref={(c) => {
-          this.walletRef = c;
-        }}
-        settingHelper={this.settingHelper}
-        navigation={navigation}
-        hideSensitive={hideSensitive}
-        hasBeenSetup={hasBeenSetup}
-      />
+      <ExchangeRateContextProvider>
+        <InstalledWallet
+          ref={(c) => {
+            this.walletRef = c;
+          }}
+          settingHelper={this.settingHelper}
+          navigation={navigation}
+          hideSensitive={hideSensitive}
+          hasBeenSetup={hasBeenSetup}
+        />
+      </ExchangeRateContextProvider>
     );
   }
 
