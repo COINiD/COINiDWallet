@@ -1,5 +1,28 @@
-import { Clipboard, Platform } from 'react-native';
+import { Alert, Clipboard, Platform } from 'react-native';
 import Share from 'react-native-share';
+import RNExitApp from 'react-native-exit-app';
+
+const resetAccount = ({ title, coinid }) => {
+  Alert.alert(
+    `Remove the ${title.toLowerCase()} wallet account?`,
+    'The public key and history will be removed. The app will exit when it is finished.',
+    [
+      { text: 'Cancel', onPress: () => {}, style: 'cancel' },
+      {
+        text: 'OK',
+        onPress: () => {
+          coinid
+            .getStorage()
+            .reset()
+            .then(() => {
+              RNExitApp.exitApp();
+            });
+        },
+      },
+    ],
+    { cancelable: true },
+  );
+};
 
 const onShare = (data) => {
   const options = {
@@ -21,11 +44,6 @@ const getShareIcon = () => ({
   linkText: 'Share',
   linkIconType: 'evilicon',
 });
-/*
-ypub6YLbo78uVXWfBychBD7WpxyKgCBkyBFWW2e7Jg8WAXazaZ88PMQ175hBrWAAeLD4eVJuqC3a8zLDHqgTMRiUUP15NCYYdqLZFV5Ktkp2i1f
-ypub6Zg8KLiu5sx72A3eYUgkAMfik6GE8aA1c5pfkbA9aqvajruyHVoLagCFZ25CGNkhwGThxBhadbvReqP6V1sMgB4qUmeeUBPNBQ8owgwH4MW
-ypub6Zg8KLiu5sx73P6rhZnftZK9o83SddCmDAoHPwMbdt8TYJdgCWYYU7ZohDrJzG1tJqCFmE5evbRofAk18qMcnfz2FEuVfpDWFGfrKjuft34
-*/
 
 const getChainSections = ({ chainKeys, showStatus }) => chainKeys.map((chain, idx) => ({
   items: [
@@ -63,7 +81,7 @@ const getAccountSection = ({ publicKey, derivationPath, showStatus }) => {
   return {
     items: [
       {
-        title: 'Account public key',
+        title: 'Public key',
         rightTitle: publicKey,
         hideChevron: true,
         onPress: () => {
@@ -99,13 +117,54 @@ const getAccountSection = ({ publicKey, derivationPath, showStatus }) => {
         },
       },
     ],
-    listHint:
-      'The account extended public key have been derived following the path and scheme shown above.',
   };
 };
 
-const ExportPublicKeys = ({ activeWallets, showStatus }) => {
-  const { coinid } = activeWallets[0];
+const getAddressInfoSections = ({ addressType, derivationPath, showStatus }) => {
+  const addressDerivationPath = `${derivationPath}/c/i`;
+  return {
+    items: [
+      {
+        title: 'Address type',
+        rightTitle: addressType,
+        hideChevron: true,
+        onPress: () => {
+          Clipboard.setString(addressType);
+          showStatus('Copied address type', {
+            ...getShareIcon(),
+            onLinkPress: () => onShare(addressType),
+          });
+        },
+      },
+      {
+        title: 'Address derivation',
+        rightTitle: addressDerivationPath,
+        hideChevron: true,
+        onPress: () => {
+          Clipboard.setString(addressDerivationPath);
+          showStatus('Copied address derivation', {
+            ...getShareIcon(),
+            onLinkPress: () => onShare(addressDerivationPath),
+          });
+        },
+      },
+    ],
+  };
+};
+
+let selectedWallet;
+
+const AccountInformation = ({ showStatus, params }) => {
+  if (params && params.wallet) {
+    selectedWallet = params.wallet;
+  }
+
+  if (!selectedWallet) {
+    return [];
+  }
+
+  const { coinid, title } = selectedWallet;
+
   const {
     publicKey, derivationPath, chainKeys, addressType,
   } = coinid.getPublicKeyAndDerivation();
@@ -119,7 +178,37 @@ const ExportPublicKeys = ({ activeWallets, showStatus }) => {
 
   const chainSections = getChainSections({ chainKeys, showStatus });
 
-  return [accountSection, ...chainSections];
+  const addressInfoSection = getAddressInfoSections({
+    title,
+    derivationPath,
+    addressType,
+    showStatus,
+  });
+
+  return [
+    {
+      items: [
+        {
+          title: 'Account',
+          rightTitle: `${title} wallet`,
+          hideChevron: true,
+        },
+      ],
+    },
+    addressInfoSection,
+    accountSection,
+    ...chainSections,
+    {
+      items: [
+        {
+          title: `Remove ${title.toLowerCase()} wallet account`,
+          onPress: () => resetAccount({ title, coinid }),
+          hideChevron: true,
+          isWarning: true,
+        },
+      ],
+    },
+  ];
 };
 
-export default ExportPublicKeys;
+export default AccountInformation;

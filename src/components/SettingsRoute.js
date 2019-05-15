@@ -68,7 +68,6 @@ class SettingsRoute extends PureComponent {
 
   _onFocus = () => {
     const { navigation, routeName, onRouteChange } = this._getPropsInfo();
-
     onRouteChange({ routeName, navigation });
   };
 
