@@ -21,11 +21,16 @@ import {
   isAddressUsed,
 } from './transactionHelper';
 import {
-  getByteCount, dataToString, derivationToQr, derivationArrToQr,
+  getByteCount,
+  dataToString,
+  derivationToQr,
+  derivationArrToQr,
+  reverseQrFriendlyDerivationPath,
 } from './utils';
 
 const bitcoin = require('bitcoinjs-lib');
 const bitcoinMessage = require('bitcoinjs-message');
+const bs58checkBase = require('bs58check/base');
 
 const bip32utils = require('./bip32-utils-extension');
 const Blockchain = require('./blockchain');
@@ -54,6 +59,46 @@ class COINiDPublic extends EventEmitter {
     this.key = key;
     this.pubKeyData = '';
   }
+
+  convertPublicKeyToSlip131Version = (publicKey, derivationPath) => {
+    // convert public key to ypub/zpub/xpub according to registered version byte for currency
+    // see: https://github.com/satoshilabs/slips/blob/master/slip-0132.md
+    const addressType = getTypeFromDerivation(derivationPath);
+
+    const bs58check = bs58checkBase(this.network.hashFunctions.address);
+    const buffer = bs58check.decode(publicKey);
+    const version = this.network.slip132[addressType].public;
+
+    buffer.writeUInt32BE(version, 0);
+
+    return bs58check.encode(buffer);
+  };
+
+  getChainKeys = () => {
+    const accountJSON = this.account.toJSON();
+
+    return accountJSON.map(({ node, derivationPath }) => ({
+      publicKey: this.convertPublicKeyToSlip131Version(node, derivationPath),
+      derivationPath,
+    }));
+  };
+
+  getPublicKeyAndDerivation = () => {
+    const [qrDerivationPath, xpubPublicKey] = this.pubKeyData.split('$');
+
+    const derivationPath = reverseQrFriendlyDerivationPath(qrDerivationPath);
+    const publicKey = this.convertPublicKeyToSlip131Version(xpubPublicKey, derivationPath);
+    const addressType = getTypeFromDerivation(derivationPath);
+
+    const chainKeys = this.getChainKeys();
+
+    return {
+      publicKey,
+      derivationPath,
+      addressType,
+      chainKeys,
+    };
+  };
 
   getStorage = () => this.storage;
 

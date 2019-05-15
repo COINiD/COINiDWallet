@@ -7,6 +7,7 @@ import { SettingsHeader } from '../components';
 import { colors } from '../config/styling';
 import { settingRoutes, getSettingsNavigator } from '../routes/settings';
 import SettingsTree from '../settingstree';
+import StatusBoxContext from '../contexts/StatusBoxContext';
 
 import GlobalContext from '../contexts/GlobalContext';
 
@@ -106,7 +107,7 @@ class Settings extends PureComponent {
     return true;
   };
 
-  _renderGlobalContextConsumer = (globalContext) => {
+  _renderGlobalContextConsumer = (globalContext, statusBoxContext) => {
     const { navigation } = this.props;
     const {
       isHome, currentRoute, screenAnimator, screenLayout,
@@ -121,6 +122,7 @@ class Settings extends PureComponent {
       isBLESupported,
       settings,
       settingHelper,
+      showStatus: statusBoxContext.showStatus,
     });
 
     const headerAnimStyle = {
@@ -167,8 +169,14 @@ class Settings extends PureComponent {
     );
   };
 
+  _renderStatusBoxConsumer = statusBoxContext => (
+    <GlobalContext.Consumer>
+      {globalContext => this._renderGlobalContextConsumer(globalContext, statusBoxContext)}
+    </GlobalContext.Consumer>
+  );
+
   render() {
-    return <GlobalContext.Consumer>{this._renderGlobalContextConsumer}</GlobalContext.Consumer>;
+    return <StatusBoxContext.Consumer>{this._renderStatusBoxConsumer}</StatusBoxContext.Consumer>;
   }
 }
 

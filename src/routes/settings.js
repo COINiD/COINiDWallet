@@ -32,6 +32,10 @@ export const settingRoutes = {
     screen: SettingsRoute,
     title: 'About',
   },
+  ExportPublicKeys: {
+    screen: SettingsRoute,
+    title: 'Public key info',
+  },
 };
 
 export const getSettingsNavigator = cardStyle => createStackNavigator(settingRoutes, {

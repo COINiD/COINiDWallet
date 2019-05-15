@@ -5,6 +5,7 @@ import PreferredCurrency from './PreferredCurrency';
 import Reset from './Reset';
 import SignMessage from './SignMessage';
 import About from './About';
+import ExportPublicKeys from './ExportPublicKeys';
 
 const SettingsTree = state => ({
   Home: Home(state),
@@ -14,6 +15,7 @@ const SettingsTree = state => ({
   Reset: Reset(state),
   SignMessage: SignMessage(state),
   About: About(state),
+  ExportPublicKeys: ExportPublicKeys(state),
 });
 
 export default SettingsTree;
