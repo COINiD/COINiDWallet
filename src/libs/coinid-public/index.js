@@ -60,6 +60,51 @@ class COINiDPublic extends EventEmitter {
     this.pubKeyData = '';
   }
 
+  getDerivationPathFromSlip131PublicKey = (publicKey) => {
+    // checks version and matches with slip131
+    const bs58check = bs58checkBase(this.network.hashFunctions.address);
+    const buffer = bs58check.decode(publicKey);
+    const version = buffer.readUInt32BE(0);
+
+    const typeIndex = Object.values(this.network.slip132)
+      .map(e => e.public)
+      .indexOf(version);
+
+    if (typeIndex === -1) {
+      throw Error('Invalid version');
+    }
+
+    const addressType = Object.keys(this.network.slip132)[typeIndex];
+    const addressTypeInfo = getAddressTypeInfo(addressType);
+
+    const derivationPath = `m/${addressTypeInfo.bip44Derivation}'/${
+      this.network.bip44Derivation
+    }'/0'`;
+
+    return derivationPath;
+  };
+
+  convertSlip131PubKeyToTransport = (inputPublicKey) => {
+    const bs58check = bs58checkBase(this.network.hashFunctions.address);
+
+    try {
+      const derivationPath = this.getDerivationPathFromSlip131PublicKey(inputPublicKey);
+
+      const buffer = bs58check.decode(inputPublicKey);
+      const version = this.network.bip32.public;
+
+      buffer.writeUInt32BE(version, 0);
+
+      const publicKey = bs58check.encode(buffer);
+
+      const transportPublicKey = `${derivationToQr(derivationPath)}$${publicKey}`;
+
+      return transportPublicKey;
+    } catch (err) {
+      return inputPublicKey;
+    }
+  };
+
   convertPublicKeyToSlip131Version = (publicKey, derivationPath) => {
     // convert public key to ypub/zpub/xpub according to registered version byte for currency
     // see: https://github.com/satoshilabs/slips/blob/master/slip-0132.md
