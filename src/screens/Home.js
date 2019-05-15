@@ -12,7 +12,6 @@ import projectSettings from '../config/settings';
 
 import { Text } from '../components';
 import { Wallet } from '.';
-import StatusBoxContext from '../contexts/StatusBoxContext';
 import DialogBoxContext from '../contexts/DialogBoxContext';
 import COINiDPublic from '../libs/coinid-public';
 import storageHelper from '../utils/storageHelper';
@@ -382,25 +381,23 @@ class Home extends PureComponent {
 
   render() {
     return (
-      <StatusBoxContext.Provider>
-        <DialogBoxContext.Provider>
-          <View style={{ flex: 1 }}>
-            <View style={styles.container}>
-              <Animated.View style={[{ height: 40 }, this.headerAnimStyle]}>
-                <Header
-                  outerContainerStyles={styles.headerOuter}
-                  innerContainerStyles={styles.headerInner}
-                  leftComponent={this._renderHeaderLeft()}
-                  centerComponent={this._pagination}
-                  rightComponent={this._renderHeaderRight()}
-                />
-              </Animated.View>
-              {this._carousel}
-            </View>
-            <Animated.View pointerEvents="none" style={[styles.overlay, this.overlayAnimStyle]} />
+      <DialogBoxContext.Provider>
+        <View style={{ flex: 1 }}>
+          <View style={styles.container}>
+            <Animated.View style={[{ height: 40 }, this.headerAnimStyle]}>
+              <Header
+                outerContainerStyles={styles.headerOuter}
+                innerContainerStyles={styles.headerInner}
+                leftComponent={this._renderHeaderLeft()}
+                centerComponent={this._pagination}
+                rightComponent={this._renderHeaderRight()}
+              />
+            </Animated.View>
+            {this._carousel}
           </View>
-        </DialogBoxContext.Provider>
-      </StatusBoxContext.Provider>
+          <Animated.View pointerEvents="none" style={[styles.overlay, this.overlayAnimStyle]} />
+        </View>
+      </DialogBoxContext.Provider>
     );
   }
 }
