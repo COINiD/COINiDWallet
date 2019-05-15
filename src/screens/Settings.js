@@ -85,11 +85,11 @@ class Settings extends PureComponent {
     childGoBack();
   };
 
-  _gotoRoute = (route) => {
+  _gotoRoute = (route, params) => {
     const { navigation } = this.props;
     const { navigate } = navigation;
 
-    navigate(route);
+    navigate(route, params);
   };
 
   _handleRouteChange = ({ routeName, navigation }) => {
@@ -98,11 +98,13 @@ class Settings extends PureComponent {
     }
     const { title, isHome } = settingRoutes[routeName];
     const { goBack: childGoBack } = navigation;
+    const { params } = navigation.state;
 
     this.setState({
       currentRoute: title,
       isHome,
       childGoBack,
+      params,
     });
     return true;
   };
@@ -123,6 +125,7 @@ class Settings extends PureComponent {
       settings,
       settingHelper,
       showStatus: statusBoxContext.showStatus,
+      navigation,
     });
 
     const headerAnimStyle = {

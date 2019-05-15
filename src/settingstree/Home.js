@@ -133,9 +133,15 @@ const Home = (state) => {
     {
       items: [
         {
-          title: 'Remove account',
-          onPress: () => gotoRoute('Reset'),
-          disabled: !hasAnyWallets,
+          title: 'Account information',
+          onPress: () => {
+            if (state.activeWallets.length === 1) {
+              state.gotoRoute('AccountInformation', { wallet: state.activeWallets[0] });
+            } else {
+              state.gotoRoute('AccountList');
+            }
+          },
+          disabled: !state.activeWallets.length,
         },
       ],
     },
