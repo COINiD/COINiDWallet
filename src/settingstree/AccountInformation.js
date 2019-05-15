@@ -166,9 +166,33 @@ const getCryptoTitle = (activeWallet) => {
   return coinid.coinTitle;
 };
 
-let selectedWallet;
+const getSlipKeysOptions = ({ settings, settingHelper, allowBitcoinSlip132 }) => {
+  if (!allowBitcoinSlip132) {
+    return [];
+  }
 
-const AccountInformation = ({ showStatus, params }) => {
+  return [
+    {
+      items: [
+        {
+          title: 'Use SLIP-0132 public keys',
+          hideChevron: true,
+          switchButton: true,
+          disabled: false,
+          switched: !settings.displayBitcoinXpub,
+          onSwitch: () => {
+            settingHelper.toggle('displayBitcoinXpub');
+          },
+        },
+      ],
+    },
+  ];
+};
+
+let selectedWallet;
+const AccountInformation = ({
+  showStatus, params, settingHelper, settings,
+}) => {
   if (params && params.wallet) {
     selectedWallet = params.wallet;
   }
@@ -178,10 +202,13 @@ const AccountInformation = ({ showStatus, params }) => {
   }
 
   const { coinid, title } = selectedWallet;
+  const { allowBitcoinSlip132 } = coinid.network;
 
   const {
     publicKey, derivationPath, chainKeys, addressType,
-  } = coinid.getPublicKeyAndDerivation();
+  } = coinid.getPublicKeyAndDerivation(
+    settings.displayBitcoinXpub,
+  );
 
   const accountSection = getAccountSection({
     publicKey,
@@ -198,6 +225,8 @@ const AccountInformation = ({ showStatus, params }) => {
     addressType,
     showStatus,
   });
+
+  const slipKeysOption = getSlipKeysOptions({ settings, settingHelper, allowBitcoinSlip132 });
 
   return [
     {
@@ -222,6 +251,7 @@ const AccountInformation = ({ showStatus, params }) => {
     addressInfoSection,
     accountSection,
     ...chainSections,
+    ...slipKeysOption,
     {
       items: [
         {

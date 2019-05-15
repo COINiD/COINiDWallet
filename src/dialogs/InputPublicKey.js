@@ -67,7 +67,7 @@ export default class InputPublicKey extends PureComponent {
   _continue = () => {
     const { publicKey: inputPublicKey } = this.state;
 
-    const publicKey = this.coinid.convertSlip131PubKeyToTransport(inputPublicKey);
+    const publicKey = this.coinid.convertSlip132PubKeyToTransport(inputPublicKey);
 
     const { onContinue } = this.props;
     const { type, dialogCloseAndClear } = this.context;
