@@ -250,6 +250,15 @@ class StatusBoxProvider extends PureComponent {
   }
 }
 
+export const withStatusBox = (WrappedComponent) => {
+  const Enhance = props => (
+    <StatusContext.Consumer>
+      {statusBoxContext => <WrappedComponent {...props} statusBoxContext={statusBoxContext} />}
+    </StatusContext.Consumer>
+  );
+  return Enhance;
+};
+
 export default {
   ...StatusContext,
   Provider: StatusBoxProvider,
