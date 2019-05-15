@@ -152,6 +152,20 @@ const getAddressInfoSections = ({ addressType, derivationPath, showStatus }) => 
   };
 };
 
+const getBlockheight = (activeWallet) => {
+  if (!activeWallet) {
+    return 'Not synced yet';
+  }
+
+  const { coinid } = activeWallet;
+  return `${coinid.blockHeight}`;
+};
+
+const getCryptoTitle = (activeWallet) => {
+  const { coinid } = activeWallet;
+  return coinid.coinTitle;
+};
+
 let selectedWallet;
 
 const AccountInformation = ({ showStatus, params }) => {
@@ -191,6 +205,16 @@ const AccountInformation = ({ showStatus, params }) => {
         {
           title: 'Account',
           rightTitle: `${title} wallet`,
+          hideChevron: true,
+        },
+        {
+          title: 'Cryptocurrency',
+          rightTitle: getCryptoTitle(selectedWallet),
+          hideChevron: true,
+        },
+        {
+          title: 'Latest block',
+          rightTitle: getBlockheight(selectedWallet),
           hideChevron: true,
         },
       ],
