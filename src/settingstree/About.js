@@ -98,6 +98,15 @@ const About = state => [
   {
     items: getLinks(),
   },
+  {
+    items: [
+      {
+        title: 'Public key info',
+        onPress: () => state.gotoRoute('ExportPublicKeys'),
+        disabled: !state.activeWallets.length,
+      },
+    ],
+  },
 ];
 
 export default About;
