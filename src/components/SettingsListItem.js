@@ -8,6 +8,10 @@ import {
 } from '../config/styling';
 
 const styles = StyleSheet.create({
+  subtitle: {
+    color: colors.gray,
+    marginLeft: 2,
+  },
   rightTitle: {
     color: colors.gray,
   },
@@ -52,6 +56,7 @@ class SettingsListItem extends PureComponent {
     customTitleStyle: PropTypes.shape({}),
     customRightTitleStyle: PropTypes.shape({}),
     customRightTitleContainerStyle: PropTypes.shape({}),
+    customContainerStyle: PropTypes.shape({}),
   };
 
   static defaultProps = {
@@ -59,7 +64,7 @@ class SettingsListItem extends PureComponent {
     isWarning: false,
     customTitleStyle: {},
     customRightTitleStyle: {},
-    customRightTitleContainerStyle: {},
+    customContainerStyle: {},
   };
 
   render() {
@@ -69,11 +74,12 @@ class SettingsListItem extends PureComponent {
       customTitleStyle,
       customRightTitleStyle,
       customRightTitleContainerStyle,
+      customContainerStyle,
     } = this.props;
 
     return (
       <ListItem
-        containerStyle={styles.listItemContainer}
+        containerStyle={[styles.listItemContainer, customContainerStyle]}
         wrapperStyle={styles.listItemWrapper}
         titleStyle={[
           styles.listItemTitle,
@@ -81,6 +87,7 @@ class SettingsListItem extends PureComponent {
           isWarning ? styles.warningText : null,
           customTitleStyle,
         ]}
+        subtitleStyle={[styles.listItemTitle, styles.subtitle]}
         titleContainerStyle={styles.listItemTitleContainer}
         rightTitleStyle={[styles.listItemTitle, styles.rightTitle, customRightTitleStyle]}
         rightTitleContainerStyle={[

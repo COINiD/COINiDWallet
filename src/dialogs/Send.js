@@ -10,11 +10,11 @@ import {
   Button, Text, AmountInput, FontScale,
 } from '../components';
 import { numFormat } from '../utils/numFormat';
-import ExchangeHelper from '../utils/exchangeHelper';
 import { fontSize, colors, fontWeight } from '../config/styling';
 import { decodeQrRequest } from '../utils/addressHelper';
 
 import WalletContext from '../contexts/WalletContext';
+import { withExchangeRateContext } from '../contexts/ExchangeRateContext';
 
 import styleMerge from '../utils/styleMerge';
 import parentStyles from './styles/common';
@@ -61,6 +61,7 @@ class Send extends PureComponent {
     balance: PropTypes.number.isRequired,
     onAddToBatch: PropTypes.func.isRequired,
     onRemoveFromBatch: PropTypes.func.isRequired,
+    exchangeRateContext: PropTypes.shape({}).isRequired,
   };
 
   static defaultProps = {
@@ -72,21 +73,14 @@ class Send extends PureComponent {
     super(props);
 
     const { navigation, editItem } = props;
-    const {
-      coinid,
-      globalContext: { settingHelper },
-    } = context;
+    const { coinid } = context;
     const { ticker } = coinid;
 
     this.coinid = coinid;
-
-    this.settingHelper = settingHelper;
-    this.exchangeHelper = ExchangeHelper(ticker);
     this.navigation = navigation;
 
     this.state = {
       exchangeRate: 0,
-      currency: '',
       ticker,
       inputInFiat: false,
       address: '',
@@ -107,27 +101,6 @@ class Send extends PureComponent {
       };
     }
   }
-
-  componentDidMount() {
-    this._onSettingsUpdated(this.settingHelper.getAll());
-    this.settingHelper.on('updated', this._onSettingsUpdated);
-  }
-
-  componentWillUnmount() {
-    this.settingHelper.removeListener('updated', this._onSettingsUpdated);
-  }
-
-  _onSettingsUpdated = (settings) => {
-    const { currency } = settings;
-    this.setState({ currency });
-    this._refreshExchangeRate(currency);
-  };
-
-  _refreshExchangeRate = (currency) => {
-    this.exchangeHelper.convert(1, currency).then((exchangeRate) => {
-      this.setState({ exchangeRate });
-    });
-  };
 
   _verify = () => {
     const { address } = this.state;
@@ -234,7 +207,9 @@ class Send extends PureComponent {
   };
 
   _toggleInputFiat = () => {
-    const { inputInFiat, exchangeRate } = this.state;
+    const { inputInFiat } = this.state;
+    const { exchangeRateContext } = this.props;
+    const { exchangeRate } = exchangeRateContext;
 
     if (!exchangeRate) {
       return;
@@ -245,17 +220,13 @@ class Send extends PureComponent {
 
   render() {
     const {
-      editAddress,
-      editAmount,
-      address,
-      note,
-      ticker,
-      amount,
-      exchangeRate,
-      currency,
+      editAddress, editAmount, address, note, ticker, amount,
     } = this.state;
 
-    const { balance, dialogRef, fee } = this.props;
+    const {
+      balance, dialogRef, fee, exchangeRateContext,
+    } = this.props;
+    const { exchangeRate, currency } = exchangeRateContext;
 
     let { inputInFiat } = this.state;
 
@@ -489,4 +460,4 @@ class Send extends PureComponent {
   }
 }
 
-export default Send;
+export default withExchangeRateContext()(Send);

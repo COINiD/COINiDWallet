@@ -6,6 +6,7 @@ import DetailsModal from '../components/DetailsModal';
 import { dialogRoutes } from '../routes/dialogs';
 
 import WalletContext from './WalletContext';
+import { ExchangeRateContextProvider } from './ExchangeRateContext';
 
 const DialogContext = React.createContext({});
 
@@ -228,33 +229,41 @@ class DialogBox extends PureComponent {
     );
   };
 
-  render() {
+  _renderModal = () => {
     const { dialogs } = this;
-    const { currentDialog, context, props } = this.state;
+    const { currentDialog, props } = this.state;
+
+    return (
+      <DetailsModal
+        {...props}
+        ref={(c) => {
+          this.modal = c;
+        }}
+        onLayout={this._onLayout}
+        onOuterLayout={this._onOuterLayout}
+        closeAndClear={() => {
+          this._closeAndClear();
+        }}
+        currentDialog={currentDialog}
+        removeWhenClosed={false}
+        onMoreOptions={() => {
+          const { key } = this._getCurrent();
+          if (this.moreOptionCallbacks[key]) {
+            this.moreOptionCallbacks[key]();
+          }
+        }}
+      >
+        {dialogs.map(this._renderDialogComponent)}
+      </DetailsModal>
+    );
+  };
+
+  render() {
+    const { context } = this.state;
 
     return (
       <WalletContext.Provider value={context}>
-        <DetailsModal
-          {...props}
-          ref={(c) => {
-            this.modal = c;
-          }}
-          onLayout={this._onLayout}
-          onOuterLayout={this._onOuterLayout}
-          closeAndClear={() => {
-            this._closeAndClear();
-          }}
-          currentDialog={currentDialog}
-          removeWhenClosed={false}
-          onMoreOptions={() => {
-            const { key } = this._getCurrent();
-            if (this.moreOptionCallbacks[key]) {
-              this.moreOptionCallbacks[key]();
-            }
-          }}
-        >
-          {dialogs.map(this._renderDialogComponent)}
-        </DetailsModal>
+        <ExchangeRateContextProvider>{this._renderModal()}</ExchangeRateContextProvider>
       </WalletContext.Provider>
     );
   }

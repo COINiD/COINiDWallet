@@ -1075,6 +1075,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -1703,7 +1704,7 @@
 			buildSettings = {
 				APP_RETURN_SCHEME = "coinid-tbtc";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CURRENT_PROJECT_VERSION = 317;
+				CURRENT_PROJECT_VERSION = 328;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = GC88SQF2BV;
 				HEADER_SEARCH_PATHS = (
@@ -1748,7 +1749,7 @@
 			buildSettings = {
 				APP_RETURN_SCHEME = "coinid-tbtc";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CURRENT_PROJECT_VERSION = 317;
+				CURRENT_PROJECT_VERSION = 328;
 				DEVELOPMENT_TEAM = GC88SQF2BV;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",

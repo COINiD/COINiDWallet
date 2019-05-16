@@ -5,4 +5,22 @@ const GlobalContext = React.createContext({
   isBLESupported: false,
 });
 
+export const withGlobalContext = (WrappedComponent) => {
+  const Enhance = props => (
+    <GlobalContext.Consumer>
+      {globalContext => <WrappedComponent {...props} globalContext={globalContext} />}
+    </GlobalContext.Consumer>
+  );
+  return Enhance;
+};
+
+export const withGlobalCurrency = (WrappedComponent) => {
+  const Enhance = props => (
+    <GlobalContext.Consumer>
+      {({ settings }) => <WrappedComponent {...props} currency={settings.currency} />}
+    </GlobalContext.Consumer>
+  );
+  return Enhance;
+};
+
 export default GlobalContext;

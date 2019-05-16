@@ -59,4 +59,8 @@ export const derivationToQr = path => path
   .map(v => v.replace("'", '-'))
   .join('*');
 
+export const reverseQrFriendlyDerivationPath = qrFriendlyDerivationPath => `m/${qrFriendlyDerivationPath
+  .replace(new RegExp('\\*', 'g'), '/')
+  .replace(new RegExp('\\-', 'g'), "'")}`;
+
 export const derivationArrToQr = pathArr => pathArr.map(derivationToQr).join('+');

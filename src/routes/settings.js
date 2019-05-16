@@ -20,10 +20,6 @@ export const settingRoutes = {
     screen: SettingsRoute,
     title: 'Preferred currency',
   },
-  Reset: {
-    screen: SettingsRoute,
-    title: 'Remove account',
-  },
   SignMessage: {
     screen: SettingsRoute,
     title: 'Sign message',
@@ -31,6 +27,14 @@ export const settingRoutes = {
   About: {
     screen: SettingsRoute,
     title: 'About',
+  },
+  AccountList: {
+    screen: SettingsRoute,
+    title: 'Select an account',
+  },
+  AccountInformation: {
+    screen: SettingsRoute,
+    title: 'Account information',
   },
 };
 

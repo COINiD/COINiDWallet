@@ -11,6 +11,8 @@ import { RootNavigator } from './routes/root';
 import { InactiveOverlay } from './components';
 import SettingHelper from './utils/settingHelper';
 import GlobalContext from './contexts/GlobalContext';
+import StatusBoxContext from './contexts/StatusBoxContext';
+
 import { QRCodeProvider } from './contexts/QRCodeContext';
 import projectSettings from './config/settings';
 import { colors } from './config/styling';
@@ -76,12 +78,14 @@ class COINiDWallet extends PureComponent {
   render() {
     return (
       <QRCodeProvider>
-        <GlobalContext.Provider value={this.state}>
-          <View style={styles.container}>
-            <RootNavigator />
-            <InactiveOverlay />
-          </View>
-        </GlobalContext.Provider>
+        <StatusBoxContext.Provider>
+          <GlobalContext.Provider value={this.state}>
+            <View style={styles.container}>
+              <RootNavigator />
+              <InactiveOverlay />
+            </View>
+          </GlobalContext.Provider>
+        </StatusBoxContext.Provider>
       </QRCodeProvider>
     );
   }

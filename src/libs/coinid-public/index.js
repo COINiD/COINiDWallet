@@ -21,11 +21,16 @@ import {
   isAddressUsed,
 } from './transactionHelper';
 import {
-  getByteCount, dataToString, derivationToQr, derivationArrToQr,
+  getByteCount,
+  dataToString,
+  derivationToQr,
+  derivationArrToQr,
+  reverseQrFriendlyDerivationPath,
 } from './utils';
 
 const bitcoin = require('bitcoinjs-lib');
 const bitcoinMessage = require('bitcoinjs-message');
+const bs58checkBase = require('bs58check/base');
 
 const bip32utils = require('./bip32-utils-extension');
 const Blockchain = require('./blockchain');
@@ -54,6 +59,119 @@ class COINiDPublic extends EventEmitter {
     this.key = key;
     this.pubKeyData = '';
   }
+
+  getDerivationPathFromSlip132PublicKey = (publicKey) => {
+    // checks version and matches with slip132
+    const bs58check = bs58checkBase(this.network.hashFunctions.address);
+    const buffer = bs58check.decode(publicKey);
+    const version = buffer.readUInt32BE(0);
+
+    const getAddressTypeFromSlip132 = (network) => {
+      const typeIndex = Object.values(network.slip132)
+        .map(e => e.public)
+        .indexOf(version);
+
+      if (typeIndex === -1) {
+        if (network.allowBitcoinSlip132 && network !== bitcoin.networks.bitcoin) {
+          return getAddressTypeFromSlip132(bitcoin.networks.bitcoin);
+        }
+        return false;
+      }
+
+      return Object.keys(network.slip132)[typeIndex];
+    };
+
+    const addressType = getAddressTypeFromSlip132(this.network);
+
+    if (!addressType) {
+      throw Error('Could not get address type from slip132');
+    }
+
+    const addressTypeInfo = getAddressTypeInfo(addressType);
+
+    const derivationPath = `m/${addressTypeInfo.bip44Derivation}'/${
+      this.network.bip44Derivation
+    }'/0'`;
+
+    return derivationPath;
+  };
+
+  convertSlip132PubKeyToTransport = (inputPublicKey) => {
+    const bs58check = bs58checkBase(this.network.hashFunctions.address);
+
+    try {
+      const derivationPath = this.getDerivationPathFromSlip132PublicKey(inputPublicKey);
+
+      const buffer = bs58check.decode(inputPublicKey);
+      const version = this.network.bip32.public;
+
+      buffer.writeUInt32BE(version, 0);
+
+      const publicKey = bs58check.encode(buffer);
+
+      const transportPublicKey = `${derivationToQr(derivationPath)}$${publicKey}`;
+
+      return transportPublicKey;
+    } catch (err) {
+      return inputPublicKey;
+    }
+  };
+
+  convertPublicKeyToSlip132Version = (publicKey, derivationPath, network) => {
+    // convert public key to ypub/zpub/xpub according to registered version byte for currency
+    // see: https://github.com/satoshilabs/slips/blob/master/slip-0132.md
+    const addressType = getTypeFromDerivation(derivationPath);
+
+    const bs58check = bs58checkBase(network.hashFunctions.address);
+    const buffer = bs58check.decode(publicKey);
+    const version = network.slip132[addressType].public;
+
+    buffer.writeUInt32BE(version, 0);
+
+    return bs58check.encode(buffer);
+  };
+
+  getChainKeys = (network) => {
+    const accountJSON = this.account.toJSON();
+
+    return accountJSON.map(({ node, derivationPath }) => ({
+      publicKey: this.convertPublicKeyToSlip132Version(node, derivationPath, network),
+      derivationPath,
+    }));
+  };
+
+  getPublicKeyAndDerivation = (displayBitcoinXpub) => {
+    const [qrDerivationPath, xpubPublicKey] = this.pubKeyData.split('$');
+
+    const slipNetwork = this.network.allowBitcoinSlip132 && displayBitcoinXpub
+      ? bitcoin.networks.bitcoin
+      : this.network;
+
+    const derivationPath = reverseQrFriendlyDerivationPath(qrDerivationPath);
+    const publicKey = this.convertPublicKeyToSlip132Version(
+      xpubPublicKey,
+      derivationPath,
+      slipNetwork,
+    );
+    const addressType = getTypeFromDerivation(derivationPath);
+
+    const chainKeys = this.getChainKeys(slipNetwork);
+
+    const isNonStandardSlip132 = () => {
+      const version = this.network.slip132[addressType].public;
+      const bitcoinVersion = bitcoin.networks.bitcoin.slip132[addressType].public;
+
+      return version !== bitcoinVersion;
+    };
+
+    return {
+      publicKey,
+      derivationPath,
+      addressType,
+      chainKeys,
+      allowBitcoinSlip132: this.network.allowBitcoinSlip132 && isNonStandardSlip132(),
+    };
+  };
 
   getStorage = () => this.storage;
 

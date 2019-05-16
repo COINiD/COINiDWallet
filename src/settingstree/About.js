@@ -38,37 +38,7 @@ const getLinks = () => {
   return items;
 };
 
-const getBlockheight = ({ activeWallets }) => {
-  const [activeWallet] = activeWallets;
-
-  if (!activeWallet) {
-    return 'Not synced yet';
-  }
-
-  const { coinid } = activeWallet;
-  return `${coinid.blockHeight}`;
-};
-
-const getCryptoTitle = ({ slides }) => {
-  const [{ coinid }] = slides;
-  return coinid.coinTitle;
-};
-
-const About = state => [
-  {
-    items: [
-      {
-        title: 'Cryptocurrency',
-        rightTitle: getCryptoTitle(state),
-        hideChevron: true,
-      },
-      {
-        title: 'Latest block',
-        rightTitle: getBlockheight(state),
-        hideChevron: true,
-      },
-    ],
-  },
+const About = () => [
   {
     items: [
       {
