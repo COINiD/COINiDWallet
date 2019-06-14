@@ -142,7 +142,7 @@ class AmountInput extends PureComponent {
   }
 
   render() {
-    const { style, inputInFiat } = this.props;
+    const { style, inputInFiat, testID } = this.props;
     const { amount, fiatAmount } = this.state;
 
     if (inputInFiat) {
@@ -161,6 +161,7 @@ class AmountInput extends PureComponent {
           textContentType="none"
           underlineColorAndroid="transparent"
           autoCapitalize="words"
+          testID={testID}
         />
       );
     }
@@ -180,6 +181,7 @@ class AmountInput extends PureComponent {
         textContentType="none"
         underlineColorAndroid="transparent"
         autoCapitalize="words"
+        testID={testID}
       />
     );
   }

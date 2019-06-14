@@ -331,6 +331,7 @@ class Setup extends PureComponent {
             disabled={disableButton}
             isLoading={isSigning}
             loadingText={signingText}
+            testID="button-setup-cold"
           >
             {buttonText}
           </Button>
@@ -399,6 +400,7 @@ class Setup extends PureComponent {
           disabled={disableButton}
           isLoading={isSigning}
           loadingText={signingText}
+          testID="button-setup-hot"
         >
           Start setup of hot wallet
         </Button>

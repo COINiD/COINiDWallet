@@ -296,6 +296,7 @@ class Receive extends PureComponent {
               amount={amount}
               exchangeTo={currency}
               exchangeFrom={ticker}
+              testID="input-receive-amount"
             />
             <TouchableOpacity style={styles.currencyButton} onPress={this._toggleInputFiat}>
               <Text style={styles.currencyButtonText}>{inputInFiat ? currency : ticker}</Text>

@@ -5,6 +5,7 @@
 import io from 'socket.io-client';
 
 import { EventEmitter } from 'events';
+import { mockableUrl } from 'node-mock-server/react-native/utils';
 import {
   getTxUniqueHash,
   isAddressUsed,
@@ -197,7 +198,7 @@ class Blockbook extends EventEmitter {
 
     socketDisconnected();
 
-    this.socket = io(this.apiUrl, {
+    this.socket = io(mockableUrl(this.apiUrl), {
       transports: ['websocket'],
       reconnection: true,
       autoConnect: true,

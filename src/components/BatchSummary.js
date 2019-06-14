@@ -169,7 +169,7 @@ export default class BatchSummary extends PureComponent {
           { display: isVisible ? 'flex' : 'none', transform: [{ translateX: this.state.left }] },
         ]}
       >
-        <TouchableOpacity style={styles.touch} onPress={onPress}>
+        <TouchableOpacity style={styles.touch} onPress={onPress} testID="button-batch-summary">
           <View style={styles.content}>
             <Animated.View
               style={[styles.counterContainer, { transform: [{ scale: counterScale }] }]}

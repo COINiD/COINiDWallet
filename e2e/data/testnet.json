@@ -1,0 +1,19 @@
+{
+  "coin": "testnet",
+  "pubKeyData": {
+    "P2SHP2WPKH": "upub5ES82KEjWCvx19vi1EcEQFQp2xuiTMB9r837ztBr8ntHzMaxGc81PkcfRFFDfWFKULhSZ15bRyXWgp8oWamLPMTweywYrp8zPCy6HM3EEyj",
+    "P2PKH": "tpubDDebpBUs3pCHeXVsPgLHBBbPL76cwdEihX6Sdf5TFCheqK8j3WvDQs7SERyzhJXstJAGeryxipbR5BtsRXBy9GrrhJMYnYcxjFhU5r5ANde",
+    "P2WPKH": "vpub5ZgAcoT5GB2beVumFeJYQvx2tNotDn8Vsd1RZ42dEN6pN2UDvBfskXqkpwoacNQY744McLaJWvMfnMfJ8nC4m6sAF9TpByhjAK5JmJRB9ZB"
+  },
+  "receiveAddress": {
+    "P2SHP2WPKH": "2NE6Diqqtegnp7JLwEW7u6qjUEwV2JVzpn9"
+  },
+  "sendTest": {
+    "address": "2NE6Diqqtegnp7JLwEW7u6qjUEwV2JVzpn9",
+    "amount": "1",
+    "note": "Test note"
+  },
+  "message": "This is a test message",
+  "messageAddress": "2N7UPz9tH9hkmAoKnR1VhkgBq9TyyHVL68t",
+  "messageSignature": "H1ox+mmOF5Wh0LK8RgRtL5YSoSHt3l03qjEEMVLlJzCkEvUzfbEBClNji+OeJ65NepKHDB3vm99DHGqa5vTi/8w="
+}

@@ -6,7 +6,9 @@
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
     "postinstall": "node node_modules/rn-nodeify/cmd.js --install stream,buffer,events,assert,crypto,vm --hack",
-    "postversion": "react-native-version; bin/createBuildJSON"
+    "postversion": "react-native-version; bin/createBuildJSON",
+    "detox": "bin/runDetoxTests",
+    "detoxPackager": "RN_SRC_EXT=e2e.js yarn start"
   },
   "rnpm": {
     "assets": [
@@ -68,6 +70,7 @@
     "@babel/runtime": "^7.4.0",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.5.0",
+    "detox": "^12.9.0",
     "enzyme": "^3.8.0",
     "enzyme-adapter-react-16": "^1.7.1",
     "eslint": "^5.15.3",
@@ -80,6 +83,7 @@
     "metro-react-native-babel-preset": "^0.53.1",
     "mock-async-storage": "^2.0.4",
     "mock-socket": "^8.0.5",
+    "node-mock-server": "https://github.com/COINiD/node-mock-server.git",
     "react-dom": "^16.7.0",
     "react-native-version": "^2.7.0",
     "react-test-renderer": "16.8.3",
@@ -90,6 +94,47 @@
     "transformIgnorePatterns": [
       "node_modules/(?!(react-native|react-navigation|coinid-address-functions|coinid-address-types))"
     ]
+  },
+  "detox": {
+    "configurations": {
+      "ios.sim.iphonexsmax": {
+        "binaryPath": "ios/build/Build/Products/Debug-iphonesimulator/tBTC COINiD.app",
+        "build": "xcodebuild -project ios/COINiDWallet.xcodeproj -scheme COINiDWallet -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build",
+        "type": "ios.simulator",
+        "name": "iPhone Xs Max"
+      },
+      "ios.sim.iphonex": {
+        "binaryPath": "ios/build/Build/Products/Debug-iphonesimulator/tBTC COINiD.app",
+        "build": "xcodebuild -project ios/COINiDWallet.xcodeproj -scheme COINiDWallet -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build",
+        "type": "ios.simulator",
+        "name": "iPhone X"
+      },
+      "ios.sim.iphone7": {
+        "binaryPath": "ios/build/Build/Products/Debug-iphonesimulator/tBTC COINiD.app",
+        "build": "xcodebuild -project ios/COINiDWallet.xcodeproj -scheme COINiDWallet -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build",
+        "type": "ios.simulator",
+        "name": "iPhone 7"
+      },
+      "ios.sim.iphone5s": {
+        "binaryPath": "ios/build/Build/Products/Debug-iphonesimulator/tBTC COINiD.app",
+        "build": "xcodebuild -project ios/COINiDWallet.xcodeproj -scheme COINiDWallet -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build",
+        "type": "ios.simulator",
+        "name": "iPhone 5s"
+      },
+      "android.emu.pixel2xl": {
+        "binaryPath": "android/app/build/outputs/apk/debug/app-debug.apk",
+        "build": "cd android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug -DisTesting=yes && cd ..",
+        "type": "android.emulator",
+        "name": "Pixel_2_XL_API_28"
+      },
+      "android.emu.nexus5x": {
+        "binaryPath": "android/app/build/outputs/apk/debug/app-debug.apk",
+        "build": "cd android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug -DisTesting=yes && cd ..",
+        "type": "android.emulator",
+        "name": "Nexus_5X_API_24"
+      }
+    },
+    "test-runner": "jest"
   },
   "react-native": {
     "crypto": "react-native-crypto",

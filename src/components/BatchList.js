@@ -68,7 +68,7 @@ class BatchListItem extends PureComponent {
     }
 
     return (
-      <TouchableOpacity style={itemStyle} onPress={this._onPress}>
+      <TouchableOpacity style={itemStyle} onPress={this._onPress} testID={`batch-item-${index}`}>
         <View style={styles.infoContainer}>
           <Text style={[styles.line, styles.amountText]}>
             {numFormat(item.amount, ticker)} {ticker}

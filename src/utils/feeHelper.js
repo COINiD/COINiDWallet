@@ -1,18 +1,17 @@
-
-
 /**
  * Helper for retrieving fees.
  * All fees are displayed as fee-per-byte (in satoshis)
  */
 
 import { EventEmitter } from 'events';
+import { mockableUrl } from 'node-mock-server/react-native/utils';
 import storageHelper from './storageHelper';
 
 class FeeHelper extends EventEmitter {
   constructor(coin) {
     super();
     this.storage = storageHelper(coin);
-    this.apiUrl = `https://estimatefee.coinid.org/${coin}.json`;
+    this.apiUrl = mockableUrl(`https://estimatefee.coinid.org/${coin}.json`);
 
     this.minimumFee = 1; // satoshi-per-byte (should lookup from coin settings)
     this.syncEveryMs = 60000;
@@ -38,7 +37,8 @@ class FeeHelper extends EventEmitter {
   }
 
   setFeesInfo = (feesInfo, save, emit) => {
-    if (feesInfo.lastUpdated === undefined
+    if (
+      feesInfo.lastUpdated === undefined
       || feesInfo.fees === undefined
       || !Array.isArray(feesInfo.fees)
       || feesInfo.fees[0] === undefined
@@ -60,21 +60,23 @@ class FeeHelper extends EventEmitter {
     }
 
     return true;
-  }
+  };
 
   sync = () => {
     if (this.syncTimer) {
       clearTimeout(this.syncTimer);
     }
 
-    this.fetchFees().then((feesInfo) => {
-      this.setFeesInfo(feesInfo, true, true);
-      setTimeout(this.sync, this.syncEveryMs);
-    }).catch((err) => {
-      console.log(err);
-      setTimeout(this.sync, this.syncEveryMs);
-    });
-  }
+    this.fetchFees()
+      .then((feesInfo) => {
+        this.setFeesInfo(feesInfo, true, true);
+        setTimeout(this.sync, this.syncEveryMs);
+      })
+      .catch((err) => {
+        console.log(err);
+        setTimeout(this.sync, this.syncEveryMs);
+      });
+  };
 
   fetchFees = () => fetch(this.apiUrl)
     .then(r => r.json())
@@ -85,9 +87,9 @@ class FeeHelper extends EventEmitter {
         lastUpdated: Date.now(),
         fees,
       };
-    })
+    });
 
-  getFees = () => this.feesInfo
+  getFees = () => this.feesInfo;
 }
 
 const feeHelpersCache = {};

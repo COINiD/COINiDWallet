@@ -4,10 +4,11 @@
  */
 
 import { EventEmitter } from 'events';
+import { mockableUrl } from 'node-mock-server/react-native/utils';
 import storageHelper from './storageHelper';
 import Settings from '../config/settings';
 
-const apiUrl = 'https://min-api.cryptocompare.com/data';
+const apiUrl = mockableUrl('https://min-api.cryptocompare.com/data');
 
 const fetchFromHistoryApi = (range, ticker, currency, duration, aggregate) => {
   const url = `${apiUrl}/`

@@ -446,6 +446,7 @@ class InstalledWallet extends PureComponent {
               name="send"
               onPress={this._openSend}
               underlayColor={colors.transparent}
+              testID="button-send"
             />
             <Icon
               iconStyle={styles.footerIcon}
@@ -454,6 +455,7 @@ class InstalledWallet extends PureComponent {
               onPress={this._openReceive}
               type="material-community"
               underlayColor={colors.transparent}
+              testID="button-receive"
             />
           </View>
         </View>

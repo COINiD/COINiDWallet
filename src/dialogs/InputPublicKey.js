@@ -122,9 +122,15 @@ export default class InputPublicKey extends PureComponent {
             underlineColorAndroid="transparent"
             blurOnSubmit
             multiline
+            testID="input-public-key"
           />
         </View>
-        <Button big onPress={this._continue} style={{ marginTop: 24 }}>
+        <Button
+          big
+          onPress={this._continue}
+          style={{ marginTop: 24 }}
+          testID="button-create-public-key"
+        >
           Create Wallet
         </Button>
       </View>
