@@ -178,6 +178,7 @@ class InstalledWallet extends PureComponent {
     setTimeout(() => {
       statusBoxContext.showStatus(
         "Keep it safe. Don't forget to backup the recovery phrase from your COINiD Vault.",
+        { hideAfter: 6000 },
       );
     }, 3000);
   };
