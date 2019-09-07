@@ -205,6 +205,8 @@ class StatusBoxProvider extends PureComponent {
   _showStatus = (statusContent, statusProps) => {
     clearTimeout(this.timeout);
 
+    const { hideAfter = 1600 } = statusProps;
+
     this.setState(
       {
         statusContent,
@@ -212,7 +214,7 @@ class StatusBoxProvider extends PureComponent {
       },
       () => {
         this._animate(1, () => {
-          this.timeout = setTimeout(this._hideStatus, 1600);
+          this.timeout = setTimeout(this._hideStatus, hideAfter);
         });
       },
     );
