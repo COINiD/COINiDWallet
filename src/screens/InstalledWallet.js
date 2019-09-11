@@ -9,6 +9,7 @@ import { getBottomSpace } from 'react-native-iphone-x-helper';
 import {
   BatchSummary, ConnectionStatus, Balance, TransactionList, Text,
 } from '../components';
+import { withStatusBox } from '../contexts/StatusBoxContext';
 
 import projectSettings from '../config/settings';
 import { colors } from '../config/styling';
@@ -63,6 +64,7 @@ class InstalledWallet extends PureComponent {
     navigation: PropTypes.shape({}).isRequired,
     hideSensitive: PropTypes.bool,
     hasBeenSetup: PropTypes.bool,
+    statusBoxContext: PropTypes.shape({}).isRequired,
   };
 
   static defaultProps = {
@@ -170,6 +172,15 @@ class InstalledWallet extends PureComponent {
         this._onTransactions();
       });
     }, 100);
+
+    const { statusBoxContext } = this.props;
+
+    setTimeout(() => {
+      statusBoxContext.showStatus(
+        "Keep it safe. Don't forget to backup the recovery phrase from your COINiD Vault.",
+        { hideAfter: 10000 },
+      );
+    }, 3000);
   };
 
   _onTransactions = () => {
@@ -451,4 +462,4 @@ class InstalledWallet extends PureComponent {
   }
 }
 
-export default InstalledWallet;
+export default withStatusBox(InstalledWallet);

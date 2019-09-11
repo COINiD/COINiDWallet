@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 
 import {
   Linking,
@@ -20,6 +21,7 @@ import { addressFunctionP2PKH } from 'coinid-address-functions';
 import SplashScreen from 'react-native-splash-screen';
 
 import { ifIphoneX } from 'react-native-iphone-x-helper';
+
 import { colors, fontSize, fontWeight } from '../config/styling';
 import Settings from '../config/settings';
 import settingHelper from '../utils/settingHelper';
@@ -116,7 +118,7 @@ const AnimatedBlurView = Platform.OS === 'ios'
   ? Animated.createAnimatedComponent(BlurView)
   : Animated.createAnimatedComponent(View);
 
-export default class InactiveOverlay extends PureComponent {
+class InactiveOverlay extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -633,3 +635,5 @@ export default class InactiveOverlay extends PureComponent {
 InactiveOverlay.propTypes = {};
 
 InactiveOverlay.defaultProps = {};
+
+export default InactiveOverlay;

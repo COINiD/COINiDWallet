@@ -1,34 +1,25 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Animated,
-  Easing,
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
+  StyleSheet, View, TouchableOpacity, KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { getBottomSpace } from 'react-native-iphone-x-helper';
 import { Icon } from 'react-native-elements';
+
 import Text from '../components/Text';
+import DismissableByDragView from '../components/DismissableByDragView';
+
 import { colors, fontWeight, fontSize } from '../config/styling';
 
 const StatusContext = React.createContext({});
 
 const BOX_HEIGHT = 48;
 const OUTER_PADDING = 8;
-const BOTTOM = +BOX_HEIGHT + OUTER_PADDING * 2;
-const TRANSLATE_UP = BOTTOM + getBottomSpace();
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    zIndex: 1000,
+    marginBottom: getBottomSpace(),
     padding: OUTER_PADDING,
-    bottom: -BOTTOM,
-    width: '100%',
-    overflow: 'visible',
   },
   box: {
     backgroundColor: colors.otherGray,
@@ -65,7 +56,6 @@ const styles = StyleSheet.create({
 
 class StatusBox extends PureComponent {
   static propTypes = {
-    style: PropTypes.shape({}).isRequired,
     children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
     linkText: PropTypes.string,
     linkIcon: PropTypes.string,
@@ -147,21 +137,7 @@ class StatusBox extends PureComponent {
   };
 
   render() {
-    const { style } = this.props;
-
-    if (Platform.OS === 'ios') {
-      return (
-        <KeyboardAvoidingView
-          behavior="position"
-          style={{ zIndex: 1000 }}
-          keyboardVerticalOffset={16}
-        >
-          <Animated.View style={[styles.container, style]}>{this._renderBox()}</Animated.View>
-        </KeyboardAvoidingView>
-      );
-    }
-
-    return <Animated.View style={[styles.container, style]}>{this._renderBox()}</Animated.View>;
+    return <View style={styles.container}>{this._renderBox()}</View>;
   }
 }
 
@@ -177,74 +153,70 @@ class StatusBoxProvider extends PureComponent {
   constructor() {
     super();
 
-    const animation = new Animated.Value(0);
-
-    const statusStyle = {
-      opacity: animation.interpolate({
-        inputRange: [0, 1],
-        outputRange: [0, 1],
-      }),
-      transform: [
-        {
-          translateY: animation.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0, -TRANSLATE_UP],
-          }),
-        },
-      ],
-    };
+    this.dismissableView = React.createRef();
 
     this.state = {
       statusContent: null,
-      animation,
-      statusStyle,
       value: { showStatus: this._showStatus },
     };
   }
 
-  _showStatus = (statusContent, statusProps) => {
-    clearTimeout(this.timeout);
+  _showStatus = async (statusContent, statusProps) => {
+    const { current: dismissableView } = this.dismissableView;
+    if (dismissableView && dismissableView.dismiss) {
+      await dismissableView.dismiss();
+    }
 
-    this.setState(
-      {
-        statusContent,
-        statusProps,
-      },
-      () => {
-        this._animate(1, () => {
-          this.timeout = setTimeout(this._hideStatus, 1600);
-        });
-      },
-    );
+    this.setState({
+      statusContent,
+      statusProps,
+    });
   };
 
-  _hideStatus = () => {
-    this._animate(0);
+  _onHide = () => {
+    this.setState({
+      statusContent: null,
+    });
   };
 
-  _animate = (toValue, cb) => {
-    const { animation } = this.state;
+  _renderStatusBox = () => {
+    const { statusContent, statusProps } = this.state;
 
-    Animated.timing(animation, {
-      toValue,
-      duration: 200,
-      easing: toValue === 1 ? Easing.elastic(1) : Easing.out(Easing.quad),
-      useNativeDriver: true,
-    }).start(cb);
+    const doRender = () => {
+      if (!statusContent) {
+        return null;
+      }
+
+      const { hideAfter = 1600 } = statusProps;
+
+      return (
+        <DismissableByDragView
+          ref={this.dismissableView}
+          slide="slideBottom"
+          onHide={this._onHide}
+          showTime={hideAfter}
+        >
+          <StatusBox {...statusProps} onHide={this._onHide}>
+            {statusContent}
+          </StatusBox>
+        </DismissableByDragView>
+      );
+    };
+
+    if (Platform.OS === 'ios') {
+      return <KeyboardAvoidingView behavior="position">{doRender()}</KeyboardAvoidingView>;
+    }
+    return doRender();
   };
 
   render() {
     const { children } = this.props;
-    const {
-      statusContent, statusStyle, statusProps, value,
-    } = this.state;
+    const { value } = this.state;
 
     return (
       <StatusContext.Provider value={value}>
         {children}
-        <StatusBox style={statusStyle} {...statusProps}>
-          {statusContent}
-        </StatusBox>
+        {this._renderStatusBox()}
       </StatusContext.Provider>
     );
   }
