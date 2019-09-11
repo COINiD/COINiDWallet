@@ -11,12 +11,14 @@ platform :ios do
       next
     end
 
-    rootDir = '..'
     shRootDir = '../..'; # sh cwd is android/fastlane
 
     sh("#{shRootDir}/bin/changeCoin #{options[:ticker]}")
 
-    build_app(scheme: 'COINiDWallet')
+    build_app(
+      scheme: 'COINiDWallet',
+      xcargs: '-allowProvisioningUpdates'
+    )
     upload_to_testflight(skip_waiting_for_build_processing: true)
 
     message_slack(options)
