@@ -79,6 +79,9 @@ class Wallet extends PureComponent {
     return (
       <ExchangeRateContextProvider>
         <InstalledWallet
+          ref={(c) => {
+            this.walletRef = c;
+          }}
           settingHelper={this.settingHelper}
           navigation={navigation}
           hideSensitive={hideSensitive}

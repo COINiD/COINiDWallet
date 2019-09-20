@@ -223,11 +223,13 @@ class StatusBoxProvider extends PureComponent {
 }
 
 export const withStatusBox = (WrappedComponent) => {
-  const Enhance = props => (
+  const Enhance = React.forwardRef((props, ref) => (
     <StatusContext.Consumer>
-      {statusBoxContext => <WrappedComponent {...props} statusBoxContext={statusBoxContext} />}
+      {statusBoxContext => (
+        <WrappedComponent {...props} ref={ref} statusBoxContext={statusBoxContext} />
+      )}
     </StatusContext.Consumer>
-  );
+  ));
   return Enhance;
 };
 
