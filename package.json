@@ -70,7 +70,7 @@
     "@babel/runtime": "^7.4.0",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.5.0",
-    "detox": "^12.9.0",
+    "detox": "^14.4.1",
     "enzyme": "^3.8.0",
     "enzyme-adapter-react-16": "^1.7.1",
     "eslint": "^5.15.3",
@@ -107,7 +107,7 @@
         "binaryPath": "ios/build/Build/Products/Debug-iphonesimulator/tBTC COINiD.app",
         "build": "xcodebuild -project ios/COINiDWallet.xcodeproj -scheme COINiDWallet -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build",
         "type": "ios.simulator",
-        "name": "iPhone X"
+        "name": "iPhone 8"
       },
       "ios.sim.iphone7": {
         "binaryPath": "ios/build/Build/Products/Debug-iphonesimulator/tBTC COINiD.app",
