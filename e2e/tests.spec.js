@@ -20,6 +20,7 @@ const commonTests = (accountKey) => {
       }
     }
     await takeScreenshot(id);
+
     await input.tapAtPoint({x: 100, y: -30});
   }
 
@@ -27,6 +28,11 @@ const commonTests = (accountKey) => {
     await waitFor(element(button)).toBeVisible().whileElement(scroller).scroll(150, 'down');
     await expect(element(button)).toBeVisible();
     await element(button).tap();
+  }
+
+  const removeStatusBox = async () => {
+    await waitFor(element(by.id('statusbox'))).toBeVisible().withTimeout(5000);
+    await element(by.id('statusbox')).swipe('down');
   }
 
   it('should install a wallet', async () => {
@@ -45,6 +51,8 @@ const commonTests = (accountKey) => {
   });
 
   it('should have filtering options', async () => {
+    await removeStatusBox();
+
     await expect(element(by.id('button-filter-list'))).toBeVisible();
     await takeScreenshot('wallet-main');
 
@@ -54,6 +62,8 @@ const commonTests = (accountKey) => {
   });
 
   it('should have a receive dialog', async () => {
+    await removeStatusBox();
+
     await waitFor(element(by.id('button-receive'))).toBeVisible().withTimeout(5000);
     await element(by.id('button-receive')).tap();
     await expect(element(by.id('dialog-title'))).toHaveText('Receive');
@@ -71,6 +81,8 @@ const commonTests = (accountKey) => {
   });
 
   it('should have a send dialog', async () => {
+    await removeStatusBox();
+
     await waitFor(element(by.id('button-send'))).toBeVisible().withTimeout(5000);
     await element(by.id('button-send')).tap();
     await expect(element(by.id('dialog-title'))).toHaveText('Send');
@@ -85,6 +97,8 @@ const commonTests = (accountKey) => {
   });
 
   it('should have a sign and edit dialog', async () => {
+    await removeStatusBox();
+
     await waitFor(element(by.id('button-batch-summary'))).toBeVisible().withTimeout(5000);
     await element(by.id('button-batch-summary')).tap();
     await expect(element(by.text('Sign transactions'))).toBeVisible();
@@ -98,6 +112,8 @@ const commonTests = (accountKey) => {
   });
 
   it('should have a transaction details dialog', async () => {
+    await removeStatusBox();
+
     await element(by.id('transaction-item')).atIndex(0).tap();
     await expect(element(by.id('dialog-title'))).toHaveText('Transaction details');
     await takeScreenshot('transaction-detail');
@@ -105,6 +121,8 @@ const commonTests = (accountKey) => {
   });
 
   it('should have a settings screen', async () => {
+    await removeStatusBox();
+
     await waitFor(element(by.id('button-settings'))).toBeVisible().withTimeout(5000);
     await element(by.id('button-settings')).tap();
     await expect(element(by.text('Settings'))).toBeVisible();
@@ -131,6 +149,8 @@ const commonTests = (accountKey) => {
   })
 
   it('should have a sign message dialog', async () => {
+    await removeStatusBox();
+
     await waitFor(element(by.id('button-settings'))).toBeVisible().withTimeout(5000);
     await element(by.id('button-settings')).tap();
     await takeScreenshot('settings-screen');
@@ -143,6 +163,8 @@ const commonTests = (accountKey) => {
   })
 
   it('should have a verify message dialog', async () => {
+    await removeStatusBox();
+
     await waitFor(element(by.id('button-settings'))).toBeVisible().withTimeout(5000);
     await element(by.id('button-settings')).tap();
     await takeScreenshot('settings-screen');

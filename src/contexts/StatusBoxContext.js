@@ -125,11 +125,15 @@ class StatusBox extends PureComponent {
 
   _renderBox = () => {
     if (!this._shouldRenderLink()) {
-      return <View style={[styles.box]}>{this._renderChildren()}</View>;
+      return (
+        <View style={[styles.box]} testID="statusbox">
+          {this._renderChildren()}
+        </View>
+      );
     }
 
     return (
-      <View style={[styles.box, styles.boxSpacedItems]}>
+      <View style={[styles.box, styles.boxSpacedItems]} testID="statusbox">
         {this._renderChildren()}
         {this._renderLink()}
       </View>
