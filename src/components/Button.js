@@ -98,6 +98,7 @@ class Button extends PureComponent {
       loadingText,
       disabled,
       onLayout,
+      testID,
     } = this.props;
     const styles = this._getStyle();
     const extraStyle = this._getExtraStyle();
@@ -125,6 +126,7 @@ class Button extends PureComponent {
         style={[styles.button, style, extraStyle, disabled && !isLoading ? styles.disabled : null]}
         onPress={onPress}
         disabled={disabled}
+        testID={testID}
       >
         <View style={[styles.buttonInner]} onLayout={onLayout}>
           {_renderContent()}

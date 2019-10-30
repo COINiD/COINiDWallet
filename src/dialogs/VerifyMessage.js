@@ -93,7 +93,7 @@ export default class SignMessage extends PureComponent {
       const verify = this.coinid.verifyMessage(message, address, signature);
 
       if (verify) {
-        Alert.alert('Verify message', `Message verified to be from ${address}`);
+        Alert.alert('Message verified', `Message verified to be from ${address}`);
         dialogCloseAndClear();
       }
     } catch (err) {
@@ -135,6 +135,7 @@ export default class SignMessage extends PureComponent {
                   this.setState({ address: newAddress });
                 }}
                 underlineColorAndroid="transparent"
+                testID="input-verify-address"
               />
             </View>
           </View>
@@ -165,6 +166,7 @@ export default class SignMessage extends PureComponent {
                   this.messageRef = c;
                 }}
                 underlineColorAndroid="transparent"
+                testID="input-verify-message"
               />
             </View>
           </View>
@@ -191,11 +193,14 @@ export default class SignMessage extends PureComponent {
                   this.setState({ signature: newSignature });
                 }}
                 underlineColorAndroid="transparent"
+                testID="input-verify-signature"
               />
             </View>
           </View>
 
-          <Button onPress={this._verifyMessage}>Verify message</Button>
+          <Button onPress={this._verifyMessage} testID="button-verify">
+            Verify message
+          </Button>
         </View>
       </View>
     );

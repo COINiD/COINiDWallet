@@ -232,6 +232,7 @@ export default class TransactionFilter extends PureComponent {
                 placeholderTextColor={colors.gray}
                 onFocus={onFocus}
                 underlineColorAndroid="transparent"
+                testID="input-filter-search"
               />
 
               <Icon

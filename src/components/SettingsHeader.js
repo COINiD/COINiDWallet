@@ -166,6 +166,7 @@ class SettingsHeader extends PureComponent {
             onPress={onBack}
             color="white"
             name="chevron-left"
+            testID="button-back"
           />
         </Animated.View>
 
@@ -183,6 +184,7 @@ class SettingsHeader extends PureComponent {
             onPress={onClose}
             color="white"
             name="close"
+            testID="button-settings-close"
           />
         </Animated.View>
       </Animated.View>

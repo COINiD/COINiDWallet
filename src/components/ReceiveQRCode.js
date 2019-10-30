@@ -81,7 +81,7 @@ class ReceiveQRCode extends PureComponent {
     return (
       <>
         <View style={styles.qrCodeWrapper}>
-          <TouchableOpacity onPress={() => this._copyAddress()}>
+          <TouchableOpacity onPress={() => this._copyAddress()} testID="receive-qrcode">
             <ViewShot
               ref={getViewShot}
               options={{
@@ -100,7 +100,11 @@ class ReceiveQRCode extends PureComponent {
 
         <FontScale fontSizeMax={fontSize.small} fontSizeMin={8} text={address} widthScale={0.9}>
           {({ fontSize: scaledFontSize }) => (
-            <Text style={[styles.addressText, { fontSize: scaledFontSize }]} selectable>
+            <Text
+              style={[styles.addressText, { fontSize: scaledFontSize }]}
+              selectable
+              testID="text-receive-address"
+            >
               {address}
             </Text>
           )}

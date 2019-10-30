@@ -67,6 +67,7 @@ export default class DialogTitle extends PureComponent {
             right: 20,
             bottom: 20,
           }}
+          testID="button-actionsheet"
         />
       );
     };
@@ -85,8 +86,11 @@ export default class DialogTitle extends PureComponent {
             right: 20,
             left: 20,
           }}
+          testID="button-close"
         />
-        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.title} testID="dialog-title">
+          {title}
+        </Text>
       </View>
     );
   }

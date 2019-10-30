@@ -53,7 +53,7 @@ export default class SetupWallet extends PureComponent {
         <Text style={styles.text}>
           To setup your hot wallet you need to have the COINiD Vault app installed on this device.
         </Text>
-        <Button big onPress={this._continue}>
+        <Button big onPress={this._continue} testID="button-setup-continue">
           Continue with COINiD Vault
         </Button>
         <Button
@@ -62,6 +62,7 @@ export default class SetupWallet extends PureComponent {
           onPress={this._continuePublic}
           style={styles.manualPublic}
           textStyle={styles.manualPublicText}
+          testID="button-setup-public-key"
         >
           Or enter public key manually
         </Button>
@@ -78,7 +79,12 @@ export default class SetupWallet extends PureComponent {
             To setup your cold wallet you need to have the COINiD Vault app installed on a separate
             offline device.
           </Text>
-          <Button big onPress={this._continue} disabled={disableButton}>
+          <Button
+            big
+            onPress={this._continue}
+            disabled={disableButton}
+            testID="button-setup-continue"
+          >
             {buttonText}
           </Button>
           <Button
@@ -87,6 +93,7 @@ export default class SetupWallet extends PureComponent {
             onPress={this._continuePublic}
             style={styles.manualPublic}
             textStyle={styles.manualPublicText}
+            testID="button-setup-public-key"
           >
             Or enter public key manually
           </Button>

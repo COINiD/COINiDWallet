@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+const { execSync } = require('child_process');
+const rootDir = `${__dirname}/..`;
+
+const { configurations } = require(`${rootDir}/package.json`).detox;
+const detoxConfigs = Object.keys(configurations);
+
+detoxConfigs.forEach(key => {
+  execSync(`detox test -c ${key}`, { stdio: 'inherit' });
+});

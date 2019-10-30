@@ -85,7 +85,7 @@ class SettingsRoute extends PureComponent {
         contentContainerStyle={styles.container}
       >
         <View style={styles.scrollWrapper}>
-          <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <ScrollView contentContainerStyle={styles.scrollContainer} testID="settings-scroll">
             {this._renderSections(settingsTree[routeName])}
             <View style={styles.logoWrapper}>
               <Image style={styles.logo} source={imageCOINiDLogo} resizeMode="contain" />

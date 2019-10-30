@@ -364,6 +364,7 @@ class TransactionListItem extends Component {
           <TouchableOpacity
             style={{ height: 56, marginVertical: 3 }}
             onPress={() => this._onPress({ tx, address, balanceChanged })}
+            testID="transaction-item"
           >
             <View style={styles.itemContainer}>
               <View style={styles.infoContainer}>
@@ -960,6 +961,7 @@ export default class TransactionList extends PureComponent {
                 left: 20,
                 right: 20,
               }}
+              testID="button-filter-list"
             />
             {showFilterIndicator()}
           </View>

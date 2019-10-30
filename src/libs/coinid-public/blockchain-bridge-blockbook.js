@@ -5,6 +5,7 @@
 import io from 'socket.io-client';
 
 import { EventEmitter } from 'events';
+
 import {
   getTxUniqueHash,
   isAddressUsed,

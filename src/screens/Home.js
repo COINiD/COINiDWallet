@@ -185,6 +185,7 @@ class Home extends PureComponent {
         inactiveSlideOpacity={Platform.OS === 'ios' ? 0.7 : 1}
         firstItem={activeSlide}
         containerCustomStyle={{ overflow: 'visible' }}
+        testID="carousel"
       />
     );
   }
@@ -253,7 +254,7 @@ class Home extends PureComponent {
     const { slides, hideSensitive } = this.state;
 
     return (
-      <View style={{ flex: 1, width: sliderWidth }}>
+      <View style={{ flex: 1, width: sliderWidth }} testID={`wallet-${slides[index].type}`}>
         <Wallet
           ref={(c) => {
             this.walletComponents[index] = c;
@@ -375,6 +376,7 @@ class Home extends PureComponent {
         iconStyle={styles.settingsBtn}
         underlayColor="transparent"
         onPress={this._openSettings}
+        testID="button-settings"
       />
     </View>
   );

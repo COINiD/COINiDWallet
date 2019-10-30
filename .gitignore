@@ -2,6 +2,9 @@
 src/config/secrets.js
 /builds/
 
+/screenshots/
+/artifacts/
+
 # OSX
 #
 .DS_Store

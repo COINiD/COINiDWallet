@@ -250,6 +250,7 @@ class Send extends PureComponent {
             },
           ]}
           onPress={this._removeFromBatch}
+          testID="button-remove-batch"
         >
           <Icon
             name="delete"
@@ -293,7 +294,7 @@ class Send extends PureComponent {
     };
 
     const renderSendButton = () => (
-      <Button style={styles.formButton} onPress={this._submit}>
+      <Button style={styles.formButton} onPress={this._submit} testID="button-add-transaction">
         Add transaction
       </Button>
     );
@@ -367,6 +368,7 @@ class Send extends PureComponent {
                     onSubmitEditing={() => this.amountRef.focus()}
                     underlineColorAndroid="transparent"
                     allowFontScaling={false}
+                    testID="input-send-address"
                   />
                 )}
               </FontScale>
@@ -414,9 +416,14 @@ class Send extends PureComponent {
                   amount={amount}
                   exchangeTo={currency}
                   exchangeFrom={ticker}
+                  testID="input-send-amount"
                 />
               </View>
-              <TouchableOpacity style={styles.currencyButton} onPress={this._toggleInputFiat}>
+              <TouchableOpacity
+                style={styles.currencyButton}
+                onPress={this._toggleInputFiat}
+                testID="button-send-toggle-fiat"
+              >
                 <Text style={styles.currencyButtonText}>{inputInFiat ? currency : ticker}</Text>
               </TouchableOpacity>
             </View>
@@ -449,6 +456,7 @@ class Send extends PureComponent {
                 returnKeyType="done"
                 onSubmitEditing={() => this.noteRef.blur()}
                 underlineColorAndroid="transparent"
+                testID="input-send-note"
               />
             </View>
           </View>
