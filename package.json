@@ -97,13 +97,13 @@
   },
   "detox": {
     "configurations": {
-      "ios.sim.iphonexsmax": {
+      "ios.sim.iphone11max": {
         "binaryPath": "ios/build/Build/Products/Debug-iphonesimulator/tBTC COINiD.app",
         "build": "xcodebuild -project ios/COINiDWallet.xcodeproj -scheme COINiDWallet -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build",
         "type": "ios.simulator",
-        "name": "iPhone Xs Max"
+        "name": "iPhone 11 Max"
       },
-      "ios.sim.iphonex": {
+      "ios.sim.iphone8": {
         "binaryPath": "ios/build/Build/Products/Debug-iphonesimulator/tBTC COINiD.app",
         "build": "xcodebuild -project ios/COINiDWallet.xcodeproj -scheme COINiDWallet -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build",
         "type": "ios.simulator",

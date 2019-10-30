@@ -25,13 +25,13 @@ const commonTests = (accountKey) => {
   }
 
   const scrollAndTap = async (button, scroller) => {
-    await waitFor(element(button)).toBeVisible().whileElement(scroller).scroll(150, 'down');
+    await waitFor(element(button)).toBeVisible().whileElement(scroller).scroll(50, 'down');
     await expect(element(button)).toBeVisible();
     await element(button).tap();
   }
 
   const removeStatusBox = async () => {
-    await waitFor(element(by.id('statusbox'))).toBeVisible().withTimeout(5000);
+    await waitFor(element(by.id('statusbox'))).toBeVisible().withTimeout(10000);
     await element(by.id('statusbox')).swipe('down');
   }
 
@@ -182,7 +182,6 @@ const commonTests = (accountKey) => {
     await expect(element(by.text('Message verified'))).toBeVisible();
   })
 }
-
 
 describe(`${coinConfig.coin} hot wallet`, () => {
   beforeEach(async () => {
