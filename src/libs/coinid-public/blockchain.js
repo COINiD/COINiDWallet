@@ -9,10 +9,11 @@ const bridgeFetcher = require('./blockchain-fetch-bridge');
 // Gets best bridge that provides selected function
 const getBridgeFunction = function (bridges, functionKey) {
   for (let i = 0; i < bridges.length; i++) {
-    if (bridges[i].hasOwnProperty(functionKey)) {
+    if (bridges[i].connected && bridges[i].hasOwnProperty(functionKey)) {
       return bridges[i];
     }
   }
+  return bridges[0];
 };
 
 const addBridge = function (bridgeKey, apiUrl, storage, network) {
