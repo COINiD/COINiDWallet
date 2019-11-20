@@ -93,7 +93,11 @@
   "jest": {
     "preset": "react-native",
     "transformIgnorePatterns": [
-      "node_modules/(?!(react-native|react-navigation|coinid-address-functions|coinid-address-types))"
+      "node_modules/(?!(react-native|react-navigation|coinid-address-functions|coinid-address-types|node-mock-server))"
+    ],
+    "testMatch": [
+      "<rootDir>/__tests__/**/*test.js?(x)",
+      "<rootDir>/src/**/*test.js"
     ]
   },
   "detox": {
