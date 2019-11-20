@@ -1619,9 +1619,9 @@ bitcoin-ops@^1.3.0:
   resolved "https://registry.yarnpkg.com/bitcoin-ops/-/bitcoin-ops-1.4.1.tgz#e45de620398e22fd4ca6023de43974ff42240278"
   integrity sha512-pef6gxZFztEhaE9RY9HmWVmiIHqCb2OyS4HPKkpc6CIiiOa3Qmuoylxc5P2EkU3w+5eTSifI9SEZC88idAIGow==
 
-"bitcoinjs-lib@https://github.com/wlc-/bitcoinjs-lib":
+"bitcoinjs-lib@https://github.com/COINiD/bitcoinjs-lib":
   version "3.3.0"
-  resolved "https://github.com/wlc-/bitcoinjs-lib#241cced02082f75bdd2eada33195b91002a568c2"
+  resolved "https://github.com/COINiD/bitcoinjs-lib#241cced02082f75bdd2eada33195b91002a568c2"
   dependencies:
     bech32 "0.0.3"
     bigi "^1.4.0"
@@ -1642,9 +1642,9 @@ bitcoin-ops@^1.3.0:
 
 "bitcoinjs-message@https://github.com/COINiD/bitcoinjs-message.git#coinid-version":
   version "2.0.0"
-  resolved "https://github.com/COINiD/bitcoinjs-message.git#45ca80585b5ef75d90143171ecb7445f8c355605"
+  resolved "https://github.com/COINiD/bitcoinjs-message.git#176efbe7884c6460f58397ded30579ce20f8fa1d"
   dependencies:
-    bitcoinjs-lib "https://github.com/wlc-/bitcoinjs-lib"
+    bitcoinjs-lib "https://github.com/COINiD/bitcoinjs-lib"
     buffer-equals "^1.0.3"
     secp256k1 "^3.0.1"
     varuint-bitcoin "^1.0.1"
@@ -8084,6 +8084,16 @@ set-value@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/set-value/-/set-value-2.0.0.tgz#71ae4a88f0feefbbf52d1ea604f3fb315ebb6274"
   integrity sha512-hw0yxk9GT/Hr5yJEYnHNKYXkIA8mVJgd9ditYZCe16ZczcaELYYcfvaXesNACk2O8O0nTiPQcQhGUQj8JLzeeg==
+  dependencies:
+    extend-shallow "^2.0.1"
+    is-extendable "^0.1.1"
+    is-plain-object "^2.0.3"
+    split-string "^3.0.1"
+
+set-value@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/set-value/-/set-value-2.0.1.tgz#a18d40530e6f07de4228c7defe4227af8cad005b"
+  integrity sha512-JxHc1weCN68wRY0fhCoXpyK55m/XPHafOmK4UWD7m2CI14GMcFypt4w/0+NV5f/ZMby2F6S2wwA7fgynh9gWSw==
   dependencies:
     extend-shallow "^2.0.1"
     is-extendable "^0.1.1"

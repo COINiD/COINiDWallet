@@ -22,7 +22,7 @@
     "big.js": "^5.0.3",
     "bip21": "^2.0.2",
     "bip32-utils": "^0.11.1",
-    "bitcoinjs-lib": "https://github.com/wlc-/bitcoinjs-lib",
+    "bitcoinjs-lib": "https://github.com/COINiD/bitcoinjs-lib",
     "bitcoinjs-message": "https://github.com/COINiD/bitcoinjs-message.git#coinid-version",
     "buffer": "^4.9.1",
     "buffer-reverse": "^1.0.1",
@@ -61,6 +61,7 @@
     "react-native-webview": "^5.4.4",
     "react-navigation": "^2.12.1",
     "readable-stream": "^1.0.33",
+    "set-value": "^2.0.1",
     "socket.io-client": "^2.2.0",
     "stream-browserify": "^1.0.0",
     "vm-browserify": "0.0.4"
