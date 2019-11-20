@@ -15,7 +15,7 @@ import {
 
 import { numFormat } from '../utils/numFormat';
 
-import { colors, fontWeight } from '../config/styling';
+import { colors, fontWeight, fontSize } from '../config/styling';
 import styleMerge from '../utils/styleMerge';
 import parentStyles from './styles/common';
 
@@ -43,6 +43,12 @@ const styles = styleMerge(
       ...fontWeight.medium,
     },
     totalError: { color: '#FA503C' },
+    warningText: {
+      fontSize: fontSize.small,
+      color: colors.getTheme('light').warning,
+      marginTop: -16,
+      marginBottom: 16,
+    },
   }),
 );
 
@@ -116,28 +122,28 @@ class Sign extends Component {
     if (!payments.length) {
       errors.push({
         type: 'payments',
-        message: 'no payments...',
+        message: 'No payments...',
       });
     }
 
     if (isNaN(total)) {
       errors.push({
         type: 'amount',
-        message: 'amount is not a number',
+        message: 'Amount is not a number',
       });
     }
 
     if (total === Number(0)) {
       errors.push({
         type: 'amount',
-        message: 'amount cannot be zero',
+        message: 'Amount cannot be zero',
       });
     }
 
     if (total > realBalance) {
       errors.push({
         type: 'balance',
-        message: 'not enough funds',
+        message: 'You do not have enough funds.',
       });
     }
 
@@ -235,6 +241,18 @@ class Sign extends Component {
         disableButton = true;
       }
 
+      const renderError = () => {
+        if (!validationError.length) {
+          return null;
+        }
+
+        return validationError.map(({ message }, i) => (
+          <Text key={i} style={styles.warningText}>
+            {message}
+          </Text>
+        ));
+      };
+
       return (
         <View style={styles.modalContent}>
           <View style={styles.batchedHeaderContainer}>
@@ -260,6 +278,7 @@ class Sign extends Component {
             >
               {`${numFormat(total, ticker)} ${ticker}`}
             </RowInfo>
+            {renderError()}
             <Button
               style={styles.formButton}
               onPress={submit}
