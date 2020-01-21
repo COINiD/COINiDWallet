@@ -48,6 +48,7 @@ const styles = styleMerge(
       color: colors.getTheme('light').warning,
       marginTop: -16,
       marginBottom: 16,
+      alignSelf: 'flex-end',
     },
   }),
 );
@@ -143,7 +144,7 @@ class Sign extends Component {
     if (total > realBalance) {
       errors.push({
         type: 'balance',
-        message: 'You do not have enough funds.',
+        message: 'You do not have sufficient funds.',
       });
     }
 
