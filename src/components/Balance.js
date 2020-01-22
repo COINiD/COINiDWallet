@@ -4,6 +4,7 @@ import { StyleSheet, View, Text as DefaultText } from 'react-native';
 import { Text, FontScale } from '.';
 import ConvertCurrency from './ConvertCurrency';
 
+import Settings from '../config/settings';
 import { numFormat } from '../utils/numFormat';
 
 import { colors, fontWeight, fontSize } from '../config/styling';
@@ -34,6 +35,7 @@ const themedStyleGenerator = theme => StyleSheet.create({
   negative: {
     color: colors.orange,
   },
+  testnetConversionWarning: { fontSize: fontSize.smaller, color: colors.orange, marginTop: 4 },
 });
 
 export default class Balance extends PureComponent {
@@ -54,6 +56,18 @@ export default class Balance extends PureComponent {
   _renderBalance = ({ fiatText }) => {
     const { styles } = this.state;
 
+    function TestnetWarning() {
+      if (!Settings.isTestnet) {
+        return null;
+      }
+
+      return (
+        <Text style={styles.testnetConversionWarning}>
+          Warning: Testnet coins have no real value. Conversion is only shown for testing purposes.
+        </Text>
+      );
+    }
+
     return (
       <FontScale
         fontSizeMax={28}
@@ -67,6 +81,8 @@ export default class Balance extends PureComponent {
             <Text style={[styles.currencyText, { fontSize, lineHeight }]} allowFontScaling={false}>
               {fiatText}
             </Text>
+
+            <TestnetWarning />
           </View>
         )}
       </FontScale>
