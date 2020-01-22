@@ -7,11 +7,11 @@ import { LineChart } from 'react-native-svg-charts';
 import * as shape from 'd3-shape';
 
 import { Text, FontScale } from '.';
-import Settings from '../config/settings';
 import { numFormat } from '../utils/numFormat';
 import { colors, fontWeight, fontSize } from '../config/styling';
 
 import { withExchangeRateContext } from '../contexts/ExchangeRateContext';
+import { withGlobalRange } from '../contexts/GlobalContext';
 
 const themedStyleGenerator = theme => StyleSheet.create({
   container: {
@@ -57,47 +57,18 @@ const themedStyleGenerator = theme => StyleSheet.create({
 });
 
 class Graph extends PureComponent {
-  constructor(props) {
+  constructor(props, context) {
     super(props);
 
+    const { ticker, coinTitle } = context.coinid;
+
     this.state = {
-      isLoading: true,
-      range: undefined,
       diffType: 'percent',
       graphHeight: 128,
-    };
-  }
-
-  componentDidMount() {
-    const { ticker, coinTitle } = this.context.coinid;
-
-    this.settingHelper = this.context.settingHelper;
-    const range = this._getRange(this.settingHelper.getAll());
-
-    this.setState({
       ticker,
       coinTitle,
-      range,
-      isLoading: false,
-    });
-
-    this.settingHelper.on('updated', this._onSettingsUpdated);
+    };
   }
-
-  componentWillUnmount() {
-    this.settingHelper.removeListener('updated', this._onSettingsUpdated);
-  }
-
-  _getRange = (settings) => {
-    const { range: rangeIndex } = settings;
-    const range = Settings.ranges[rangeIndex];
-    return range;
-  };
-
-  _onSettingsUpdated = (settings) => {
-    const range = this._getRange(settings);
-    this.setState({ range });
-  };
 
   _diffRaw = () => {
     const dataPoints = this._getCurrentDataPoints();
@@ -146,7 +117,7 @@ class Graph extends PureComponent {
   };
 
   _getCurrentDataPoints = () => {
-    const { range } = this.state;
+    const { range } = this.props;
     const { toggleRange, onLayout, exchangeRateContext } = this.props;
     const { dataPointsForAllRanges } = exchangeRateContext;
 
@@ -155,15 +126,11 @@ class Graph extends PureComponent {
 
   render() {
     const styles = this._getStyle();
+    const { ticker, coinTitle, graphHeight } = this.state;
+
     const {
-      ticker, coinTitle, isLoading, range, graphHeight,
-    } = this.state;
-
-    if (isLoading) {
-      return <ActivityIndicator animating size="small" style={styles.loader} />;
-    }
-
-    const { toggleRange, onLayout, exchangeRateContext } = this.props;
+      toggleRange, onLayout, exchangeRateContext, range,
+    } = this.props;
     const { currency, exchangeRate } = exchangeRateContext;
 
     const diffColor = () => (this._diffRaw() < 0.0 ? styles.negative : styles.positive);
@@ -240,17 +207,11 @@ Graph.contextTypes = {
   type: PropTypes.string,
   theme: PropTypes.string,
   coinid: PropTypes.object,
-  settingHelper: PropTypes.object,
 };
 
 Graph.propTypes = {
-  currency: PropTypes.string,
-  range: PropTypes.number,
+  exchangeRateContext: PropTypes.shape().isRequired,
+  range: PropTypes.string.isRequired,
 };
 
-Graph.defaultProps = {
-  currency: Settings.currency,
-  range: 0,
-};
-
-export default withExchangeRateContext()(Graph);
+export default withGlobalRange(withExchangeRateContext()(Graph));
