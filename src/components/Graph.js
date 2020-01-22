@@ -8,9 +8,10 @@ import * as shape from 'd3-shape';
 
 import { Text, FontScale } from '.';
 import Settings from '../config/settings';
-import ExchangeHelper from '../utils/exchangeHelper';
 import { numFormat } from '../utils/numFormat';
 import { colors, fontWeight, fontSize } from '../config/styling';
+
+import { withExchangeRateContext } from '../contexts/ExchangeRateContext';
 
 const themedStyleGenerator = theme => StyleSheet.create({
   container: {
@@ -55,16 +56,13 @@ const themedStyleGenerator = theme => StyleSheet.create({
   },
 });
 
-export default class Graph extends PureComponent {
+class Graph extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      isLoading: false,
-      dataPoints: [],
+      isLoading: true,
       range: undefined,
-      currency: undefined,
-      currentPrice: 0.0,
       diffType: 'percent',
       graphHeight: 128,
     };
@@ -72,53 +70,48 @@ export default class Graph extends PureComponent {
 
   componentDidMount() {
     const { ticker, coinTitle } = this.context.coinid;
-    this.setState({ ticker, coinTitle });
 
     this.settingHelper = this.context.settingHelper;
-    this.exchangeHelper = ExchangeHelper(ticker);
+    const range = this._getRange(this.settingHelper.getAll());
 
-    this._onSettingsUpdated(this.settingHelper.getAll());
+    this.setState({
+      ticker,
+      coinTitle,
+      range,
+      isLoading: false,
+    });
 
     this.settingHelper.on('updated', this._onSettingsUpdated);
-    this.exchangeHelper.on('syncedexchange', this._refreshFiatData);
   }
 
   componentWillUnmount() {
     this.settingHelper.removeListener('updated', this._onSettingsUpdated);
   }
 
-  _refreshFiatData = () => {
-    const dataPoints = this.exchangeHelper.getDataPoints(this.currentCurrency, this.currentRange);
-
-    const currentPrice = this.exchangeHelper.getCurrentPrice(this.currentCurrency);
-
-    this.setState({
-      isLoading: false,
-      dataPoints,
-      currentPrice,
-    });
+  _getRange = (settings) => {
+    const { range: rangeIndex } = settings;
+    const range = Settings.ranges[rangeIndex];
+    return range;
   };
 
   _onSettingsUpdated = (settings) => {
-    const { currency, range: rangeIndex } = settings;
-
-    const range = Settings.ranges[rangeIndex];
-
-    this.setState({ currency, range });
-
-    this.currentCurrency = currency;
-    this.currentRange = range;
-
-    this._refreshFiatData();
+    const range = this._getRange(settings);
+    this.setState({ range });
   };
 
   _diffRaw = () => {
-    const first = this.state.dataPoints[0];
-    const last = this.state.dataPoints[this.state.dataPoints.length - 1];
+    const dataPoints = this._getCurrentDataPoints();
+
+    const first = dataPoints[0];
+    const last = dataPoints[dataPoints.length - 1];
+
     return last - first;
   };
 
   _diffRound = () => {
+    const { exchangeRateContext } = this.props;
+    const { currency } = exchangeRateContext;
+
     // Round to max 3 decimals, extra *1000 and /1000
     const diff = Math.round(this._diffRaw() * 1000) / 1000;
 
@@ -126,16 +119,25 @@ export default class Graph extends PureComponent {
       return '< 0,001';
     }
 
-    return numFormat(diff, this.state.currency, 3);
+    return numFormat(diff, currency, 3);
   };
 
-  _diffPercent = () => numFormat(Math.round((this._diffRaw() / this.state.dataPoints[0]) * 100 * 100) / 100);
+  _diffPercent = () => {
+    const dataPoints = this._getCurrentDataPoints();
+
+    return numFormat(Math.round((this._diffRaw() / dataPoints[0]) * 100 * 100) / 100);
+  };
 
   _diffValue = () => {
-    if (this.state.diffType == 'percent') {
+    const { exchangeRateContext } = this.props;
+    const { currency } = exchangeRateContext;
+
+    const { diffType } = this.state;
+
+    if (diffType === 'percent') {
       return `${this._diffPercent()}%`;
     }
-    return `${this._diffRound()} ${this.state.currency}`;
+    return `${this._diffRound()} ${currency}`;
   };
 
   _getStyle = () => {
@@ -143,35 +145,38 @@ export default class Graph extends PureComponent {
     return themedStyleGenerator(theme);
   };
 
+  _getCurrentDataPoints = () => {
+    const { range } = this.state;
+    const { toggleRange, onLayout, exchangeRateContext } = this.props;
+    const { dataPointsForAllRanges } = exchangeRateContext;
+
+    return dataPointsForAllRanges[range];
+  };
+
   render() {
     const styles = this._getStyle();
-    const { ticker, coinTitle } = this.state;
+    const {
+      ticker, coinTitle, isLoading, range, graphHeight,
+    } = this.state;
 
-    const toggleDiff = () => {
-      /*
-      this.setState({
-        diffType: this.state.diffType == 'percent' ? 'currency' : 'percent',
-      });
-      */
-    };
-
-    const toggleRange = () => {
-      this.props.toggleRange();
-    };
-
-    const diffColor = () => (this._diffRaw() < 0.0 ? styles.negative : styles.positive);
-
-    if (this.state.isLoading) {
+    if (isLoading) {
       return <ActivityIndicator animating size="small" style={styles.loader} />;
     }
 
+    const { toggleRange, onLayout, exchangeRateContext } = this.props;
+    const { currency, exchangeRate } = exchangeRateContext;
+
+    const diffColor = () => (this._diffRaw() < 0.0 ? styles.negative : styles.positive);
+
+    const dataPoints = this._getCurrentDataPoints();
+
     return (
-      <View style={styles.container} onLayout={this.props.onLayout}>
+      <View style={styles.container} onLayout={onLayout}>
         <View style={styles.graphHeader}>
           <FontScale
             fontSizeMax={fontSize.h2}
             fontSizeMin={fontSize.h4}
-            text={`${coinTitle} ${ticker}/${this.state.currency}     ${this._diffValue()}`}
+            text={`${coinTitle} ${ticker}/${currency}     ${this._diffValue()}`}
             widthScale={0.96}
           >
             {({ fontSize }) => (
@@ -179,7 +184,7 @@ export default class Graph extends PureComponent {
                 <View style={styles.textContainer}>
                   <Text style={[styles.coinText, styles.coinTitle, { fontSize }]}>{coinTitle}</Text>
                   <Text style={[styles.coinText, styles.coinTicker, { fontSize }]}>
-                    {ticker}/{this.state.currency}
+                    {ticker}/{currency}
                   </Text>
                 </View>
 
@@ -192,27 +197,25 @@ export default class Graph extends PureComponent {
             )}
           </FontScale>
           <View style={[styles.textContainer]}>
-            <TouchableOpacity onPress={() => toggleRange()}>
-              <Text style={styles.currencyText}>Past {this.state.range}</Text>
+            <TouchableOpacity onPress={toggleRange}>
+              <Text style={styles.currencyText}>Past {range}</Text>
             </TouchableOpacity>
             <Text style={[styles.currencyText, styles.coinDiffContainer, styles.coinDiff]}>
-              {numFormat(this.state.currentPrice, this.state.currency, undefined, 1)}{' '}
-              {this.state.currency}
+              {numFormat(exchangeRate, currency, undefined, 1)} {currency}
             </Text>
           </View>
         </View>
 
         <View
-          style={{ height: this.state.graphHeight, marginBottom: 8 }}
+          style={{ height: graphHeight, marginBottom: 8 }}
           onLayout={(e) => {
             const ratio = 128 / 343; // ratio according to design.
-            const graphHeight = ratio * e.nativeEvent.layout.width;
-            this.setState({ graphHeight });
+            this.setState({ graphHeight: ratio * e.nativeEvent.layout.width });
           }}
         >
           <LineChart
-            style={{ height: this.state.graphHeight }}
-            dataPoints={this.state.dataPoints || []}
+            style={{ height: graphHeight }}
+            dataPoints={dataPoints || []}
             curve={shape.curveLinear}
             showGrid
             numberOfTicks={1}
@@ -222,7 +225,7 @@ export default class Graph extends PureComponent {
               strokeWidth: 2,
             }}
             breakpointGradient={{
-              breakpoint: this.state.dataPoints[0],
+              breakpoint: dataPoints[0],
               colorBelow: colors.orange,
               colorAbove: colors.green,
             }}
@@ -249,3 +252,5 @@ Graph.defaultProps = {
   currency: Settings.currency,
   range: 0,
 };
+
+export default withExchangeRateContext()(Graph);

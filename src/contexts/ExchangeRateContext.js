@@ -25,7 +25,13 @@ class ExchangeRateContextProviderComponent extends PureComponent {
     super(props);
 
     this.state = {
-      exchangeRate: 0,
+      exchangeRate: 0.0,
+      dataPointsForAllRanges: {
+        day: [],
+        week: [],
+        month: [],
+        year: [],
+      },
     };
   }
 
@@ -41,6 +47,7 @@ class ExchangeRateContextProviderComponent extends PureComponent {
 
     if (prevProps.currency !== currency) {
       if (this.exchangeHelper) {
+        this.exchangeHelper.setCurrentCurrency(currency);
         this.setState({ exchangeRate: 0 }, this._onSyncedExchange);
       }
     }
@@ -51,14 +58,14 @@ class ExchangeRateContextProviderComponent extends PureComponent {
   }
 
   _setupExchangeHelper = () => {
-    const { ticker } = this.props;
+    const { ticker, currency } = this.props;
 
     if (ticker) {
       if (this.exchangeHelper) {
         this.exchangeHelper.removeListener('syncedexchange', this._onSyncedExchange);
       }
 
-      this.exchangeHelper = ExchangeHelper(ticker);
+      this.exchangeHelper = ExchangeHelper(ticker, currency);
       this.exchangeHelper.on('syncedexchange', this._onSyncedExchange);
       this.initialSyncTimer = setTimeout(this._onSyncedExchange, 100);
     }
@@ -66,7 +73,6 @@ class ExchangeRateContextProviderComponent extends PureComponent {
 
   _onSyncedExchange = async () => {
     const { time, currency } = this.props;
-    const { exchangeRate: oldExchangeRate } = this.state;
 
     clearTimeout(this.initialSyncTimer);
 
@@ -78,17 +84,24 @@ class ExchangeRateContextProviderComponent extends PureComponent {
       exchangeRate = await this.exchangeHelper.convert(1, currency);
     }
 
-    if (exchangeRate !== oldExchangeRate) {
-      this.setState({ exchangeRate });
-    }
+    const dataPointsForAllRanges = this.exchangeHelper.getDataPointsForAllRanges(currency);
+
+    this.setState({ exchangeRate, dataPointsForAllRanges });
   };
 
   render() {
     const { children, currency, ticker } = this.props;
-    const { exchangeRate } = this.state;
+    const { exchangeRate, dataPointsForAllRanges } = this.state;
 
     return (
-      <ExchangeRateContext.Provider value={{ exchangeRate, currency, ticker }}>
+      <ExchangeRateContext.Provider
+        value={{
+          exchangeRate,
+          currency,
+          ticker,
+          dataPointsForAllRanges,
+        }}
+      >
         {children}
       </ExchangeRateContext.Provider>
     );
