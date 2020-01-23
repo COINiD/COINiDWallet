@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, View, Text as DefaultText } from 'react-native';
+import {
+  Platform, StyleSheet, View, Text as DefaultText,
+} from 'react-native';
 import { Text, FontScale } from '.';
 import ConvertCurrency from './ConvertCurrency';
 
@@ -102,7 +104,7 @@ export default class Balance extends PureComponent {
           fontSizeMin={12}
           lineHeightMax={62.5}
           text={balanceText}
-          widthScale={0.9}
+          widthScale={Platform.OS === 'android' ? 0.86 : 0.9}
         >
           {({ fontSize, lineHeight }) => (
             <Text style={styles.coinText} numberOfLines={1} allowFontScaling={false}>
