@@ -184,7 +184,7 @@ class StatusBoxProvider extends PureComponent {
   };
 
   _renderStatusBox = () => {
-    const { statusContent, statusProps } = this.state;
+    const { statusContent, statusProps = {} } = this.state;
 
     const doRender = () => {
       if (!statusContent) {
