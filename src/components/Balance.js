@@ -4,7 +4,10 @@ import {
   Platform, StyleSheet, View, Text as DefaultText,
 } from 'react-native';
 import { Text, FontScale } from '.';
+import TranslatedText from './TranslatedText';
+
 import ConvertCurrency from './ConvertCurrency';
+import { useWalletContext } from '../contexts/WalletContext';
 
 import Settings from '../config/settings';
 import { numFormat } from '../utils/numFormat';
@@ -40,7 +43,22 @@ const themedStyleGenerator = theme => StyleSheet.create({
   testnetConversionWarning: { fontSize: fontSize.smaller, color: colors.orange, marginTop: 4 },
 });
 
-export default class Balance extends PureComponent {
+function TestnetWarning() {
+  if (!Settings.isTestnet) {
+    return null;
+  }
+
+  const { theme } = useWalletContext();
+  const styles = themedStyleGenerator(theme);
+
+  return (
+    <TranslatedText style={styles.testnetConversionWarning}>balance.testnetwarning</TranslatedText>
+  );
+}
+
+const MemoizedTestnetWarning = React.memo(TestnetWarning);
+
+class Balance extends PureComponent {
   constructor(props, context) {
     super(props);
 
@@ -58,18 +76,6 @@ export default class Balance extends PureComponent {
   _renderBalance = ({ fiatText }) => {
     const { styles } = this.state;
 
-    function TestnetWarning() {
-      if (!Settings.isTestnet) {
-        return null;
-      }
-
-      return (
-        <Text style={styles.testnetConversionWarning}>
-          Warning: Testnet coins have no real value. Conversion is only shown for testing purposes.
-        </Text>
-      );
-    }
-
     return (
       <FontScale
         fontSizeMax={28}
@@ -84,7 +90,7 @@ export default class Balance extends PureComponent {
               {fiatText}
             </Text>
 
-            <TestnetWarning />
+            <MemoizedTestnetWarning />
           </View>
         )}
       </FontScale>
@@ -139,3 +145,5 @@ Balance.propTypes = {
 Balance.defaultProps = {
   amount: 0,
 };
+
+export default Balance;

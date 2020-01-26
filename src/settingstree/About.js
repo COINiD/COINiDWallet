@@ -1,5 +1,5 @@
 import { Linking, StyleSheet } from 'react-native';
-import moment from 'moment';
+import moment from 'moment/min/moment-with-locales';
 import build from '../config/build';
 
 const styles = StyleSheet.create({

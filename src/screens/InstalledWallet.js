@@ -10,6 +10,7 @@ import {
   BatchSummary, ConnectionStatus, Balance, TransactionList, Text,
 } from '../components';
 import { withStatusBox } from '../contexts/StatusBoxContext';
+import { withLocaleContext } from '../contexts/LocaleContext';
 
 import projectSettings from '../config/settings';
 import { colors } from '../config/styling';
@@ -464,4 +465,4 @@ class InstalledWallet extends PureComponent {
   }
 }
 
-export default withStatusBox(InstalledWallet);
+export default withLocaleContext(withStatusBox(InstalledWallet));

@@ -24,8 +24,8 @@ import { ifIphoneX } from 'react-native-iphone-x-helper';
 
 import { colors, fontSize, fontWeight } from '../config/styling';
 import Settings from '../config/settings';
-import settingHelper from '../utils/settingHelper';
 import { Text } from '.';
+import { withGlobalSettings } from '../contexts/GlobalContext';
 
 const bitcoinMessage = require('bitcoinjs-message');
 const randomBytes = require('randombytes');
@@ -137,18 +137,13 @@ class InactiveOverlay extends PureComponent {
 
     this.appState = 'initial';
 
-    this.settingHelper = settingHelper(Settings.coin);
-
     this.isViewLocked = true;
-    this.usePasscode = true;
     this.activeTime = Date.now();
     this.inActiveTime = Date.now();
-    this.lockAfterDuration = 5000;
     this.hasUpdated = false;
   }
 
   componentDidMount() {
-    this.settingHelper.on('updated', this._updateSettings);
     AppState.addEventListener('change', this._handleAppStateChange);
     this.forceUpdate();
   }
@@ -163,14 +158,8 @@ class InactiveOverlay extends PureComponent {
   }
 
   componentWillUnmount() {
-    this.settingHelper.removeListener('updated', this._updateSettings);
     AppState.removeEventListener('change', this._handleAppStateChange);
   }
-
-  _updateSettings = (settings) => {
-    this.usePasscode = settings.usePasscode;
-    this.lockAfterDuration = settings.lockAfterDuration;
-  };
 
   _addUrlListener = () => {
     global.disableInactiveOverlay();
@@ -286,6 +275,7 @@ class InactiveOverlay extends PureComponent {
 
   _checkIfShouldLock = () => {
     const inactiveDuration = this.activeTime - this.inActiveTime;
+    const { settings } = this.props;
 
     return new Promise((resolve, reject) => {
       if (this._getCOINiD() === undefined) {
@@ -297,9 +287,10 @@ class InactiveOverlay extends PureComponent {
         .then((account) => {
           this.unlockAccount = account;
           this.unlockChain = this.unlockAccount.getChain(1);
+
           if (
-            this.usePasscode
-            && (this.isViewLocked || inactiveDuration > this.lockAfterDuration)
+            settings.usePasscode
+            && (this.isViewLocked || inactiveDuration > settings.lockAfterDuration)
           ) {
             return resolve(true);
           }
@@ -618,7 +609,13 @@ class InactiveOverlay extends PureComponent {
               ]}
             >
               <View style={{ width: 80, height: 80 }}>
-                <LottieView source={lottieFiles.lock} ref={c => (this.lockAnim = c)} loop={false} />
+                <LottieView
+                  source={lottieFiles.lock}
+                  ref={(c) => {
+                    this.lockAnim = c;
+                  }}
+                  loop={false}
+                />
               </View>
             </Animated.View>
           </TouchableOpacity>
@@ -632,8 +629,11 @@ class InactiveOverlay extends PureComponent {
   }
 }
 
-InactiveOverlay.propTypes = {};
+InactiveOverlay.propTypes = {
+  settings: PropTypes.shape({
+    usePasscode: PropTypes.bool,
+    lockAfterDuration: PropTypes.number,
+  }).isRequired,
+};
 
-InactiveOverlay.defaultProps = {};
-
-export default InactiveOverlay;
+export default withGlobalSettings(InactiveOverlay);

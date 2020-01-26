@@ -17,6 +17,7 @@ class SettingHelper extends EventEmitter {
     this.defaultSettings = {
       coldWalletMode: true,
       currency: projectSettings.currency,
+      language: projectSettings.language,
       range: 0,
       usePasscode: true,
       lockAfterDuration: 60000,
@@ -35,6 +36,7 @@ class SettingHelper extends EventEmitter {
       ([
         coldWalletMode,
         currency,
+        language,
         range,
         usePasscode,
         lockAfterDuration,
@@ -43,6 +45,7 @@ class SettingHelper extends EventEmitter {
         this.settings = {
           coldWalletMode,
           currency,
+          language,
           range,
           usePasscode,
           lockAfterDuration,

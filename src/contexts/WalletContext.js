@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 const WalletContext = React.createContext({});
 
@@ -13,5 +13,7 @@ export const withTicker = (WrappedComponent) => {
   );
   return Enhance;
 };
+
+export const useWalletContext = () => useContext(WalletContext);
 
 export default WalletContext;

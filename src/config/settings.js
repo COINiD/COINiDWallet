@@ -2,6 +2,8 @@ export default {
   coin : 'testnet',
   appReturnScheme : 'coinid-tbtc',
   coldWalletMode: true,
+  language: 'system',
+  availableLanguages : ['system','en','sv'],
   currency: 'USD',
   availableCurrencies : ['USD','EUR','JPY','GBP','CAD','CHF','KRW','NZD','SEK','NOK','DKK'],
   ranges: ['day', 'week', 'month', 'year'],

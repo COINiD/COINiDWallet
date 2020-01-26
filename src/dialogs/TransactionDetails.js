@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {
   StyleSheet, ScrollView, View, Platform, TextInput, Alert,
 } from 'react-native';
-import moment from 'moment';
+import moment from 'moment/min/moment-with-locales';
 import Big from 'big.js';
 import ConvertCurrency from '../components/ConvertCurrency';
 

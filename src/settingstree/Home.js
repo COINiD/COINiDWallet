@@ -21,18 +21,23 @@ const getPreferredCurrencyTitle = (state) => {
   return settings.currency;
 };
 
+const getLanguageTitle = (state) => {
+  const { settings } = state;
+  return `languages.${settings.language}`;
+};
+
 const getViewLockExplanation = (state) => {
   const { hasCOINiD, hasHotWallet, settings } = state;
 
   if (!hasHotWallet) {
-    return 'View lock requires an installed hot wallet.';
+    return 'viewlock.listhint.missinghotwallet';
   }
 
   if (!hasCOINiD && !settings.usePasscode) {
-    return 'View lock requires COINiD Vault.';
+    return 'viewlock.listhint.missingcoinid';
   }
 
-  return 'View lock is unlocked with COINiD Vault.';
+  return 'viewlock.listhint.text';
 };
 
 const getPasscodeTimingTitle = (state) => {
@@ -63,10 +68,10 @@ const Home = (state) => {
 
   return [
     {
-      headline: 'General',
+      headline: 'general',
       items: [
         {
-          title: 'View lock',
+          title: 'viewlock',
           hideChevron: true,
           switchButton: true,
           disabled: !hasHotWallet || (!hasCOINiD && !settings.usePasscode),
@@ -76,7 +81,7 @@ const Home = (state) => {
           },
         },
         {
-          title: 'Require unlocking',
+          title: 'requireunlocking',
           onPress: () => gotoRoute('Passcode'),
           disabled: hasHotWallet ? !settings.usePasscode : true,
           rightTitle: `${getPasscodeTimingTitle(state)}`,
@@ -87,21 +92,26 @@ const Home = (state) => {
     {
       items: [
         {
-          title: 'Offline transport',
+          title: 'offlinetransport',
           onPress: () => gotoRoute('OfflineTransport'),
           rightTitle: `${getOfflineTransportTitle(state)}`,
         },
         {
-          title: 'Preferred currency',
+          title: 'preferredcurrency',
           onPress: () => gotoRoute('PreferredCurrency'),
           rightTitle: `${getPreferredCurrencyTitle(state)}`,
+        },
+        {
+          title: 'language',
+          onPress: () => gotoRoute('Language'),
+          rightTitle: `${getLanguageTitle(state)}`,
         },
       ],
     },
     {
       items: [
         {
-          title: 'Sign message',
+          title: 'signmessage',
           onPress: () => {
             if (activeWallets.length === 1) {
               const [{ snapTo, openSignMessage }] = activeWallets;
@@ -116,7 +126,7 @@ const Home = (state) => {
           disabled: !activeWallets.length,
         },
         {
-          title: 'Verify message',
+          title: 'verifymessage',
           onPress: () => {
             if (activeWallets.length > 0) {
               const [{ snapTo, openVerifyMessage }] = activeWallets;
@@ -133,7 +143,7 @@ const Home = (state) => {
     {
       items: [
         {
-          title: 'Account information',
+          title: 'accountinformation',
           onPress: () => {
             if (state.activeWallets.length === 1) {
               state.gotoRoute('AccountInformation', { wallet: state.activeWallets[0] });
@@ -146,26 +156,26 @@ const Home = (state) => {
       ],
     },
     {
-      headline: 'Community',
+      headline: 'community',
       items: [
         {
-          title: 'Telegram chat',
+          title: 'telegramchat',
           onPress: () => Linking.openURL(config.telegramUrl),
         },
         {
-          title: 'Twitter',
+          title: 'twitter',
           onPress: () => Linking.openURL(config.twitterUrl),
         },
         {
-          title: 'Instagram',
+          title: 'instagram',
           onPress: () => Linking.openURL(config.instagramUrl),
         },
         {
-          title: 'Give us feedback',
+          title: 'giveusfeedback',
           onPress: () => Linking.openURL(config.feedbackUrl),
         },
         {
-          title: 'How to guides',
+          title: 'howtoguides',
           onPress: () => Linking.openURL(config.guidesUrl),
         },
       ],
@@ -173,7 +183,7 @@ const Home = (state) => {
     {
       items: [
         {
-          title: 'About',
+          title: 'about',
           onPress: () => gotoRoute('About'),
         },
       ],

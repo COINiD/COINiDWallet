@@ -9,15 +9,16 @@ import {
   Animated,
   Platform,
 } from 'react-native';
-import moment from 'moment';
+
 import { Icon } from 'react-native-elements';
 import LottieView from 'lottie-react-native';
 import Big from 'big.js';
+
 import { Graph, Text, TransactionFilter } from '.';
+import TranslatedText from './TranslatedText';
 import { numFormat } from '../utils/numFormat';
-
+import { withLocaleContext } from '../contexts/LocaleContext';
 import { getTxBalanceChange } from '../libs/coinid-public/transactionHelper';
-
 import { colors, fontWeight, fontSize } from '../config/styling';
 
 const lottieFiles = {
@@ -137,7 +138,9 @@ class TransactionListItem extends Component {
 
     this.noteHelper = coinid.noteHelper;
 
-    const { txData, style, confirmations } = this.props;
+    const {
+      txData, style, confirmations, languageTag,
+    } = this.props;
     const [tx, address, balanceChanged, key] = txData;
 
     const itemKey = tx.txid + address + this.noteHelper.getBaseKey();
@@ -153,6 +156,7 @@ class TransactionListItem extends Component {
       pendingProgress: new Animated.Value(0),
       confirmationOpacity: new Animated.Value(1),
       styles,
+      languageTag,
     };
 
     activeItems[itemKey] = this;
@@ -166,12 +170,20 @@ class TransactionListItem extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { txData, confirmations } = nextProps;
+    const { txData, confirmations, languageTag } = nextProps;
     const [tx, address, balanceChanged, key] = txData;
     const { unPublished } = tx;
-    const { confirmations: stateConfirmations, unPublished: stateUnPublished } = this.state;
+    const {
+      confirmations: stateConfirmations,
+      unPublished: stateUnPublished,
+      languageTag: stateLanguageTag,
+    } = this.state;
 
-    if (confirmations !== stateConfirmations || unPublished !== stateUnPublished) {
+    if (
+      confirmations !== stateConfirmations
+      || unPublished !== stateUnPublished
+      || languageTag !== stateLanguageTag
+    ) {
       this._updateConfirmationAnimation(confirmations);
 
       this.setState({
@@ -181,18 +193,26 @@ class TransactionListItem extends Component {
         balanceChanged,
         key,
         unPublished,
+        languageTag,
       });
     }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const { note, confirmations, unPublished } = nextState;
+    const {
+      note, confirmations, unPublished, languageTag,
+    } = nextState;
 
     const {
       unPublished: stateUnPublished,
       note: stateNote,
       confirmations: stateConfirmations,
+      languageTag: stateLanguageTag,
     } = this.state;
+
+    if (languageTag !== stateLanguageTag) {
+      return true;
+    }
 
     if (unPublished !== stateUnPublished) {
       return true;
@@ -256,11 +276,13 @@ class TransactionListItem extends Component {
       tx: { time },
     } = this.state;
 
+    const { moment } = this.props;
+
     if (time) {
-      return moment.unix(time).format('HH:mm');
+      return moment.unix(time).format('LT');
     }
 
-    return moment().format('HH:mm');
+    return moment().format('LT');
   };
 
   _loadNote = () => {
@@ -398,10 +420,9 @@ TransactionListItem.contextTypes = {
   type: PropTypes.string,
   theme: PropTypes.string,
   coinid: PropTypes.shape({}),
-  settingHelper: PropTypes.shape({}),
 };
 
-export default class TransactionList extends PureComponent {
+class TransactionList extends PureComponent {
   constructor(props, context) {
     super(props);
 
@@ -446,7 +467,10 @@ export default class TransactionList extends PureComponent {
       return;
     }
 
-    if (this.transactions !== nextProps.transactions) {
+    if (
+      this.transactions !== nextProps.transactions
+      || this.props.languageTag !== nextProps.languageTag
+    ) {
       this._parseTransactionsProp(nextProps.transactions);
     }
   }
@@ -530,13 +554,14 @@ export default class TransactionList extends PureComponent {
 
   _createDailySummary = () => {
     this.dailySummary = {};
+    const { moment } = this.props;
 
     const getDateString = (time) => {
       if (time) {
-        return moment.unix(time).format('MMM Do YYYY');
+        return moment.unix(time).format('LL');
       }
 
-      return moment().format('MMM Do YYYY');
+      return moment().format('LL');
     };
 
     if (this.filteredData.length) {
@@ -865,7 +890,7 @@ export default class TransactionList extends PureComponent {
   };
 
   _renderItem = ({ item, index }) => {
-    const { isLoadingTxs } = this.props;
+    const { isLoadingTxs, languageTag, moment } = this.props;
 
     const {
       coinid: { ticker },
@@ -881,6 +906,8 @@ export default class TransactionList extends PureComponent {
         txData={item}
         confirmations={item[0].confirmations}
         onPressItem={this._onPressItem}
+        languageTag={languageTag}
+        moment={moment}
       />
     );
 
@@ -948,7 +975,7 @@ export default class TransactionList extends PureComponent {
           style={[styles.listHeader, { paddingBottom: filterHeight }]}
         >
           <View style={styles.listHeaderTop}>
-            <Text style={styles.subHeader}>Transactions</Text>
+            <TranslatedText style={styles.subHeader}>transactions</TranslatedText>
             <Icon
               iconStyle={styles.subLink}
               size={24}
@@ -979,7 +1006,7 @@ export default class TransactionList extends PureComponent {
   };
 
   render() {
-    const { toggleRange } = this.props;
+    const { toggleRange, languageTag } = this.props;
     const { styles } = this.state;
 
     return (
@@ -1030,7 +1057,6 @@ TransactionList.contextTypes = {
   coinid: PropTypes.object,
   type: PropTypes.string,
   theme: PropTypes.string,
-  settingHelper: PropTypes.object,
 };
 
 TransactionList.propTypes = {
@@ -1042,3 +1068,5 @@ TransactionList.defaultProps = {
   transactions: [],
   blockHeight: 0,
 };
+
+export default withLocaleContext(TransactionList);
