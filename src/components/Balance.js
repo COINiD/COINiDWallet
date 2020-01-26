@@ -7,7 +7,6 @@ import { Text, FontScale } from '.';
 import TranslatedText from './TranslatedText';
 
 import ConvertCurrency from './ConvertCurrency';
-import { useWalletContext } from '../contexts/WalletContext';
 
 import Settings from '../config/settings';
 import { numFormat } from '../utils/numFormat';
@@ -48,8 +47,7 @@ function TestnetWarning() {
     return null;
   }
 
-  const { theme } = useWalletContext();
-  const styles = themedStyleGenerator(theme);
+  const styles = themedStyleGenerator('light');
 
   return (
     <TranslatedText style={styles.testnetConversionWarning}>balance.testnetwarning</TranslatedText>

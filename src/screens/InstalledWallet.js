@@ -16,8 +16,9 @@ import projectSettings from '../config/settings';
 import { colors } from '../config/styling';
 
 import WalletContext from '../contexts/WalletContext';
+import { memoize } from '../utils/generic';
 
-const themedStyleGenerator = theme => StyleSheet.create({
+const themedStyleGenerator = memoize(theme => StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -56,7 +57,7 @@ const themedStyleGenerator = theme => StyleSheet.create({
     marginLeft: 36,
     marginRight: 36,
   },
-});
+}));
 
 class InstalledWallet extends PureComponent {
   static contextType = WalletContext;

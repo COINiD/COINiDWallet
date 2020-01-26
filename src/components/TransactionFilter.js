@@ -5,8 +5,9 @@ import {
 } from 'react-native';
 import { Icon, ButtonGroup } from 'react-native-elements';
 import { colors } from '../config/styling';
+import { memoize } from '../utils/generic';
 
-const themedStyleGenerator = theme => StyleSheet.create({
+const themedStyleGenerator = memoize(theme => StyleSheet.create({
   container: {
     marginLeft: -16,
     marginRight: -16,
@@ -75,7 +76,7 @@ const themedStyleGenerator = theme => StyleSheet.create({
   buttonGroupSelectedText: {
     color: colors.getTheme(theme).buttonText,
   },
-});
+}));
 
 export default class TransactionFilter extends PureComponent {
   static propTypes = {

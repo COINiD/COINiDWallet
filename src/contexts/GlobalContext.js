@@ -12,6 +12,8 @@ const GlobalContext = React.createContext({
   isBLESupported: false,
 });
 
+const LanguageContext = React.createContext({});
+
 function GlobalContextProvider({ children }) {
   const { showActionSheetWithOptions } = useActionSheet();
   const settingHelper = SettingHelper(projectSettings.coin);
@@ -58,7 +60,7 @@ function GlobalContextProvider({ children }) {
         showActionSheetWithOptions,
       }}
     >
-      {children}
+      <LanguageContext.Provider value={settings.language}>{children}</LanguageContext.Provider>
     </GlobalContext.Provider>
   );
 }
@@ -69,7 +71,7 @@ GlobalContextProvider.propTypes = {
 
 export const useGlobalContext = () => useContext(GlobalContext);
 export const useGlobalSettings = () => useGlobalContext().settings;
-export const useGlobalLanguage = () => useGlobalSettings().language;
+export const useLanguageContext = () => useContext(LanguageContext);
 
 export const withGlobalContext = WrappedComponent => React.memo((props) => {
   const globalContext = useGlobalContext();
@@ -85,11 +87,6 @@ export const withGlobalRange = WrappedComponent => React.memo((props) => {
   const { range: rangeIndex } = useGlobalSettings();
   const range = projectSettings.ranges[rangeIndex];
   return <WrappedComponent {...props} range={range} />;
-});
-
-export const withGlobalLanguage = WrappedComponent => React.memo((props) => {
-  const { language } = useGlobalSettings();
-  return <WrappedComponent {...props} language={language} />;
 });
 
 export const withGlobalSettings = WrappedComponent => React.memo((props) => {

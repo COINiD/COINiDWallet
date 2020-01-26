@@ -29,5 +29,6 @@
   "viewlock.listhint.text": "Vy lås låses upp med hjälp av ditt COINiD Vault.",
   "languages.system": "Använd systemspråk",
   "languages.en": "English",
-  "languages.sv": "Swedish"
+  "languages.sv": "Swedish",
+  "transactionlist.paidfees": "Avgifter {fees}"
 }

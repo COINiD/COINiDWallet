@@ -21,6 +21,8 @@ import { withLocaleContext } from '../contexts/LocaleContext';
 import { getTxBalanceChange } from '../libs/coinid-public/transactionHelper';
 import { colors, fontWeight, fontSize } from '../config/styling';
 
+import { memoize } from '../utils/generic';
+
 const lottieFiles = {
   emptytrans_hot: require('../animations/emptytrans_hot.json'),
   emptytrans_cold: require('../animations/emptytrans_cold.json'),
@@ -29,7 +31,7 @@ const lottieFiles = {
   hourglass: require('../animations/hourglass.json'),
 };
 
-const themedStyleGenerator = theme => StyleSheet.create({
+const themedStyleGenerator = memoize(theme => StyleSheet.create({
   batchedRowsContainer: {},
   batchedLine: {
     width: 2,
@@ -125,7 +127,19 @@ const themedStyleGenerator = theme => StyleSheet.create({
     backgroundColor: colors.getTheme(theme).button,
     borderRadius: 4,
   },
-});
+  paidFees: {
+    fontSize: 14,
+    color: '#8A8A8F',
+    ...fontWeight.normal,
+  },
+  dailySummaryDate: { fontSize: 14, ...fontWeight.normal },
+  dailySummary: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: 36,
+  },
+}));
 
 const activeItems = {};
 
@@ -912,28 +926,21 @@ class TransactionList extends PureComponent {
     );
 
     const doRenderItem = () => {
+      const { styles } = this.state;
+
       if (this.dailySummary[index] !== undefined) {
         const { accFee, date } = this.dailySummary[index];
         const dayItem = (
-          <View
-            key="fee"
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              height: 36,
-            }}
-          >
-            <Text style={{ fontSize: 14, ...fontWeight.normal }}>{date}</Text>
-            <Text
-              style={{
-                fontSize: 14,
-                color: '#8A8A8F',
-                ...fontWeight.normal,
+          <View key="fee" style={styles.dailySummary}>
+            <Text style={styles.dailySummaryDate}>{date}</Text>
+            <TranslatedText
+              style={styles.paidFees}
+              options={{
+                fees: `${numFormat(accFee, ticker)} ${ticker}`,
               }}
             >
-              {`Paid fees ${numFormat(accFee, ticker)} ${ticker}`}
-            </Text>
+              transactionlist.paidfees
+            </TranslatedText>
           </View>
         );
 

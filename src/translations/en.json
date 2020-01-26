@@ -29,5 +29,6 @@
   "viewlock.listhint.text": "View lock is unlocked with COINiD Vault.",
   "languages.system": "Use system language",
   "languages.en": "English",
-  "languages.sv": "Swedish"
+  "languages.sv": "Swedish",
+  "transactionlist.paidfees": "Paid fees {fees}"
 }

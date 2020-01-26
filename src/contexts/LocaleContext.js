@@ -4,7 +4,7 @@ import * as RNLocalize from 'react-native-localize';
 import numbro from 'numbro';
 import moment from 'moment/min/moment-with-locales';
 import { numFormat } from '../utils/numFormat';
-import { useGlobalLanguage } from './GlobalContext';
+import { useLanguageContext } from './GlobalContext';
 
 const LocaleContext = React.createContext({});
 
@@ -13,14 +13,19 @@ const translations = {
   sv: require('../translations/sv.json'),
 };
 
-const t = (string, languageTag) => {
+const t = (string, languageTag, options) => {
   const translation = translations[languageTag][string];
 
   if (!translation) {
     return string;
   }
 
-  return translation;
+  if (!options) {
+    return translation;
+  }
+
+  const re = new RegExp(`{${Object.keys(options).join('|')}}`, 'gi');
+  return translation.replace(re, matched => options[matched.replace(/{|}/gi, '')]);
 };
 
 const getBestAvailableLanguage = (selectedLanguage) => {
@@ -52,15 +57,17 @@ const getNewLocaleState = (selectedLanguage) => {
 
   return {
     languageTag,
-    t: string => t(string, languageTag),
+    t: (string, options = null) => t(string, languageTag, options),
     numFormat,
     moment,
   };
 };
 
 function LocaleProvider({ children }) {
-  const language = useGlobalLanguage();
+  const language = useLanguageContext();
   const [state, setState] = useState(null);
+
+  console.log('test');
 
   useEffect(() => {
     const onLocaleChange = () => {

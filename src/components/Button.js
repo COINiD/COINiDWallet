@@ -8,8 +8,9 @@ import { Text } from '.';
 import {
   colors, fontSize, fontWeight, fontStack, gridMultiplier,
 } from '../config/styling';
+import { memoize } from '../utils/generic';
 
-const themedStyleGenerator = theme => StyleSheet.create({
+const themedStyleGenerator = memoize(theme => StyleSheet.create({
   slimButton: {
     height: 22 + gridMultiplier * 2,
   },
@@ -47,7 +48,7 @@ const themedStyleGenerator = theme => StyleSheet.create({
   loadingIndicator: {
     marginLeft: 5,
   },
-});
+}));
 
 class Button extends PureComponent {
   _getStyle = () => {

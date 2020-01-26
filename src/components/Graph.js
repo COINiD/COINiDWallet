@@ -12,7 +12,9 @@ import { colors, fontWeight, fontSize } from '../config/styling';
 import { withExchangeRateContext } from '../contexts/ExchangeRateContext';
 import { withGlobalRange } from '../contexts/GlobalContext';
 
-const themedStyleGenerator = theme => StyleSheet.create({
+import { memoize } from '../utils/generic';
+
+const themedStyleGenerator = memoize(theme => StyleSheet.create({
   container: {
     paddingTop: 8,
     paddingBottom: 16,
@@ -53,7 +55,7 @@ const themedStyleGenerator = theme => StyleSheet.create({
   negative: {
     color: colors.orange,
   },
-});
+}));
 
 class Graph extends PureComponent {
   constructor(props, context) {

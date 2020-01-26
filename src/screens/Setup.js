@@ -19,6 +19,7 @@ import { Build } from '.';
 import { colors, fontWeight } from '../config/styling';
 
 import WalletContext from '../contexts/WalletContext';
+import { memoize } from '../utils/generic';
 
 const lottieFiles = {
   setuphot: require('../animations/setuphot.json'),
@@ -29,7 +30,7 @@ const imageFiles = {
   coinid_icon: require('../assets/images/coinid_icon.png'),
 };
 
-const themedStyleGenerator = theme => StyleSheet.create({
+const themedStyleGenerator = memoize(theme => StyleSheet.create({
   container: {
     padding: 16,
     flex: 1,
@@ -93,7 +94,7 @@ const themedStyleGenerator = theme => StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
   },
-});
+}));
 
 class Setup extends PureComponent {
   static contextType = WalletContext;
