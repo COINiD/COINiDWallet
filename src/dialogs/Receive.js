@@ -6,6 +6,7 @@ import {
 import Share from 'react-native-share';
 import { Text, AmountInput, ReceiveQRCode } from '../components';
 import { colors, fontSize, fontWeight } from '../config/styling';
+import { t, withLocaleContext } from '../contexts/LocaleContext';
 
 import ReceiveActionMenu from '../actionmenus/ReceiveActionMenu';
 
@@ -183,10 +184,10 @@ class Receive extends PureComponent {
     } = this.state;
 
     const getShareMessage = () => {
-      let message = `My ${coinTitle} address: ${address}`;
+      let message = t('receive.sharemessage', { coinTitle, address });
 
       if (amount) {
-        message += `\nRequested amount: ${amount} ${ticker}`;
+        message += `\n${t('receive.requestedamount', { amount, ticker })}`;
       }
 
       return message;
@@ -201,7 +202,7 @@ class Receive extends PureComponent {
     const url = await getQRUri();
 
     const options = {
-      title: 'Share via',
+      title: t('settings.accountinformation.share.title'),
       message: getShareMessage(),
       url,
       type: 'image/png',
@@ -210,7 +211,7 @@ class Receive extends PureComponent {
     Share.open(options)
       .then(() => {
         if (Platform.OS === 'ios') {
-          this.showStatus('QR code shared successfully');
+          this.showStatus(t('receive.qrcodeshared'));
         }
       })
       .catch(() => {});
@@ -278,7 +279,7 @@ class Receive extends PureComponent {
             this.refContHeight = e.nativeEvent.layout.height;
           }}
         >
-          <Text style={styles.smallText}>Request custom amount</Text>
+          <Text style={styles.smallText}>{t('receive.customamount')}</Text>
           <View
             style={styles.amountForm}
             onFocus={() => {
@@ -308,4 +309,4 @@ class Receive extends PureComponent {
   }
 }
 
-export default withExchangeRateContext()(Receive);
+export default withLocaleContext(withExchangeRateContext()(Receive));

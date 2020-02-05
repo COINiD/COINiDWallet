@@ -57,8 +57,8 @@ export default class CheckBoxSelect extends PureComponent {
       } else {
         this.tickAnims[prevProps.selectedIndex].reset();
       }
-      this.tickAnims[this.props.selectedIndex].reset();
-      this.tickAnims[this.props.selectedIndex].play(0, 65);
+      this.tickAnims[selectedIndex].reset();
+      this.tickAnims[selectedIndex].play(0, 65);
     }
   }
 

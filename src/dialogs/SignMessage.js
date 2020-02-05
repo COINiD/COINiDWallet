@@ -9,6 +9,7 @@ import {
 } from '../components';
 
 import WalletContext from '../contexts/WalletContext';
+import { t, withLocaleContext } from '../contexts/LocaleContext';
 
 import styleMerge from '../utils/styleMerge';
 import parentStyles from './styles/common';
@@ -22,7 +23,7 @@ const styles = styleMerge(
   }),
 );
 
-export default class SignMessage extends PureComponent {
+class SignMessage extends PureComponent {
   static contextType = WalletContext;
 
   static propTypes = {
@@ -43,7 +44,10 @@ export default class SignMessage extends PureComponent {
       const valData = this.coinid.buildMsgCoinIdData(address, message);
       return Promise.resolve(valData);
     } catch (err) {
-      Alert.alert('Validation Error', 'Make sure address belongs to this wallet.');
+      Alert.alert(
+        t('signmessage.alert.validationerror.title'),
+        t('signmessage.alert.validationerror.description'),
+      );
     }
   };
 
@@ -67,7 +71,7 @@ export default class SignMessage extends PureComponent {
 
     Clipboard.setString(signedMessage);
     dialogCloseAndClear();
-    showStatus('Signed message copied to clipboard', {
+    showStatus('signmessage.messagecopied', {
       linkIcon: Platform.OS === 'ios' ? 'share-apple' : 'share-google',
       linkIconType: 'evilicon',
       onLinkPress: () => this._share(signedMessage),
@@ -76,14 +80,14 @@ export default class SignMessage extends PureComponent {
 
   _share = (signedMessage) => {
     const options = {
-      title: 'Share via',
+      title: t('signmessage.share.title'),
       message: signedMessage,
     };
 
     Share.open(options)
       .then(() => {
         if (Platform.OS === 'ios') {
-          this.showStatus('QR code shared successfully');
+          this.showStatus('signmessage.share.description');
         }
       })
       .catch(() => {});
@@ -117,7 +121,7 @@ export default class SignMessage extends PureComponent {
               this.refAddressBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
             }}
           >
-            <Text style={styles.formLabel}>Address</Text>
+            <Text style={styles.formLabel}>{t('signmessage.address')}</Text>
             <View style={styles.formItemRow}>
               <TextInput
                 keyboardType={Platform.OS === 'ios' ? 'default' : 'visible-password'}
@@ -146,7 +150,7 @@ export default class SignMessage extends PureComponent {
               this.refMessageBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
             }}
           >
-            <Text style={styles.formLabel}>Message</Text>
+            <Text style={styles.formLabel}>{t('signmessage.message')}</Text>
             <View style={styles.formItemRow}>
               <TextInput
                 keyboardType={Platform.OS === 'ios' ? 'default' : 'visible-password'}
@@ -195,3 +199,5 @@ export default class SignMessage extends PureComponent {
     );
   }
 }
+
+export default withLocaleContext(SignMessage);

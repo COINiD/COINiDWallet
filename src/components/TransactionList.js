@@ -15,9 +15,8 @@ import LottieView from 'lottie-react-native';
 import Big from 'big.js';
 
 import { Graph, Text, TransactionFilter } from '.';
-import TranslatedText from './TranslatedText';
 import { numFormat } from '../utils/numFormat';
-import { withLocaleContext } from '../contexts/LocaleContext';
+import { withLocaleContext, t } from '../contexts/LocaleContext';
 import { getTxBalanceChange } from '../libs/coinid-public/transactionHelper';
 import { colors, fontWeight, fontSize } from '../config/styling';
 
@@ -465,7 +464,7 @@ class TransactionList extends PureComponent {
     this.transactions = transactions;
     this.filteredData = this.txData;
     this.dailySummary = {};
-    this.sections = [{ data: [], title: 'Transactions' }];
+    this.sections = [{ data: [], title: t('transactionlist.transactions') }];
     this.hasFiltered = false;
 
     this.noteHelper = coinid.noteHelper;
@@ -517,7 +516,7 @@ class TransactionList extends PureComponent {
 
         // if no tx added, then it was most likely a transaction between internal addresses
         if (txData.length === length) {
-          pushTxData(tx, '(internal transaction)', 0);
+          pushTxData(tx, `(${t('transactionlist.internal')})`, 0);
         }
       } else {
         // Received
@@ -830,8 +829,8 @@ class TransactionList extends PureComponent {
         >
           <View style={{ alignItems: 'center', justifyContent: 'center' }}>
             <ActivityIndicator animating size="large" style={{ marginTop: 30 }} />
-            <Text style={{ fontSize: 18, marginTop: 8 }}>Loading transactions</Text>
-            <Text style={{ marginTop: 8 }}>Your wallet will be ready soon</Text>
+            <Text style={{ fontSize: 18, marginTop: 8 }}>{t('transactionlist.loading')}</Text>
+            <Text style={{ marginTop: 8 }}>{t('transactionlist.readysoon')}</Text>
           </View>
         </Animated.View>
       );
@@ -853,7 +852,7 @@ class TransactionList extends PureComponent {
               alignItems: 'center',
             }}
           >
-            <Text style={{ fontSize: 18 }}>Filter did not match any transactions</Text>
+            <Text style={{ fontSize: 18 }}>{t('transactionlist.nomatch')}</Text>
             <Text
               style={{
                 fontSize: 16,
@@ -862,7 +861,7 @@ class TransactionList extends PureComponent {
                 ...fontWeight.normal,
               }}
             >
-              Try another input
+              {t('transactionlist.tryanotherinput')}
             </Text>
           </View>
         </Animated.View>
@@ -888,7 +887,7 @@ class TransactionList extends PureComponent {
         >
           <LottieView source={lottieFiles[`emptytrans_${type}`]} autoSize />
         </View>
-        <Text style={{ fontSize: 18 }}>No transactions</Text>
+        <Text style={{ fontSize: 18 }}>{t('transactionlist.notransactions')}</Text>
         <Text
           style={{
             fontSize: 16,
@@ -897,7 +896,7 @@ class TransactionList extends PureComponent {
             ...fontWeight.normal,
           }}
         >
-          Your transactions will be listed here
+          {t('transactionlist.willbelistedhere')}
         </Text>
       </Animated.View>
     );
@@ -933,14 +932,9 @@ class TransactionList extends PureComponent {
         const dayItem = (
           <View key="fee" style={styles.dailySummary}>
             <Text style={styles.dailySummaryDate}>{date}</Text>
-            <TranslatedText
-              style={styles.paidFees}
-              options={{
-                fees: `${numFormat(accFee, ticker)} ${ticker}`,
-              }}
-            >
-              transactionlist.paidfees
-            </TranslatedText>
+            <Text style={styles.paidFees}>
+              {t('transactionlist.paidfees', { fees: `${numFormat(accFee, ticker)} ${ticker}` })}
+            </Text>
           </View>
         );
 
@@ -966,7 +960,7 @@ class TransactionList extends PureComponent {
       return null;
     };
 
-    if (section.title === 'Transactions') {
+    if (section.title === t('transactionlist.transactions')) {
       return (
         // setState below... might want to change that...
         <View
@@ -982,7 +976,7 @@ class TransactionList extends PureComponent {
           style={[styles.listHeader, { paddingBottom: filterHeight }]}
         >
           <View style={styles.listHeaderTop}>
-            <TranslatedText style={styles.subHeader}>transactions</TranslatedText>
+            <Text style={styles.subHeader}>{t('transactionlist.transactions')}</Text>
             <Icon
               iconStyle={styles.subLink}
               size={24}

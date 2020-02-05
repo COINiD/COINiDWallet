@@ -9,6 +9,7 @@ import parentStyles from './styles/common';
 import styleMerge from '../utils/styleMerge';
 
 import WalletContext from '../contexts/WalletContext';
+import { t, withLocaleContext } from '../contexts/LocaleContext';
 
 const styles = styleMerge(
   parentStyles('light'),
@@ -28,7 +29,7 @@ const styles = styleMerge(
   }),
 );
 
-export default class InputPublicKey extends PureComponent {
+class InputPublicKey extends PureComponent {
   static contextType = WalletContext;
 
   static propTypes = {
@@ -58,7 +59,7 @@ export default class InputPublicKey extends PureComponent {
     const account = this.coinid.getAccountFromPubKeyArray(pubKeyArray);
 
     if (account === undefined) {
-      throw 'The input public key is invalid';
+      throw t('inputpublickey.error.invalid.description');
     }
 
     return true;
@@ -84,7 +85,7 @@ export default class InputPublicKey extends PureComponent {
 
       dialogCloseAndClear(true);
     } catch (err) {
-      Alert.alert('Pubkey invalid', `${err}`);
+      Alert.alert(t('inputpublickey.error.invalid.title'), `${err}`);
     }
   };
 
@@ -102,7 +103,7 @@ export default class InputPublicKey extends PureComponent {
           this.refContHeight = e.nativeEvent.layout.height;
         }}
       >
-        <Text style={styles.formLabel}>Public key data</Text>
+        <Text style={styles.formLabel}>{t('inputpublickey.publickeydata')}</Text>
         <View
           style={styles.formItemRow}
           onFocus={() => {
@@ -131,9 +132,11 @@ export default class InputPublicKey extends PureComponent {
           style={{ marginTop: 24 }}
           testID="button-create-public-key"
         >
-          Create Wallet
+          {t('inputpublickey.createwallet')}
         </Button>
       </View>
     );
   }
 }
+
+export default withLocaleContext(InputPublicKey);

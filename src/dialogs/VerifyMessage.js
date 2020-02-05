@@ -7,6 +7,7 @@ import { Button, Text } from '../components';
 import VerifyMessageActionMenu from '../actionmenus/VerifyMessageActionMenu';
 
 import WalletContext from '../contexts/WalletContext';
+import { t, withLocaleContext } from '../contexts/LocaleContext';
 
 import styleMerge from '../utils/styleMerge';
 import parentStyles from './styles/common';
@@ -20,7 +21,7 @@ const styles = styleMerge(
   }),
 );
 
-export default class SignMessage extends PureComponent {
+class VerifyMessage extends PureComponent {
   static contextType = WalletContext;
 
   static propTypes = {
@@ -79,8 +80,8 @@ export default class SignMessage extends PureComponent {
       });
     } catch (err) {
       Alert.alert(
-        'Parsing error',
-        'Could not parse clipboard data, make sure it is formatted correctly.',
+        t('verifymessage.parsingerror.title'),
+        t('verifymessage.parsingerror.description'),
       );
     }
   };
@@ -93,11 +94,14 @@ export default class SignMessage extends PureComponent {
       const verify = this.coinid.verifyMessage(message, address, signature);
 
       if (verify) {
-        Alert.alert('Message verified', `Message verified to be from ${address}`);
+        Alert.alert(
+          t('verifymessage.messageverify.alert.title'),
+          t('verifymessage.messageverify.alert.description', { address }),
+        );
         dialogCloseAndClear();
       }
     } catch (err) {
-      Alert.alert('Verification error', `${err}`);
+      Alert.alert(t('verifymessage.verificationerror'), `${err}`);
     }
   };
 
@@ -122,7 +126,7 @@ export default class SignMessage extends PureComponent {
               this.refAddressBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
             }}
           >
-            <Text style={styles.formLabel}>Address</Text>
+            <Text style={styles.formLabel}>{t('verifymessage.address')}</Text>
             <View style={styles.formItemRow}>
               <TextInput
                 keyboardType={Platform.OS === 'ios' ? 'default' : 'visible-password'}
@@ -149,7 +153,7 @@ export default class SignMessage extends PureComponent {
               this.refMessageBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
             }}
           >
-            <Text style={styles.formLabel}>Message</Text>
+            <Text style={styles.formLabel}>{t('verifymessage.message')}</Text>
             <View style={styles.formItemRow}>
               <TextInput
                 keyboardType={Platform.OS === 'ios' ? 'default' : 'visible-password'}
@@ -180,7 +184,7 @@ export default class SignMessage extends PureComponent {
               this.refSignatureBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
             }}
           >
-            <Text style={styles.formLabel}>Signature</Text>
+            <Text style={styles.formLabel}>{t('verifymessage.signature')}</Text>
             <View style={styles.formItemRow}>
               <TextInput
                 keyboardType={Platform.OS === 'ios' ? 'default' : 'visible-password'}
@@ -199,10 +203,12 @@ export default class SignMessage extends PureComponent {
           </View>
 
           <Button onPress={this._verifyMessage} testID="button-verify">
-            Verify message
+            {t('verifymessage.verifymessage')}
           </Button>
         </View>
       </View>
     );
   }
 }
+
+export default withLocaleContext(VerifyMessage);

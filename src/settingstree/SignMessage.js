@@ -2,7 +2,7 @@ const SignMessage = (state) => {
   const { activeWallets, goBack } = state;
 
   const items = activeWallets.map(({ title, snapTo, openSignMessage }) => ({
-    title: `Sign message with ${title.toLowerCase()} wallet account`,
+    title: `settings.signmessage.items.${title.toLowerCase()}`,
     onPress: () => {
       goBack();
       snapTo();
@@ -15,7 +15,7 @@ const SignMessage = (state) => {
     return [
       {
         items,
-        listHint: 'Select which account you want to use to sign a message.',
+        listHint: 'settings.signmessage.listhint',
       },
     ];
   }
@@ -23,11 +23,11 @@ const SignMessage = (state) => {
   return [
     {
       items: {
-        title: 'No wallets installed to sign with...',
+        title: 'settings.signmessage.missingwallets.itemtitle',
         onPress: () => {},
         hideChevron: true,
       },
-      listHint: 'You have not installed any wallets.',
+      listHint: 'settings.signmessage.missingwallets.listhint',
     },
   ];
 };

@@ -1,4 +1,5 @@
 import ActionMenuRouter from './ActionMenuRouter';
+import { t } from '../contexts/LocaleContext';
 
 class VerifyMessageActionMenu {
   constructor({ showActionSheetWithOptions, ...params }) {
@@ -10,11 +11,11 @@ class VerifyMessageActionMenu {
     const { onParseClipboard } = this.params;
     return [
       {
-        name: 'Parse clipboard data',
+        name: t('actionmenus.verifymessage.parseclipboard'),
         callback: () => setTimeout(onParseClipboard, 100),
       },
       {
-        name: 'Cancel',
+        name: t('generic.cancel'),
         isCancel: true,
       },
     ];

@@ -5,6 +5,7 @@ import { fontWeight } from '../config/styling';
 import {
   Button, CancelButton, Text, COINiDTransport,
 } from '../components';
+import { t, withLocaleContext } from '../contexts/LocaleContext';
 
 import WalletContext from '../contexts/WalletContext';
 
@@ -19,7 +20,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class ValidateAddress extends PureComponent {
+class ValidateAddress extends PureComponent {
   static contextType = WalletContext;
 
   static propTypes = {
@@ -50,15 +51,10 @@ export default class ValidateAddress extends PureComponent {
 
       return (
         <View style={styles.container}>
-          <Text style={styles.textContainer}>
-            The COINiD Vault will independently generate the expected receive address.
-          </Text>
-          <Text style={styles.textContainer}>
-            If it generates a different address. The wallet might have been compromised or been
-            created with a different private key.
-          </Text>
+          <Text style={styles.textContainer}>{t('actionmenus.validateaddress.text1')}</Text>
+          <Text style={styles.textContainer}>{t('actionmenus.validateaddress.text2')}</Text>
           <Text style={[styles.textContainer, { ...fontWeight.bold }]}>
-            In that case the receive address must not be used or shared!
+            {t('actionmenus.validateaddress.text3')}
           </Text>
           <Button
             onPress={() => {
@@ -68,10 +64,10 @@ export default class ValidateAddress extends PureComponent {
             isLoading={isSigning}
             loadingText={signingText}
           >
-            Validate with COINiD Vault
+            {t('validateaddress.button')}
           </Button>
           <CancelButton show={isSigning} onPress={cancel} marginTop={16}>
-            Cancel
+            {t('generic.cancel')}
           </CancelButton>
         </View>
       );
@@ -91,3 +87,5 @@ export default class ValidateAddress extends PureComponent {
     );
   }
 }
+
+export default withLocaleContext(ValidateAddress);

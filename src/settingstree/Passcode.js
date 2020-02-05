@@ -19,8 +19,7 @@ const Passcode = (state) => {
   return [
     {
       items,
-      listHint:
-        'View lock will activate if the app have been inactive for longer then the set time.',
+      listHint: 'settings.lockduration.listhint',
     },
   ];
 };

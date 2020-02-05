@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { StyleSheet, ActivityIndicator, View } from 'react-native';
 import KeepAwake from 'react-native-keep-awake';
 import { Text } from '../components';
+import { withLocaleContext, t } from '../contexts/LocaleContext';
 
 const styles = StyleSheet.create({
   container: {
@@ -36,8 +37,8 @@ class Build extends PureComponent {
       <View style={styles.container}>
         <KeepAwake />
         <ActivityIndicator animating size="large" />
-        <Text style={styles.title}>Setting up your wallet</Text>
-        <Text style={styles.text}>Your wallet will soon be ready.</Text>
+        <Text style={styles.title}>{t('build.title')}</Text>
+        <Text style={styles.text}>{t('build.text')}</Text>
         <Text style={styles.text}>{status}</Text>
       </View>
     );
@@ -48,4 +49,4 @@ Build.propTypes = {
   status: PropTypes.string.isRequired,
 };
 
-export default Build;
+export default withLocaleContext(Build);

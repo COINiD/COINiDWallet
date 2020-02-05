@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { StyleSheet, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 
-import { Text } from '.';
+import TranslatedText from './TranslatedText';
 import { colors, fontSize, fontWeight } from '../config/styling';
 
 const styles = StyleSheet.create({
@@ -88,9 +88,9 @@ export default class DialogTitle extends PureComponent {
           }}
           testID="button-close"
         />
-        <Text style={styles.title} testID="dialog-title">
+        <TranslatedText style={styles.title} testID="dialog-title">
           {title}
-        </Text>
+        </TranslatedText>
       </View>
     );
   }

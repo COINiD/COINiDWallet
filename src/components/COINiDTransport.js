@@ -9,6 +9,7 @@ import { p2pServer } from '../utils/p2p-ble-central';
 import { getP2PCode } from '../utils/p2p-ble-common';
 
 import WalletContext from '../contexts/WalletContext';
+import { t, withLocaleContext } from '../contexts/LocaleContext';
 
 class COINiDTransport extends PureComponent {
   static contextType = WalletContext;
@@ -130,7 +131,7 @@ class COINiDTransport extends PureComponent {
 
       this.setState({
         isSigning: true,
-        signingText: 'Waiting for COINiD Vault',
+        signingText: t('coinidtransport.qr.waiting'),
       });
     }
 
@@ -202,7 +203,7 @@ class COINiDTransport extends PureComponent {
 
     this.setState({
       isSigning: true,
-      signingText: 'Sending data with QR',
+      signingText: t('coinidtransport.qr.sending'),
     });
 
     dialogNavigate(
@@ -223,7 +224,7 @@ class COINiDTransport extends PureComponent {
           if (!skipReturnData) {
             this.setState({
               isSigning: true,
-              signingText: 'Receiving data with QR',
+              signingText: t('coinidtransport.qr.receiving'),
             });
 
             navigation.navigate('QRDataReceiver', {
@@ -254,13 +255,13 @@ class COINiDTransport extends PureComponent {
 
     this.setState({
       isSigning: true,
-      signingText: `Connect with ${code}`,
+      signingText: t('coinidtransport.ble.connect', { code }),
       signingCode: code,
     });
 
     const cbConnected = () => {
       this.setState({
-        signingText: 'Connected',
+        signingText: t('coinidtransport.ble.connected'),
         isSigning: true,
         signingCode: '',
       });
@@ -270,14 +271,14 @@ class COINiDTransport extends PureComponent {
       const progress = 100 * (parseFloat(data.receivedBytes) / parseFloat(data.finalBytes));
 
       this.setState({
-        signingText: `Sending Data ${progress.toFixed(0)}%`,
+        signingText: t('coinidtransport.ble.sending', { progress: progress.toFixed(0) }),
         isSigning: true,
       });
     };
 
     const cbSendDone = () => {
       this.setState({
-        signingText: 'Waiting for return data',
+        signingText: t('coinidtransport.ble.waiting'),
         isSigning: true,
       });
 
@@ -287,14 +288,14 @@ class COINiDTransport extends PureComponent {
     const cbReceiveProgress = (data) => {
       const progress = 100 * (parseFloat(data.receivedBytes) / parseFloat(data.finalBytes));
       this.setState({
-        signingText: `Receiving Data ${progress.toFixed(0)}%`,
+        signingText: t('coinidtransport.ble.receiving', { progress: progress.toFixed(0) }),
         isSigning: true,
       });
     };
 
     const cbReceiveDone = () => {
       this.setState({
-        signingText: 'Finished',
+        signingText: t('coinidtransport.ble.finished'),
         isSigning: true,
       });
     };
@@ -377,4 +378,4 @@ class COINiDTransport extends PureComponent {
   }
 }
 
-export default COINiDTransport;
+export default withLocaleContext(COINiDTransport);

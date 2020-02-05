@@ -18,7 +18,7 @@ const getOfflineTransportTitle = (state) => {
 
 const getPreferredCurrencyTitle = (state) => {
   const { settings } = state;
-  return settings.currency;
+  return `currencies.${settings.currency.toLowerCase()}`;
 };
 
 const getLanguageTitle = (state) => {

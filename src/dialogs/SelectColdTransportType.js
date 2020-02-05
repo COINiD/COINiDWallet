@@ -8,6 +8,7 @@ import { colors, fontWeight } from '../config/styling';
 import settings from '../config/settings';
 
 import WalletContext from '../contexts/WalletContext';
+import { t, withLocaleContext } from '../contexts/LocaleContext';
 
 const styles = StyleSheet.create({
   container: {
@@ -119,13 +120,13 @@ class SelectColdTransportType extends PureComponent {
 
       if (selectedOption.key === 'ble' && !isBLESupported) {
         return {
-          buttonText: 'Device not supported',
+          buttonText: t('selectcoldtransport.notsupported'),
           disableButton: true,
         };
       }
 
       return {
-        buttonText: 'Continue',
+        buttonText: t('generic.continue'),
         disableButton: false,
       };
     };
@@ -135,7 +136,7 @@ class SelectColdTransportType extends PureComponent {
     return (
       <View style={styles.container}>
         <Text style={{ fontSize: 16, ...fontWeight.normal }}>
-          Select how you would like to connect to the offline device.
+          {t('selectcoldtransport.offline')}
         </Text>
         <View style={{ marginTop: 16 }}>
           <CheckBoxSelect
@@ -164,4 +165,4 @@ class SelectColdTransportType extends PureComponent {
   }
 }
 
-export default SelectColdTransportType;
+export default withLocaleContext(SelectColdTransportType);

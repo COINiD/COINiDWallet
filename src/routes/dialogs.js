@@ -17,47 +17,47 @@ import VerifyMessage from '../dialogs/VerifyMessage';
 export const dialogRoutes = {
   COINiDNotFound: {
     DialogComponent: COINiDNotFound,
-    defaultProps: { title: 'COINiD Vault not installed' },
+    defaultProps: { title: 'dialogs.coinidnotinstalled' },
   },
   SetupWallet: {
     DialogComponent: SetupWallet,
-    defaultProps: { title: 'Setup your wallet' },
+    defaultProps: { title: 'dialogs.setupwallet' },
   },
   SelectAddressType: {
     DialogComponent: SelectAddressType,
-    defaultProps: { title: 'Select address type' },
+    defaultProps: { title: 'dialogs.selectaddresstype' },
   },
   InputPublicKey: {
     DialogComponent: InputPublicKey,
     defaultProps: {
-      title: 'Enter public Key',
+      title: 'dialogs.enterpublickey',
       avoidKeyboard: true,
     },
   },
   SelectColdTransportType: {
     DialogComponent: SelectColdTransportType,
-    defaultProps: { title: 'Choose how to connect' },
+    defaultProps: { title: 'dialogs.howtoconnect' },
   },
   QRDataSender: {
     DialogComponent: QRDataSender,
-    defaultProps: { title: 'QR transfer to Vault' },
+    defaultProps: { title: 'dialogs.qrtransfertovault' },
   },
   ValidateAddress: {
     DialogComponent: ValidateAddress,
-    defaultProps: { title: 'Validate address' },
+    defaultProps: { title: 'dialogs.validateaddress' },
   },
   SweepPrivateKey: {
     DialogComponent: SweepPrivateKey,
-    defaultProps: { title: 'Sweep private key' },
+    defaultProps: { title: 'dialogs.sweepprivatekey' },
   },
   SweepKeyDetails: {
     DialogComponent: SweepKeyDetails,
-    defaultProps: { title: 'Private key details' },
+    defaultProps: { title: 'dialogs.privatekeydetails' },
   },
   Receive: {
     DialogComponent: Receive,
     defaultProps: {
-      title: 'Receive',
+      title: 'dialogs.receive',
       verticalPosition: 'flex-end',
       showMoreOptions: true,
       avoidKeyboard: true,
@@ -66,7 +66,7 @@ export const dialogRoutes = {
   TransactionDetails: {
     DialogComponent: TransactionDetails,
     defaultProps: {
-      title: 'Transaction details',
+      title: 'dialogs.transactiondetails',
       verticalPosition: 'flex-end',
       avoidKeyboard: true,
     },
@@ -74,7 +74,7 @@ export const dialogRoutes = {
   Send: {
     DialogComponent: Send,
     defaultProps: {
-      title: 'Send',
+      title: 'dialogs.send',
       verticalPosition: 'flex-end',
       avoidKeyboard: true,
     },
@@ -82,7 +82,7 @@ export const dialogRoutes = {
   EditTransaction: {
     DialogComponent: Send,
     defaultProps: {
-      title: 'Edit transaction',
+      title: 'dialogs.edittransaction',
       verticalPosition: 'flex-end',
       avoidKeyboard: true,
     },
@@ -90,7 +90,7 @@ export const dialogRoutes = {
   Sign: {
     DialogComponent: Sign,
     defaultProps: {
-      title: 'Sign transactions',
+      title: 'dialogs.signtransaction',
       verticalPosition: 'flex-end',
       avoidKeyboard: true,
     },
@@ -98,7 +98,7 @@ export const dialogRoutes = {
   SignMessage: {
     DialogComponent: SignMessage,
     defaultProps: {
-      title: 'Sign message',
+      title: 'dialogs.signmessage',
       verticalPosition: 'flex-end',
       avoidKeyboard: true,
     },
@@ -106,7 +106,7 @@ export const dialogRoutes = {
   VerifyMessage: {
     DialogComponent: VerifyMessage,
     defaultProps: {
-      title: 'Verify message',
+      title: 'dialogs.verifymessage',
       verticalPosition: 'flex-end',
       avoidKeyboard: true,
       showMoreOptions: true,

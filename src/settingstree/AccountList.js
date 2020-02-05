@@ -1,6 +1,6 @@
 const AccountList = ({ activeWallets, gotoRoute }) => {
   const items = activeWallets.map(wallet => ({
-    title: `${wallet.title} wallet account`,
+    title: `settings.accountlist.items.${wallet.title.toLowerCase()} `,
     onPress: () => gotoRoute('AccountInformation', { wallet }),
     hideChevron: true,
     isWarning: false,
@@ -17,11 +17,11 @@ const AccountList = ({ activeWallets, gotoRoute }) => {
   return [
     {
       items: {
-        title: 'No wallets installed...',
+        title: 'settings.signmessage.missingwallets.itemtitle',
         onPress: () => {},
         hideChevron: true,
       },
-      listHint: 'You have not installed any wallets.',
+      listHint: 'settings.accountlist.missingwallets.listhint',
     },
   ];
 };
