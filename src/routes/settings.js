@@ -5,40 +5,40 @@ export const settingRoutes = {
   Home: {
     screen: SettingsRoute,
     swipeEnabled: false,
-    title: 'settings',
+    title: 'settings.settings.title',
     isHome: true,
   },
   Passcode: {
     screen: SettingsRoute,
-    title: 'requireunlocking',
+    title: 'settings.requireunlocking.title',
   },
   OfflineTransport: {
     screen: SettingsRoute,
-    title: 'offlinetransport',
+    title: 'settings.offlinetransport.title',
   },
   PreferredCurrency: {
     screen: SettingsRoute,
-    title: 'preferredcurrency',
+    title: 'settings.preferredcurrency.title',
   },
   Language: {
     screen: SettingsRoute,
-    title: 'language',
+    title: 'settings.language.title',
   },
   SignMessage: {
     screen: SettingsRoute,
-    title: 'signmessage',
+    title: 'settings.signmessage.title',
   },
   About: {
     screen: SettingsRoute,
-    title: 'about',
+    title: 'settings.about.title',
   },
   AccountList: {
     screen: SettingsRoute,
-    title: 'selectaccount',
+    title: 'settings.selectaccount.title',
   },
   AccountInformation: {
     screen: SettingsRoute,
-    title: 'accountinformation',
+    title: 'settings.accountinformation.title',
   },
 };
 

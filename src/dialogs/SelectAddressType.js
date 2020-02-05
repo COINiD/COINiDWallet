@@ -6,6 +6,7 @@ import { Text, Button, CheckBoxSelect } from '../components';
 import { fontWeight } from '../config/styling';
 
 import WalletContext from '../contexts/WalletContext';
+import { t, withLocaleContext } from '../contexts/LocaleContext';
 
 const styles = StyleSheet.create({
   container: {
@@ -15,7 +16,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class SelectAddressType extends PureComponent {
+class SelectAddressType extends PureComponent {
   static contextType = WalletContext;
 
   static propTypes = {
@@ -50,14 +51,15 @@ export default class SelectAddressType extends PureComponent {
 
     const { coinid } = this.context;
     const { supportedAddressTypes } = coinid.network;
-    const addressTypesInfo = supportedAddressTypes.map(e => getAddressTypeInfo(e));
+    const addressTypesInfo = supportedAddressTypes.map(addressType => ({
+      title: t(`addresstypes.${addressType.toLowerCase()}.title`),
+      description: t(`addresstypes.${addressType.toLowerCase()}.description`),
+    }));
     const selectedAddressTypeInfo = addressTypesInfo[selectedIndex];
 
     return (
       <View style={styles.container}>
-        <Text style={{ fontSize: 16, ...fontWeight.normal }}>
-          What kind of addresses do you want the wallet to generate?
-        </Text>
+        <Text style={{ fontSize: 16, ...fontWeight.normal }}>{t('selectaddresstype.text')}</Text>
         <View style={{ marginTop: 16 }}>
           <CheckBoxSelect
             onIndexChange={this._onIndexChange}
@@ -76,9 +78,11 @@ export default class SelectAddressType extends PureComponent {
           {selectedAddressTypeInfo.description}
         </Text>
         <Button style={{ marginTop: 24 }} onPress={this._continue}>
-          Continue
+          {t('generic.continue')}
         </Button>
       </View>
     );
   }
 }
+
+export default withLocaleContext(SelectAddressType);

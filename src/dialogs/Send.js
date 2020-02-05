@@ -15,6 +15,7 @@ import { decodeQrRequest } from '../utils/addressHelper';
 
 import WalletContext from '../contexts/WalletContext';
 import { withExchangeRateContext } from '../contexts/ExchangeRateContext';
+import { t, withLocaleContext } from '../contexts/LocaleContext';
 
 import styleMerge from '../utils/styleMerge';
 import parentStyles from './styles/common';
@@ -113,14 +114,14 @@ class Send extends PureComponent {
     if (isNaN(amount)) {
       errors.push({
         type: 'amount',
-        message: 'amount is not a number',
+        message: t('send.error.amountnotanumber'),
       });
     }
 
     if (amount === Number(0)) {
       errors.push({
         type: 'amount',
-        message: 'amount cannot be zero',
+        message: t('send.error.amountcannotbezero'),
       });
     }
 
@@ -141,7 +142,7 @@ class Send extends PureComponent {
     if (!this.coinid.validateAddress(address)) {
       errors.push({
         type: 'address',
-        message: `address is not a valid ${this.coinid.coin} address`,
+        message: t('send.error.address', { coin: this.coinid.coin }),
       });
     }
 
@@ -277,7 +278,7 @@ class Send extends PureComponent {
 
       return (
         <View style={{ flexDirection: 'row' }}>
-          <Text style={styles.formInfo}>Available balance: </Text>
+          <Text style={styles.formInfo}>{`${t('send.availablebalance')} `}</Text>
           <TouchableOpacity
             onPress={() => {
               if (availableBalance > 0) {
@@ -295,7 +296,7 @@ class Send extends PureComponent {
 
     const renderSendButton = () => (
       <Button style={styles.formButton} onPress={this._submit} testID="button-add-transaction">
-        Add transaction
+        {t('send.addtransaction')}
       </Button>
     );
 
@@ -322,7 +323,7 @@ class Send extends PureComponent {
               this.refToBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
             }}
           >
-            <Text style={styles.formLabel}>To</Text>
+            <Text style={styles.formLabel}>{t('send.to')}</Text>
             <View style={styles.formItemRow}>
               <FontScale
                 style={{
@@ -402,7 +403,7 @@ class Send extends PureComponent {
             }}
           >
             <View>
-              <Text style={styles.formLabel}>Amount</Text>
+              <Text style={styles.formLabel}>{t('send.amount')}</Text>
               <View style={styles.formItemRow}>
                 <AmountInput
                   ref={(c) => {
@@ -439,7 +440,7 @@ class Send extends PureComponent {
               this.refNoteBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
             }}
           >
-            <Text style={styles.formLabel}>Note</Text>
+            <Text style={styles.formLabel}>{t('send.note')}</Text>
             <View style={styles.formItemRow}>
               <TextInput
                 keyboardType={Platform.OS === 'ios' ? 'default' : 'visible-password'}
@@ -468,4 +469,4 @@ class Send extends PureComponent {
   }
 }
 
-export default withExchangeRateContext()(Send);
+export default withLocaleContext(withExchangeRateContext()(Send));

@@ -6,6 +6,7 @@ import {
 import moment from 'moment/min/moment-with-locales';
 import Big from 'big.js';
 import ConvertCurrency from '../components/ConvertCurrency';
+import { t, withLocaleContext } from '../contexts/LocaleContext';
 
 import {
   Text,
@@ -66,7 +67,7 @@ const styles = styleMerge(
   }),
 );
 
-export default class TransactionDetails extends PureComponent {
+class TransactionDetails extends PureComponent {
   static contextType = WalletContext;
 
   static propTypes = {
@@ -193,17 +194,18 @@ export default class TransactionDetails extends PureComponent {
                 onPress={() => {
                   const { oldFee, newFee, feeIncrease } = this._getNewFee();
                   Alert.alert(
-                    'Bump fee?',
-                    `Previous fee: ${oldFee.toFixed(8)}\nIncrease: ${feeIncrease.toFixed(
-                      8,
-                    )}\n New fee: ${newFee.toFixed(8)}`,
+                    t('transactiondetails.bumpfee.alert.title'),
+                    t('transactiondetails.bumpfee.alert.description', {
+                      oldFee: oldFee.toFixed(8),
+                      feeIncrease: feeIncrease.toFixed(8),
+                      newFee: newFee.toFixed(8),
+                    }),
                     [
                       {
-                        text: 'Cancel',
-                        onPress: () => console.log('Cancel Pressed'),
+                        text: t('generic.cancel'),
                         style: 'cancel',
                       },
-                      { text: 'Yes', onPress: () => submit() },
+                      { text: t('generic.yes'), onPress: submit },
                     ],
                   );
                 }}
@@ -211,10 +213,10 @@ export default class TransactionDetails extends PureComponent {
                 isLoading={isSigning}
                 loadingText={signingText}
               >
-                Bump Fee
+                {t('transactiondetails.bumpfee.button.title')}
               </Button>
               <CancelButton show={isSigning} onPress={cancel} marginTop={16}>
-                Cancel
+                {t('generic.cancel')}
               </CancelButton>
             </React.Fragment>
           )}
@@ -233,7 +235,8 @@ export default class TransactionDetails extends PureComponent {
     const { tx, address, balanceChanged } = info;
     const { note, ticker, recommendedConfirmations } = this.state;
     const { time, fees, size } = tx;
-    const date = !time ? '-' : moment.unix(time).format('H:mm:ss - MMM D, YYYY');
+    //
+    const date = !time ? '-' : moment.unix(time).format('LLL');
 
     const confirmations = getConfirmationsFromBlockHeight(tx, blockHeight);
 
@@ -292,7 +295,15 @@ export default class TransactionDetails extends PureComponent {
           }}
           scrollEventThrottle={16}
         >
-          <RowInfo title={balanceChanged < 0 ? 'Sent to' : 'Received on'} selectable multiLine>
+          <RowInfo
+            title={
+              balanceChanged < 0
+                ? t('transactiondetails.sentto')
+                : t('transactiondetails.receivedon')
+            }
+            selectable
+            multiLine
+          >
             <FontScale
               fontSizeMax={fontSize.base}
               fontSizeMin={fontSize.base / 3}
@@ -307,17 +318,17 @@ export default class TransactionDetails extends PureComponent {
             </FontScale>
           </RowInfo>
           <View style={styles.separator} />
-          <RowInfo title="Date">{date}</RowInfo>
-          <RowInfo title="Status">
+          <RowInfo title={t('transactiondetails.date')}>{date}</RowInfo>
+          <RowInfo title={t('transactiondetails.status')}>
             <TransactionState
               confirmations={confirmations}
               recommendedConfirmations={recommendedConfirmations}
             />
           </RowInfo>
-          <RowInfo title="Confirmations">{confirmations}</RowInfo>
+          <RowInfo title={t('transactiondetails.confirmations')}>{confirmations}</RowInfo>
           <View style={styles.separator} />
           <RowInfo
-            title="Note"
+            title={t('transactiondetails.note')}
             multiLine
             onLayout={(e) => {
               this.refNoteBottom = e.nativeEvent.layout.y + e.nativeEvent.layout.height;
@@ -325,7 +336,9 @@ export default class TransactionDetails extends PureComponent {
           >
             <TextInput
               value={note}
-              onChangeText={note => this.setState({ note })}
+              onChangeText={(changedNote) => {
+                this.setState({ note: changedNote });
+              }}
               onBlur={() => {
                 this.noteHelper.saveNote(tx, address, note || '');
               }}
@@ -350,15 +363,21 @@ export default class TransactionDetails extends PureComponent {
             />
           </RowInfo>
           <View style={styles.separator} />
-          <RowInfo title="Fee">{`${numFormat(fees, ticker)} ${ticker}`}</RowInfo>
-          <RowInfo title="Size">{`${size} bytes`}</RowInfo>
+          <RowInfo title={t('transactiondetails.fee')}>
+            {`${numFormat(fees, ticker)} ${ticker}`}
+          </RowInfo>
+          <RowInfo title={t('transactiondetails.size')}>
+            {t('transactiondetails.sizebytes', { size })}
+          </RowInfo>
           <ConvertCurrency value={balanceChanged} time={time}>
             {({ fiatText }) => (
-              <RowInfo title={`${currency} on completion`}>{`${fiatText}`}</RowInfo>
+              <RowInfo title={t('transactiondetails.oncompletion', { currency })}>
+                {`${fiatText}`}
+              </RowInfo>
             )}
           </ConvertCurrency>
           <View style={styles.separator} />
-          <RowInfo title="Included in TXID" multiLine selectable>
+          <RowInfo title={t('transactiondetails.includedintxid')} multiLine selectable>
             {tx.txid}
           </RowInfo>
           {this._renderToolBox()}
@@ -368,3 +387,5 @@ export default class TransactionDetails extends PureComponent {
     );
   }
 }
+
+export default withLocaleContext(TransactionDetails);

@@ -7,6 +7,8 @@ import bleCentral from 'react-native-p2p-transfer-ble-central';
 import SettingHelper from '../utils/settingHelper';
 import projectSettings from '../config/settings';
 
+const settingHelper = SettingHelper(projectSettings.coin);
+
 const GlobalContext = React.createContext({
   hasCOINiD: false,
   isBLESupported: false,
@@ -16,11 +18,9 @@ const LanguageContext = React.createContext({});
 
 function GlobalContextProvider({ children }) {
   const { showActionSheetWithOptions } = useActionSheet();
-  const settingHelper = SettingHelper(projectSettings.coin);
 
   const [state, setState] = useState(null);
-
-  const [settings, setSettings] = useState(null);
+  const [settings, setSettings] = useState(settingHelper.settings);
 
   useEffect(() => {
     const onSettingsUpdated = (newSettings) => {

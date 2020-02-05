@@ -5,7 +5,6 @@ import { useLocaleContext } from '../contexts/LocaleContext';
 
 function TranslatedText({ children, options, ...props }) {
   const { t } = useLocaleContext();
-  console.log('TranslatedText', { children, options, props });
   return <Text {...props}>{t(children, options)}</Text>;
 }
 

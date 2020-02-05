@@ -18,7 +18,7 @@ const getOfflineTransportTitle = (state) => {
 
 const getPreferredCurrencyTitle = (state) => {
   const { settings } = state;
-  return settings.currency;
+  return `currencies.${settings.currency.toLowerCase()}`;
 };
 
 const getLanguageTitle = (state) => {
@@ -59,7 +59,6 @@ const Home = (state) => {
     gotoRoute,
     hasCOINiD,
     hasHotWallet,
-    hasAnyWallets,
     settingHelper,
     settings,
     activeWallets,
@@ -68,10 +67,10 @@ const Home = (state) => {
 
   return [
     {
-      headline: 'general',
+      headline: 'settings.general.title',
       items: [
         {
-          title: 'viewlock',
+          title: 'settings.viewlock.title',
           hideChevron: true,
           switchButton: true,
           disabled: !hasHotWallet || (!hasCOINiD && !settings.usePasscode),
@@ -81,7 +80,7 @@ const Home = (state) => {
           },
         },
         {
-          title: 'requireunlocking',
+          title: 'settings.requireunlocking.title',
           onPress: () => gotoRoute('Passcode'),
           disabled: hasHotWallet ? !settings.usePasscode : true,
           rightTitle: `${getPasscodeTimingTitle(state)}`,
@@ -92,17 +91,17 @@ const Home = (state) => {
     {
       items: [
         {
-          title: 'offlinetransport',
+          title: 'settings.offlinetransport.title',
           onPress: () => gotoRoute('OfflineTransport'),
           rightTitle: `${getOfflineTransportTitle(state)}`,
         },
         {
-          title: 'preferredcurrency',
+          title: 'settings.preferredcurrency.title',
           onPress: () => gotoRoute('PreferredCurrency'),
           rightTitle: `${getPreferredCurrencyTitle(state)}`,
         },
         {
-          title: 'language',
+          title: 'settings.language.title',
           onPress: () => gotoRoute('Language'),
           rightTitle: `${getLanguageTitle(state)}`,
         },
@@ -111,7 +110,7 @@ const Home = (state) => {
     {
       items: [
         {
-          title: 'signmessage',
+          title: 'settings.signmessage.title',
           onPress: () => {
             if (activeWallets.length === 1) {
               const [{ snapTo, openSignMessage }] = activeWallets;
@@ -126,7 +125,7 @@ const Home = (state) => {
           disabled: !activeWallets.length,
         },
         {
-          title: 'verifymessage',
+          title: 'settings.verifymessage.title',
           onPress: () => {
             if (activeWallets.length > 0) {
               const [{ snapTo, openVerifyMessage }] = activeWallets;
@@ -143,7 +142,7 @@ const Home = (state) => {
     {
       items: [
         {
-          title: 'accountinformation',
+          title: 'settings.accountinformation.title',
           onPress: () => {
             if (state.activeWallets.length === 1) {
               state.gotoRoute('AccountInformation', { wallet: state.activeWallets[0] });
@@ -156,26 +155,26 @@ const Home = (state) => {
       ],
     },
     {
-      headline: 'community',
+      headline: 'settings.community.title',
       items: [
         {
-          title: 'telegramchat',
+          title: 'settings.telegramchat.title',
           onPress: () => Linking.openURL(config.telegramUrl),
         },
         {
-          title: 'twitter',
+          title: 'settings.twitter.title',
           onPress: () => Linking.openURL(config.twitterUrl),
         },
         {
-          title: 'instagram',
+          title: 'settings.instagram.title',
           onPress: () => Linking.openURL(config.instagramUrl),
         },
         {
-          title: 'giveusfeedback',
+          title: 'settings.giveusfeedback.title',
           onPress: () => Linking.openURL(config.feedbackUrl),
         },
         {
-          title: 'howtoguides',
+          title: 'settings.howtoguides.title',
           onPress: () => Linking.openURL(config.guidesUrl),
         },
       ],
@@ -183,7 +182,7 @@ const Home = (state) => {
     {
       items: [
         {
-          title: 'about',
+          title: 'settings.about.title',
           onPress: () => gotoRoute('About'),
         },
       ],

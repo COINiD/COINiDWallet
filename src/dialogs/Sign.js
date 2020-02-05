@@ -13,6 +13,8 @@ import {
   CancelButton,
 } from '../components';
 
+import { t, withLocaleContext } from '../contexts/LocaleContext';
+
 import { numFormat } from '../utils/numFormat';
 
 import { colors, fontWeight, fontSize } from '../config/styling';
@@ -89,15 +91,6 @@ class Sign extends Component {
     this._calculateTotal();
   }
 
-  /*
-  shouldComponentUpdate() {
-    if (this.forceNoRender) {
-      return false;
-    }
-    return true;
-  }
-  */
-
   _calculateTotal = () => {
     const { payments } = this.props;
     const { fee } = this;
@@ -123,28 +116,28 @@ class Sign extends Component {
     if (!payments.length) {
       errors.push({
         type: 'payments',
-        message: 'No payments...',
+        message: t('sign.nopayments'),
       });
     }
 
     if (isNaN(total)) {
       errors.push({
         type: 'amount',
-        message: 'Amount is not a number',
+        message: t('sign.notanumber'),
       });
     }
 
     if (total === Number(0)) {
       errors.push({
         type: 'amount',
-        message: 'Amount cannot be zero',
+        message: t('sign.notzero'),
       });
     }
 
     if (total > realBalance) {
       errors.push({
         type: 'balance',
-        message: 'You do not have sufficient funds.',
+        message: t('sign.notsufficient'),
       });
     }
 
@@ -257,7 +250,7 @@ class Sign extends Component {
       return (
         <View style={styles.modalContent}>
           <View style={styles.batchedHeaderContainer}>
-            <Text style={styles.batchedHeader}>Batched Transactions</Text>
+            <Text style={styles.batchedHeader}>{t('sign.batchedtransactions')}</Text>
           </View>
           <BatchList onPress={this._onPressItem} batchedTxs={payments} disabled={isSigning} />
           <View style={styles.summaryContainer}>
@@ -275,7 +268,7 @@ class Sign extends Component {
             <RowInfo
               style={[{ marginBottom: 24 }]}
               childStyle={validationError.length ? styles.totalError : {}}
-              title="Total"
+              title={t('generic.total')}
             >
               {`${numFormat(total, ticker)} ${ticker}`}
             </RowInfo>
@@ -287,10 +280,10 @@ class Sign extends Component {
               isLoading={isSigning}
               loadingText={signingText}
             >
-              Sign with COINiD
+              {t('sign.signwithcoinid')}
             </Button>
             <CancelButton show={isSigning} onPress={cancel} marginTop={16}>
-              Cancel
+              {t('generic.cancel')}
             </CancelButton>
           </View>
         </View>
@@ -309,4 +302,4 @@ class Sign extends Component {
   }
 }
 
-export default Sign;
+export default withLocaleContext(Sign);

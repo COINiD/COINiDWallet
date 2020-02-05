@@ -3,6 +3,7 @@ import {
   View, Image, Platform, Linking, StyleSheet,
 } from 'react-native';
 import { Text, Button } from '../components';
+import { t, withLocaleContext } from '../contexts/LocaleContext';
 
 import { fontWeight } from '../config/styling';
 
@@ -30,7 +31,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class COINiDNotFound extends PureComponent {
+class COINiDNotFound extends PureComponent {
   _download = () => {
     let url = 'itms-apps://itunes.apple.com/us/app/apple-store/1362831898?mt=8';
     if (Platform.OS === 'android') {
@@ -48,13 +49,15 @@ export default class COINiDNotFound extends PureComponent {
     return (
       <View style={styles.container}>
         <Image style={styles.coinidIcon} source={imageFiles.coinid_icon} />
-        <Text style={styles.text}>
-          To setup your hot wallet you need to have COINiD Vault installed on this device.
-        </Text>
+        <Text style={styles.text}>{t('coinidnotfound.text')}</Text>
         <Button onPress={this._download}>
-          {Platform.OS === 'android' ? 'Download on the Play Store' : 'Download on the App Store'}
+          {Platform.OS === 'android'
+            ? t('coinidnotfound.button.android')
+            : t('coinidnotfound.button.ios')}
         </Button>
       </View>
     );
   }
 }
+
+export default withLocaleContext(COINiDNotFound);
