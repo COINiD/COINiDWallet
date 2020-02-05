@@ -67,9 +67,9 @@ class ReceiveQRCode extends PureComponent {
     const { address, onShare, showStatus } = this.props;
     Clipboard.setString(address);
 
-    showStatus('Copied to clipboard', {
+    showStatus('receive.copiedtoclipboard', {
       linkIcon: Platform.OS === 'ios' ? 'share-apple' : 'share-google',
-      linkText: 'Share',
+      linkText: 'generic.share',
       linkIconType: 'evilicon',
       onLinkPress: onShare,
     });

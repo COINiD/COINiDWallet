@@ -1,4 +1,5 @@
 import ActionMenuRouter from './ActionMenuRouter';
+import { t } from '../contexts/LocaleContext';
 
 class ReceiveActionMenu {
   constructor({ showActionSheetWithOptions, ...params }) {
@@ -10,19 +11,19 @@ class ReceiveActionMenu {
     const { onSweepPrivateKey, onValidateAddress, onShare } = this.params;
     return [
       {
-        name: 'Share...',
+        name: t('actionmenus.receive.share'),
         callback: () => setTimeout(onShare, 300),
       },
       {
-        name: 'Validate Address...',
+        name: t('actionmenus.receive.validateaddress'),
         callback: () => setTimeout(onValidateAddress, 100),
       },
       {
-        name: 'Sweep Private Key...',
+        name: t('actionmenus.receive.sweepprivatekey'),
         callback: () => setTimeout(onSweepPrivateKey, 100),
       },
       {
-        name: 'Cancel',
+        name: t('generic.cancel'),
         isCancel: true,
       },
     ];

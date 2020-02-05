@@ -29,8 +29,7 @@ const OfflineTransport = (state) => {
   return [
     {
       items,
-      listHint:
-        'Select how you would like to transfer data between the COINiD Wallet and the COINiD Vault.',
+      listHint: 'settings.coldtransport.listhint',
     },
   ];
 };

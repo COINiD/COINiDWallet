@@ -21,7 +21,7 @@ const getLinks = () => {
 
   if (build.commit) {
     items.push({
-      title: 'View commit on GitHub',
+      title: 'settings.about.viewgithubcommit',
       onPress: () => openCommit(build.commit),
       hideChevron: false,
     });
@@ -29,7 +29,7 @@ const getLinks = () => {
 
   if (build.tag) {
     items.push({
-      title: 'View release on GitHub',
+      title: 'settings.about.viewgithubrelease',
       onPress: () => openReleaseTag(build.tag),
       hideChevron: false,
     });
@@ -42,12 +42,12 @@ const About = () => [
   {
     items: [
       {
-        title: 'Version',
+        title: 'settings.about.version',
         rightTitle: build.tag ? build.tag : `untagged-v${build.version}`,
         hideChevron: true,
       },
       {
-        title: 'Commit',
+        title: 'settings.about.commit',
         rightTitle: (build.dirty ? 'dirty-' : '') + build.commit,
         hideChevron: true,
       },
@@ -55,7 +55,7 @@ const About = () => [
         toggledState: {
           customRightTitleContainerStyle: styles.expandedRightTitle,
         },
-        title: 'Build time',
+        title: 'settings.about.buildtime',
         rightTitle: moment
           .unix(build.time)
           .utc()

@@ -4,6 +4,7 @@ import { StyleSheet, View, Text } from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { Icon } from 'react-native-elements';
 import { colors } from '../config/styling';
+import { t, withLocaleContext } from '../contexts/LocaleContext';
 
 const styles = StyleSheet.create({
   container: {
@@ -168,7 +169,7 @@ class QRScan extends PureComponent {
           color: 'white',
         }}
       >
-        Camera not authorized
+        {t('qrscan.notauthorized')}
       </Text>
     </View>
   );
@@ -222,4 +223,4 @@ QRScan.propTypes = {
   navigation: PropTypes.shape({}).isRequired,
 };
 
-export default QRScan;
+export default withLocaleContext(QRScan);

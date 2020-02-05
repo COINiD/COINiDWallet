@@ -19,6 +19,8 @@ import { Build } from '.';
 import { colors, fontWeight } from '../config/styling';
 
 import WalletContext from '../contexts/WalletContext';
+import { t, withLocaleContext } from '../contexts/LocaleContext';
+
 import { memoize } from '../utils/generic';
 
 const lottieFiles = {
@@ -121,9 +123,7 @@ class Setup extends PureComponent {
     if (this.lottieAnim !== undefined) {
       try {
         this.lottieAnim.play();
-      } catch (err) {
-        console.log('Error playing lottie');
-      }
+      } catch (err) {}
     }
   };
 
@@ -156,12 +156,12 @@ class Setup extends PureComponent {
         this.setState({ buildStatus }, () => setTimeout(resolve, 100));
       });
 
-      const createWallet = () => setBuildStatus('Setting up your account...').then(() => {
+      const createWallet = () => setBuildStatus(t('setup.build.settingup')).then(() => {
         const account = this.coinid.createWallet(pubKeyArray);
         return account;
       });
 
-      const updateDiscoveryStatus = () => setBuildStatus(`Account discovery (${usedCount}/${derivedCount})...`);
+      const updateDiscoveryStatus = () => setBuildStatus(t('setup.build.discovery', { usedCount, derivedCount }));
 
       const discoverChain = chain => new Promise((resolve, reject) => {
         updateDiscoveryStatus().then(() => {
@@ -185,12 +185,12 @@ class Setup extends PureComponent {
       });
 
       const save = () => {
-        this.setState({ buildStatus: 'Saving...' });
+        this.setState({ buildStatus: t('setup.build.saving') });
         return this.coinid.saveAll();
       };
 
       const onWalletReady = () => {
-        this.setState({ buildStatus: 'Your wallet is ready!' }, () => {
+        this.setState({ buildStatus: t('setup.build.walletready') }, () => {
           setTimeout(() => {
             onReady();
             global.enableInactiveOverlay();
@@ -208,7 +208,7 @@ class Setup extends PureComponent {
           onReady(true);
           global.enableInactiveOverlay();
 
-          Alert.alert('Error creating wallet', `${err}`);
+          Alert.alert(t('setup.build.errorcreating'), `${err}`);
           this.setState({
             isBuilding: false,
           });
@@ -221,7 +221,7 @@ class Setup extends PureComponent {
       this.setState(
         {
           isBuilding: true,
-          buildStatus: 'Please wait...',
+          buildStatus: t('setup.build.wait'),
         },
         () => {
           this.coinid.pubKeyData = pubKeyData;
@@ -317,7 +317,6 @@ class Setup extends PureComponent {
     const { styles } = this.state;
 
     const renderButton = () => {
-      const buttonText = 'Start setup of cold wallet';
       let disableButton = false;
       if (isSigning) {
         disableButton = true;
@@ -334,10 +333,10 @@ class Setup extends PureComponent {
             loadingText={signingText}
             testID="button-setup-cold"
           >
-            {buttonText}
+            {t('setup.cold.start')}
           </Button>
           <CancelButton show={isSigning} onPress={cancel}>
-            Cancel
+            {t('generic.cancel')}
           </CancelButton>
         </View>
       );
@@ -357,23 +356,22 @@ class Setup extends PureComponent {
             />
           </View>
           <Text h1 center margin>
-            Welcome
+            {t('setup.welcome')}
           </Text>
           <Text h2 center margin>
-            Setup your Cold Wallet
+            {t('setup.cold.setup')}
           </Text>
           <Text p center margin>
-            Before you begin to setup your cold wallet you need to setup an offline device.
+            {t('setup.cold.before')}
           </Text>
 
           <TouchableOpacity onPress={this._openOfflineGuide} style={styles.linkWrapper}>
-            <Text style={styles.link}>How to setup an offline device</Text>
+            <Text style={styles.link}>{t('setup.cold.howto')}</Text>
             <Image style={styles.linkIcon} source={imageFiles.coinid_icon} />
           </TouchableOpacity>
 
           <Text p center margin>
-            Your cold wallet private keys are never exposed to an online device. Offline storage is
-            the safest way to store your funds.
+            {t('setup.cold.text')}
           </Text>
         </ScrollView>
 
@@ -403,10 +401,10 @@ class Setup extends PureComponent {
           loadingText={signingText}
           testID="button-setup-hot"
         >
-          Start setup of hot wallet
+          {t('setup.hot.start')}
         </Button>
         <CancelButton show={isSigning} onPress={cancel}>
-          Cancel
+          {t('generic.text')}
         </CancelButton>
       </View>
     );
@@ -425,23 +423,22 @@ class Setup extends PureComponent {
             />
           </View>
           <Text h1 center margin>
-            Welcome
+            {t('setup.welcome')}
           </Text>
           <Text h2 center margin>
-            Setup your Hot Wallet
+            {t('setup.hot.setup')}
           </Text>
           <Text p center margin>
-            Similar to a transaction account, funds stored on your hot wallet are available for easy
-            and immediate access.
+            {t('setup.hot.text')}
           </Text>
 
           <TouchableOpacity onPress={this._openAbout} style={styles.linkWrapper}>
-            <Text style={styles.link}>Read more about COINiD</Text>
+            <Text style={styles.link}>{t('setup.readmore')}</Text>
             <Image style={styles.linkIcon} source={imageFiles.coinid_icon} />
           </TouchableOpacity>
 
           <Text p center margin>
-            Private keys are stored securely in the COINiD Vault installed on this device.
+            {t('setup.hot.privatekeys')}
           </Text>
         </ScrollView>
 
@@ -482,4 +479,4 @@ class Setup extends PureComponent {
   }
 }
 
-export default Setup;
+export default withLocaleContext(Setup);

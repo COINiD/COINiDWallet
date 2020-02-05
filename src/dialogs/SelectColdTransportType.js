@@ -8,6 +8,7 @@ import { colors, fontWeight } from '../config/styling';
 import settings from '../config/settings';
 
 import WalletContext from '../contexts/WalletContext';
+import { t, withLocaleContext } from '../contexts/LocaleContext';
 
 const styles = StyleSheet.create({
   container: {
@@ -112,20 +113,25 @@ class SelectColdTransportType extends PureComponent {
 
   render() {
     const { selectedIndex, selectData } = this.state;
-    const selectedOption = selectData[selectedIndex];
+    const translatedSelectData = selectData.map(option => ({
+      ...option,
+      title: t(option.title),
+      description: t(option.description),
+    }));
+    const selectedOption = translatedSelectData[selectedIndex];
 
     const getButtonInfo = () => {
       const { isBLESupported } = this.state;
 
       if (selectedOption.key === 'ble' && !isBLESupported) {
         return {
-          buttonText: 'Device not supported',
+          buttonText: t('selectcoldtransport.notsupported'),
           disableButton: true,
         };
       }
 
       return {
-        buttonText: 'Continue',
+        buttonText: t('generic.continue'),
         disableButton: false,
       };
     };
@@ -135,7 +141,7 @@ class SelectColdTransportType extends PureComponent {
     return (
       <View style={styles.container}>
         <Text style={{ fontSize: 16, ...fontWeight.normal }}>
-          Select how you would like to connect to the offline device.
+          {t('selectcoldtransport.offline')}
         </Text>
         <View style={{ marginTop: 16 }}>
           <CheckBoxSelect
@@ -143,7 +149,7 @@ class SelectColdTransportType extends PureComponent {
               this.setState({ selectedIndex: newIndex });
             }}
             selectedIndex={selectedIndex}
-            data={selectData}
+            data={translatedSelectData}
           />
         </View>
         <Text
@@ -164,4 +170,4 @@ class SelectColdTransportType extends PureComponent {
   }
 }
 
-export default SelectColdTransportType;
+export default withLocaleContext(SelectColdTransportType);

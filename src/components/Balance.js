@@ -12,8 +12,9 @@ import Settings from '../config/settings';
 import { numFormat } from '../utils/numFormat';
 
 import { colors, fontWeight, fontSize } from '../config/styling';
+import { memoize } from '../utils/generic';
 
-const themedStyleGenerator = theme => StyleSheet.create({
+const themedStyleGenerator = memoize(theme => StyleSheet.create({
   container: {
     margin: 0,
   },
@@ -40,7 +41,7 @@ const themedStyleGenerator = theme => StyleSheet.create({
     color: colors.orange,
   },
   testnetConversionWarning: { fontSize: fontSize.smaller, color: colors.orange, marginTop: 4 },
-});
+}));
 
 function TestnetWarning() {
   if (!Settings.isTestnet) {

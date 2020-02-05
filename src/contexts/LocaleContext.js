@@ -13,7 +13,7 @@ const translations = {
   sv: require('../translations/sv.json'),
 };
 
-const t = (string, languageTag, options) => {
+const translate = (string, languageTag, options) => {
   const translation = translations[languageTag][string];
 
   if (!translation) {
@@ -24,9 +24,14 @@ const t = (string, languageTag, options) => {
     return translation;
   }
 
-  const re = new RegExp(`{${Object.keys(options).join('|')}}`, 'gi');
-  return translation.replace(re, matched => options[matched.replace(/{|}/gi, '')]);
+  const re = new RegExp(`{${Object.keys(options).join('}|{')}}`, 'g');
+
+  return translation.replace(re, matched => options[matched.replace(/{|}/g, '')]);
 };
+
+let languageTag = 'en';
+
+export const t = (string, options = null) => translate(string, languageTag, options);
 
 const getBestAvailableLanguage = (selectedLanguage) => {
   if (!translations[selectedLanguage]) {
@@ -42,14 +47,14 @@ const getBestAvailableLanguage = (selectedLanguage) => {
 };
 
 const getNewLocaleState = (selectedLanguage) => {
-  const { languageTag } = getBestAvailableLanguage(selectedLanguage);
-  const locale = RNLocalize.getNumberFormatSettings();
+  const { languageTag: bestLanguageTag } = getBestAvailableLanguage(selectedLanguage);
+  languageTag = bestLanguageTag;
 
   numbro.registerLanguage({
     ...numbro.languageData(),
     delimiters: {
-      thousands: locale.groupingSeparator,
-      decimal: locale.decimalSeparator,
+      thousands: ',',
+      decimal: '.',
     },
   });
 
@@ -57,7 +62,7 @@ const getNewLocaleState = (selectedLanguage) => {
 
   return {
     languageTag,
-    t: (string, options = null) => t(string, languageTag, options),
+    t,
     numFormat,
     moment,
   };
@@ -66,8 +71,6 @@ const getNewLocaleState = (selectedLanguage) => {
 function LocaleProvider({ children }) {
   const language = useLanguageContext();
   const [state, setState] = useState(null);
-
-  console.log('test');
 
   useEffect(() => {
     const onLocaleChange = () => {

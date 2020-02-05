@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, View } from 'react-native';
 import { Icon } from 'react-native-elements';
-import { Text } from '.';
+import TranslatedText from './TranslatedText';
 import { colors, fontWeight } from '../config/styling';
 
 const styles = StyleSheet.create({
@@ -35,38 +35,24 @@ export default class TransactionState extends PureComponent {
   };
 
   render() {
-    const { confirmations: confs, recommendedConfirmations: recommendedConfs } = this.props;
+    const { confirmations, recommendedConfirmations: recommendedConfs } = this.props;
 
-    const confirmed = confirmations => confirmations !== undefined && confirmations >= recommendedConfs;
-
-    const confirmedText = confirmations => (confirmed(confirmations) ? 'completed' : 'pending');
-
-    const confirmedIcon = confirmations => (confirmed(confirmations) ? 'check-circle' : 'timer-sand');
-
-    const confirmedTextStyle = (confirmations) => {
-      const text = confirmedText(confirmations);
-
-      if (text === 'completed') {
-        return {};
-      }
-
-      return styles.pending;
-    };
-
-    const confirmedIconStyle = confirmations => styles[confirmedText(confirmations)];
-
-    const ucFirst = string => string[0].toUpperCase() + string.slice(1);
+    const confirmed = confirmations !== undefined && confirmations >= recommendedConfs;
+    const confirmedText = confirmed ? 'completed' : 'pending';
+    const confirmedIcon = confirmed ? 'check-circle' : 'timer-sand';
+    const confirmedTextStyle = confirmed ? null : styles.pending;
+    const confirmedIconStyle = styles[confirmedText];
 
     return (
       <View style={styles.container}>
         <Icon
-          iconStyle={[styles.icon, confirmedIconStyle(confs)]}
-          name={confirmedIcon(confs)}
+          iconStyle={[styles.icon, confirmedIconStyle]}
+          name={confirmedIcon}
           type="material-community"
         />
-        <Text style={[styles.text, confirmedTextStyle(confs)]}>
-          {ucFirst(confirmedText(confs))}
-        </Text>
+        <TranslatedText style={[styles.text, confirmedTextStyle]}>
+          {`transactionstate.${confirmedText}`}
+        </TranslatedText>
       </View>
     );
   }

@@ -207,7 +207,7 @@ class Graph extends PureComponent {
 Graph.contextTypes = {
   type: PropTypes.string,
   theme: PropTypes.string,
-  coinid: PropTypes.object,
+  coinid: PropTypes.shape(),
 };
 
 Graph.propTypes = {

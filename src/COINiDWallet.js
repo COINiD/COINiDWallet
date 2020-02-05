@@ -35,16 +35,16 @@ class COINiDWallet extends PureComponent {
   render() {
     return (
       <QRCodeProvider>
-        <StatusBoxContext.Provider>
-          <GlobalContext.Provider>
-            <LocaleContext.Provider>
+        <GlobalContext.Provider>
+          <LocaleContext.Provider>
+            <StatusBoxContext.Provider>
               <View style={styles.container}>
                 <RootNavigator />
                 <InactiveOverlay />
               </View>
-            </LocaleContext.Provider>
-          </GlobalContext.Provider>
-        </StatusBoxContext.Provider>
+            </StatusBoxContext.Provider>
+          </LocaleContext.Provider>
+        </GlobalContext.Provider>
       </QRCodeProvider>
     );
   }

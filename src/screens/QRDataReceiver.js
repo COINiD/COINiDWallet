@@ -5,6 +5,7 @@ import QRDataTransferReceiver from 'react-native-qr-data-transfer-receiver';
 import { Icon } from 'react-native-elements';
 import { colors, fontWeight, fontSize } from '../config/styling';
 import { ifSmallDevice } from '../utils/device';
+import { t, withLocaleContext } from '../contexts/LocaleContext';
 
 const styles = StyleSheet.create({
   container: {
@@ -313,7 +314,7 @@ class QRDataReceiver extends PureComponent {
       return (
         <View style={styles.completedItemsWrapper}>
           <Text style={[styles.completedItemsText, styles.textShadow]}>
-            {`Scanned blocks (${collectedSize} of ${length})`}
+            {t('qrdatareceiver.scannedblocks', { collectedSize, length })}
           </Text>
           <View style={[styles.completedItemsShadow, styles.boxShadow]}>
             <View style={styles.completedItemsInner}>{boxes}</View>
@@ -343,7 +344,7 @@ class QRDataReceiver extends PureComponent {
                 size={24}
                 reverse
               />
-              <Text style={[styles.title, styles.textShadow]}>Scan COINiD Vault QR Transfer</Text>
+              <Text style={[styles.title, styles.textShadow]}>{t('qrdatareceiver.title')}</Text>
             </React.Fragment>
 )}
           bottomContent={(
@@ -366,4 +367,4 @@ QRDataReceiver.propTypes = {
   navigation: PropTypes.shape({}).isRequired,
 };
 
-export default QRDataReceiver;
+export default withLocaleContext(QRDataReceiver);

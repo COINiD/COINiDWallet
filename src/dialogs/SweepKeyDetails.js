@@ -25,6 +25,7 @@ import {
 import styleMerge from '../utils/styleMerge';
 import parentStyles from './styles/common';
 
+import { t, withLocaleContext } from '../contexts/LocaleContext';
 import WalletContext from '../contexts/WalletContext';
 
 const styles = styleMerge(
@@ -95,7 +96,7 @@ const styles = styleMerge(
   }),
 );
 
-export default class SweepKeyDetails extends PureComponent {
+class SweepKeyDetails extends PureComponent {
   static contextType = WalletContext;
 
   static propTypes = {
@@ -158,7 +159,7 @@ export default class SweepKeyDetails extends PureComponent {
           this.coinid.noteHelper.saveNote(
             queueData.tx,
             queueData.tx.vout[0].addr,
-            'From sweeped private key',
+            t('sweepkeydetails.fromprivatekey'),
           );
 
           dialogCloseAndClear(true);
@@ -389,12 +390,12 @@ export default class SweepKeyDetails extends PureComponent {
     let disableButton = false;
     let loadingText = '';
     let isLoading = false;
-    let buttonText = 'Transfer to Wallet';
+    let buttonText = t('sweepkeydetails.transfertowallet');
 
     if (isLoadingHistory) {
       disableButton = true;
       isLoading = true;
-      loadingText = 'Loading History';
+      loadingText = t('sweepkeydetails.loadinghistory');
     }
 
     if (isSigning) {
@@ -405,7 +406,7 @@ export default class SweepKeyDetails extends PureComponent {
 
     if (Number(total) <= 0) {
       disableButton = true;
-      buttonText = 'Nothing to Sweep';
+      buttonText = t('sweepkeydetails.nothingtosweep');
     }
 
     const balanceText = `${numFormat(balance, ticker)} ${ticker}`;
@@ -445,15 +446,15 @@ export default class SweepKeyDetails extends PureComponent {
 
         <ExpandableView
           initialIsExpanded={false}
-          contractedTitle="More details"
-          expandedTitle="Hide details"
+          contractedTitle={t('sweepkeydetails.moredetails')}
+          expandedTitle={t('sweepkeydetails.hidedetails')}
           getMaxHeight={this._getExpandableMaxHeight}
           style={styles.addressContainerWrapper}
         >
           {this._renderExpandableContent()}
         </ExpandableView>
         <View style={styles.horizontalBorder} />
-        <Text style={styles.secondTitle}>Send balance to your wallet</Text>
+        <Text style={styles.secondTitle}>{t('sweepkeydetails.sendbalance')}</Text>
         <View style={styles.feeWrapper}>
           <FeeSlider
             extraData={this.formattedInputArr}
@@ -466,7 +467,7 @@ export default class SweepKeyDetails extends PureComponent {
             disabled={isSigning}
           />
         </View>
-        <RowInfo style={styles.totalWrapper} title="Total">
+        <RowInfo style={styles.totalWrapper} title={t('generic.total')}>
           {`${numFormat(total, ticker)} ${ticker}`}
         </RowInfo>
         <Button
@@ -478,7 +479,7 @@ export default class SweepKeyDetails extends PureComponent {
           {buttonText}
         </Button>
         <CancelButton show={isSigning} onPress={cancel} marginTop={gridMultiplier * 2}>
-          Cancel
+          {t('generic.cancel')}
         </CancelButton>
       </View>
     );
@@ -499,3 +500,5 @@ export default class SweepKeyDetails extends PureComponent {
     );
   }
 }
+
+export default withLocaleContext(SweepKeyDetails);
