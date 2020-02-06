@@ -1,6 +1,6 @@
 const AccountList = ({ activeWallets, gotoRoute }) => {
   const items = activeWallets.map(wallet => ({
-    title: `settings.accountlist.items.${wallet.title.toLowerCase()} `,
+    title: `settings.accountlist.items.${wallet.title.toLowerCase()}`,
     onPress: () => gotoRoute('AccountInformation', { wallet }),
     hideChevron: true,
     isWarning: false,
