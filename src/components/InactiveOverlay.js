@@ -20,7 +20,7 @@ import { addressFunctionP2PKH } from 'coinid-address-functions';
 
 import SplashScreen from 'react-native-splash-screen';
 
-import { ifIphoneX } from 'react-native-iphone-x-helper';
+import { ifIphoneX, getStatusBarHeight } from 'react-native-iphone-x-helper';
 
 import { colors, fontSize, fontWeight } from '../config/styling';
 import Settings from '../config/settings';
@@ -40,7 +40,7 @@ const lottieFiles = {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    top: Platform.OS === 'ios' ? ifIphoneX(-44, -20) : 0, // statusbar compensation...
+    top: 0,
     left: 0,
     right: 0,
     bottom: 0,
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   },
   lockTextWrapper: {
     position: 'absolute',
-    top: 16,
+    top: 16 + getStatusBarHeight(),
     alignItems: 'center',
     width: '100%',
   },
