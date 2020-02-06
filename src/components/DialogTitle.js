@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import { StyleSheet, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 

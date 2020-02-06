@@ -211,7 +211,7 @@ class Receive extends PureComponent {
     Share.open(options)
       .then(() => {
         if (Platform.OS === 'ios') {
-          this.showStatus(t('receive.qrcodeshared'));
+          this.showStatus('receive.qrcodeshared');
         }
       })
       .catch(() => {});

@@ -51,10 +51,10 @@ class ValidateAddress extends PureComponent {
 
       return (
         <View style={styles.container}>
-          <Text style={styles.textContainer}>{t('actionmenus.validateaddress.text1')}</Text>
-          <Text style={styles.textContainer}>{t('actionmenus.validateaddress.text2')}</Text>
+          <Text style={styles.textContainer}>{t('validateaddress.text1')}</Text>
+          <Text style={styles.textContainer}>{t('validateaddress.text2')}</Text>
           <Text style={[styles.textContainer, { ...fontWeight.bold }]}>
-            {t('actionmenus.validateaddress.text3')}
+            {t('validateaddress.text3')}
           </Text>
           <Button
             onPress={() => {

@@ -50,13 +50,11 @@ const getNewLocaleState = (selectedLanguage) => {
   const { languageTag: bestLanguageTag } = getBestAvailableLanguage(selectedLanguage);
   languageTag = bestLanguageTag;
 
-  const locale = RNLocalize.getNumberFormatSettings();
-
   numbro.registerLanguage({
     ...numbro.languageData(),
     delimiters: {
-      thousands: locale.groupingSeparator,
-      decimal: locale.decimalSeparator,
+      thousands: ',',
+      decimal: '.',
     },
   });
 
