@@ -9,6 +9,7 @@ import { Text, RowInfo } from '.';
 import { numFormat } from '../utils/numFormat';
 import FeeHelper from '../utils/feeHelper';
 import { colors, fontSize } from '../config/styling';
+import { t } from '../contexts/LocaleContext';
 
 import WalletContext from '../contexts/WalletContext';
 
@@ -282,28 +283,26 @@ class FeeSlider extends PureComponent {
 
     const { fees, lastUpdated } = this.feeInfo;
 
-    let priority = 'Normal priority';
+    let priority = t('feeslider.priority.normal');
 
     if (1 + this.sliderVal < fees.length * (1 / 3)) {
-      priority = 'Low priority';
+      priority = t('feeslider.priority.low');
     }
 
     if (this.sliderVal > fees.length * (2 / 3)) {
-      priority = 'High priority';
+      priority = t('feeslider.priority.high');
     }
 
     const getWarning = () => {
       const getWarningText = () => {
         if (!lastUpdated) {
-          return 'Fee estimation have never been synced so it may be inaccurate';
+          return t('feeslider.notsynced');
         }
 
         const msAgo = Date.now() - lastUpdated;
         const hoursAgo = msAgo / 1000 / 60 / 60;
         if (hoursAgo >= 1) {
-          return `${hoursAgo.toFixed(
-            0,
-          )} hours since fee estimation was synced so it may be inaccurate`;
+          return t('feeslider.hourssincesync', { hoursAgo: hoursAgo.toFixed(0) });
         }
 
         return '';
@@ -320,15 +319,18 @@ class FeeSlider extends PureComponent {
     const getEstimationText = () => {
       if (!blocks) {
         return (
-          <Text style={styles.estimationText}>
-            {`Warning: Highly uncertain when this transaction will be confirmed. Size: ${txSize} bytes`}
-          </Text>
+          <Text style={styles.estimationText}>{t('feeslider.uncertaintext', { txSize })}</Text>
         );
       }
 
       return (
         <Text style={styles.estimationText}>
-          {`${priority}: Should confirm within ${blocks} blocks. (~${timeMinutes} min). ${txSize} bytes`}
+          {t('feeslider.confirmationtext', {
+            priority,
+            blocks,
+            timeMinutes,
+            txSize,
+          })}
         </Text>
       );
     };
@@ -381,7 +383,7 @@ class FeeSlider extends PureComponent {
 
     return (
       <View onLayout={this._onLayout} ref={c => (this.refCont = c)}>
-        <RowInfo title="Fee" style={{ marginBottom: 0 }}>
+        <RowInfo title={t('feeslider.fee')} style={{ marginBottom: 0 }}>
           {`${numFormat(fee, ticker)} ${ticker}`}
         </RowInfo>
         {renderSlider()}

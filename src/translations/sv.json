@@ -70,6 +70,8 @@
   "home.header.testnet": "Testnet",
   "home.header.wallet.cold": "Cold wallet",
   "home.header.wallet.hot": "Hot wallet",
+  "inactiveoverlay.testnet": "Testnet",
+  "inactiveoverlay.signtounlock": "Signera med COINiD för att låsa upp",
   "inputpublickey.createwallet": "Skapa kontot",
   "inputpublickey.error.invalid.description": "Den angivna publika nyckeln är ogiltig",
   "inputpublickey.error.invalid.title": "Ogiltig pubkey",

@@ -5,7 +5,10 @@ import {
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import Big from 'big.js';
-import { Text } from '.';
+
+import Text from './Text';
+import TranslatedText from './TranslatedText';
+
 import { numFormat } from '../utils/numFormat';
 import { colors, fontWeight, fontSize } from '../config/styling';
 
@@ -176,10 +179,13 @@ export default class BatchSummary extends PureComponent {
             >
               <Text style={styles.counter}>{count}</Text>
             </Animated.View>
-            <Text style={styles.header}>Transactions to sign</Text>
-            <Text style={styles.text}>
-              Total: {numFormat(total, ticker)} {ticker}
-            </Text>
+            <TranslatedText style={styles.header}>batchsummary.transactionstosign</TranslatedText>
+            <TranslatedText
+              style={styles.text}
+              options={{ total: numFormat(total, ticker), ticker }}
+            >
+              batchsummary.total
+            </TranslatedText>
             <Icon
               color={colors.white}
               containerStyle={styles.iconContainer}

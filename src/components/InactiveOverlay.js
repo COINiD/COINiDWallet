@@ -15,17 +15,16 @@ import {
 
 import LottieView from 'lottie-react-native';
 import { BlurView } from 'react-native-blur';
-
+import SplashScreen from 'react-native-splash-screen';
+import { getStatusBarHeight } from 'react-native-iphone-x-helper';
 import { addressFunctionP2PKH } from 'coinid-address-functions';
 
-import SplashScreen from 'react-native-splash-screen';
+import TranslatedText from './TranslatedText';
 
-import { ifIphoneX, getStatusBarHeight } from 'react-native-iphone-x-helper';
+import { withGlobalSettings } from '../contexts/GlobalContext';
 
 import { colors, fontSize, fontWeight } from '../config/styling';
 import Settings from '../config/settings';
-import { Text } from '.';
-import { withGlobalSettings } from '../contexts/GlobalContext';
 
 const bitcoinMessage = require('bitcoinjs-message');
 const randomBytes = require('randombytes');
@@ -540,7 +539,9 @@ class InactiveOverlay extends PureComponent {
 
     const renderTestnet = () => {
       if (Settings.isTestnet) {
-        return <Text style={[styles.testnetText]}>Testnet</Text>;
+        return (
+          <TranslatedText style={[styles.testnetText]}>inactiveoverlay.testnet</TranslatedText>
+        );
       }
 
       return null;
@@ -582,7 +583,7 @@ class InactiveOverlay extends PureComponent {
             },
           ]}
         >
-          <Text style={styles.lockText}>Sign with COINiD to unlock</Text>
+          <TranslatedText style={styles.lockText}>inactiveoverlay.signtounlock</TranslatedText>
         </Animated.View>
 
         <Animated.View
