@@ -69,7 +69,7 @@ class ReceiveQRCode extends PureComponent {
 
     showStatus('receive.copiedtoclipboard', {
       linkIcon: Platform.OS === 'ios' ? 'share-apple' : 'share-google',
-      linkText: 'Share',
+      linkText: 'generic.share',
       linkIconType: 'evilicon',
       onLinkPress: onShare,
     });

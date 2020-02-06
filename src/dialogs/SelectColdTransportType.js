@@ -113,7 +113,12 @@ class SelectColdTransportType extends PureComponent {
 
   render() {
     const { selectedIndex, selectData } = this.state;
-    const selectedOption = selectData[selectedIndex];
+    const translatedSelectData = selectData.map(option => ({
+      ...option,
+      title: t(option.title),
+      description: t(option.description),
+    }));
+    const selectedOption = translatedSelectData[selectedIndex];
 
     const getButtonInfo = () => {
       const { isBLESupported } = this.state;
@@ -144,7 +149,7 @@ class SelectColdTransportType extends PureComponent {
               this.setState({ selectedIndex: newIndex });
             }}
             selectedIndex={selectedIndex}
-            data={selectData}
+            data={translatedSelectData}
           />
         </View>
         <Text
