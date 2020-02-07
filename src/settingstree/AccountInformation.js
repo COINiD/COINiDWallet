@@ -1,15 +1,16 @@
 import { Alert, Clipboard, Platform } from 'react-native';
 import Share from 'react-native-share';
 import RNExitApp from 'react-native-exit-app';
+import { t } from '../contexts/LocaleContext';
 
 const resetAccount = ({ title, coinid }) => {
   Alert.alert(
-    `Remove the ${title.toLowerCase()} wallet account?`,
-    'The public key and history will be removed. The app will exit when it is finished.',
+    t(`settings.accountinformation.reset.${title.toLowerCase()}.alert`),
+    t('settings.accountinformation.reset.hint'),
     [
-      { text: 'Cancel', onPress: () => {}, style: 'cancel' },
+      { text: t('generic.cancel'), onPress: () => {}, style: 'cancel' },
       {
-        text: 'OK',
+        text: t('generic.ok'),
         onPress: () => {
           coinid
             .getStorage()
@@ -26,14 +27,14 @@ const resetAccount = ({ title, coinid }) => {
 
 const onShare = (data) => {
   const options = {
-    title: 'Share via',
+    title: 'settings.accountinformation.share.title',
     message: data,
   };
 
   Share.open(options)
     .then(() => {
       if (Platform.OS === 'ios') {
-        this.showStatus('QR code shared successfully');
+        this.showStatus('settings.accountinformation.share.success');
       }
     })
     .catch(() => {});
@@ -41,31 +42,33 @@ const onShare = (data) => {
 
 const getShareIcon = () => ({
   linkIcon: Platform.OS === 'ios' ? 'share-apple' : 'share-google',
-  linkText: 'Share',
+  linkText: 'generic.share',
   linkIconType: 'evilicon',
 });
 
 const getChainSections = ({ chainKeys, showStatus }) => chainKeys.map((chain, idx) => ({
   items: [
     {
-      title: idx ? 'Change chain' : 'External chain',
+      title: idx
+        ? 'settings.accountinformation.changechain'
+        : 'settings.accountinformation.externalchain',
       rightTitle: chain.publicKey,
       hideChevron: true,
       onPress: () => {
         Clipboard.setString(chain.publicKey);
-        showStatus('Copied public key', {
+        showStatus('settings.accountinformation.copiedpublickey', {
           ...getShareIcon(),
           onLinkPress: () => onShare(chain.publicKey),
         });
       },
     },
     {
-      title: 'Derivation path',
+      title: 'settings.accountinformation.derivationpath',
       rightTitle: `${chain.derivationPath}`,
       hideChevron: true,
       onPress: () => {
         Clipboard.setString(chain.derivationPath);
-        showStatus('Copied derivation scheme', {
+        showStatus('settings.accountinformation.copiedderivationscheme', {
           ...getShareIcon(),
           onLinkPress: () => onShare(chain.derivationPath),
         });
@@ -81,36 +84,36 @@ const getAccountSection = ({ publicKey, derivationPath, showStatus }) => {
   return {
     items: [
       {
-        title: 'Public key',
+        title: 'settings.accountinformation.publickey',
         rightTitle: publicKey,
         hideChevron: true,
         onPress: () => {
           Clipboard.setString(publicKey);
-          showStatus('Copied public key', {
+          showStatus('settings.accountinformation.copiedpublickey', {
             ...getShareIcon(),
             onLinkPress: () => onShare(publicKey),
           });
         },
       },
       {
-        title: 'Derivation path',
+        title: 'settings.accountinformation.derivationpath',
         rightTitle: `${derivationPath}`,
         hideChevron: true,
         onPress: () => {
           Clipboard.setString(derivationPath);
-          showStatus('Copied derivation path', {
+          showStatus('settings.accountinformation.copiedderivationpath', {
             ...getShareIcon(),
             onLinkPress: () => onShare(derivationPath),
           });
         },
       },
       {
-        title: 'Derivation scheme',
+        title: 'settings.accountinformation.derivationscheme',
         rightTitle: derivationScheme,
         hideChevron: true,
         onPress: () => {
           Clipboard.setString(derivationScheme);
-          showStatus('Copied derivation scheme', {
+          showStatus('settings.accountinformation.copiedderivationscheme', {
             ...getShareIcon(),
             onLinkPress: () => onShare(derivationScheme),
           });
@@ -125,24 +128,24 @@ const getAddressInfoSections = ({ addressType, derivationPath, showStatus }) => 
   return {
     items: [
       {
-        title: 'Address type',
+        title: 'settings.accountinformation.addresstype',
         rightTitle: addressType,
         hideChevron: true,
         onPress: () => {
           Clipboard.setString(addressType);
-          showStatus('Copied address type', {
+          showStatus('settings.accountinformation.copiedaddresstype', {
             ...getShareIcon(),
             onLinkPress: () => onShare(addressType),
           });
         },
       },
       {
-        title: 'Address derivation',
+        title: 'settings.accountinformation.addressderivation',
         rightTitle: addressDerivationPath,
         hideChevron: true,
         onPress: () => {
           Clipboard.setString(addressDerivationPath);
-          showStatus('Copied address derivation', {
+          showStatus('settings.accountinformation.copiedaddressderivation', {
             ...getShareIcon(),
             onLinkPress: () => onShare(addressDerivationPath),
           });
@@ -154,7 +157,7 @@ const getAddressInfoSections = ({ addressType, derivationPath, showStatus }) => 
 
 const getBlockheight = (activeWallet) => {
   if (!activeWallet) {
-    return 'Not synced yet';
+    return 'settings.accountinformation.notsynced';
   }
 
   const { coinid } = activeWallet;
@@ -175,7 +178,7 @@ const getSlipKeysOptions = ({ settings, settingHelper, allowBitcoinSlip132 }) =>
     {
       items: [
         {
-          title: 'Use SLIP-0132 public keys',
+          title: 'settings.accountinformation.useslip0132',
           hideChevron: true,
           switchButton: true,
           disabled: false,
@@ -232,17 +235,17 @@ const AccountInformation = ({
     {
       items: [
         {
-          title: 'Account',
-          rightTitle: `${title} wallet`,
+          title: 'settings.accountinformation.account',
+          rightTitle: `settings.accountinformation.wallet.${title.toLowerCase()}`,
           hideChevron: true,
         },
         {
-          title: 'Cryptocurrency',
+          title: 'settings.accountinformation.cryptocurrency',
           rightTitle: getCryptoTitle(selectedWallet),
           hideChevron: true,
         },
         {
-          title: 'Latest block',
+          title: 'settings.accountinformation.latestblock',
           rightTitle: getBlockheight(selectedWallet),
           hideChevron: true,
         },
@@ -255,7 +258,7 @@ const AccountInformation = ({
     {
       items: [
         {
-          title: `Remove ${title.toLowerCase()} wallet account`,
+          title: `settings.accountinformation.reset.${title.toLowerCase()}.title`,
           onPress: () => resetAccount({ title, coinid }),
           hideChevron: true,
           isWarning: true,

@@ -4,8 +4,9 @@ import PropTypes from 'prop-types';
 import {
   colors, fontStack, fontWeight, fontSize,
 } from '../config/styling';
+import { memoize } from '../utils/generic';
 
-const themedStyleGenerator = theme => StyleSheet.create({
+const themedStyleGenerator = memoize(theme => StyleSheet.create({
   text: {
     color: colors.getTheme(theme).text,
     fontFamily: fontStack.primary,
@@ -43,13 +44,9 @@ const themedStyleGenerator = theme => StyleSheet.create({
   center: {
     textAlign: 'center',
   },
-});
+}));
 
 class Text extends PureComponent {
-  refresh = () => {
-    this.forceUpdate();
-  };
-
   _updateStyle = () => {
     const { props } = this;
 
@@ -101,10 +98,11 @@ class Text extends PureComponent {
 
   render() {
     this._updateStyle();
+    const { children } = this.props;
 
     return (
       <ReactText {...this.props} style={this.style} allowFontScaling={false}>
-        {this.props.children}
+        {children}
       </ReactText>
     );
   }

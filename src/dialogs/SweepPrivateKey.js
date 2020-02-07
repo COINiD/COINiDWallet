@@ -5,6 +5,7 @@ import {
   Button, CancelButton, Text, COINiDTransport,
 } from '../components';
 
+import { t, withLocaleContext } from '../contexts/LocaleContext';
 import WalletContext from '../contexts/WalletContext';
 
 const styles = StyleSheet.create({
@@ -14,7 +15,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class SweepPrivateKey extends PureComponent {
+class SweepPrivateKey extends PureComponent {
   static contextType = WalletContext;
 
   static propTypes = {
@@ -73,10 +74,10 @@ export default class SweepPrivateKey extends PureComponent {
       return (
         <View style={styles.container}>
           <Text style={{ marginBottom: 24, textAlign: 'center' }}>
-            You can scan and sweep any {coinTitle} private key in WIF, WIFC or BIP38 format.
+            {t('sweepprivatekey.text1', { coinTitle })}
           </Text>
           <Text style={{ marginBottom: 24, textAlign: 'center', fontWeight: 'bold' }}>
-            The private key will be scanned and stored in your COINiD Vault.
+            {t('sweepprivatekey.text2')}
           </Text>
           <Button
             onPress={submit}
@@ -84,10 +85,10 @@ export default class SweepPrivateKey extends PureComponent {
             isLoading={isSigning}
             loadingText={signingText}
           >
-            Scan key with COINiD Vault
+            {t('sweepprivatekey.button')}
           </Button>
           <CancelButton show={isSigning} onPress={cancel} marginTop={16}>
-            Cancel
+            {t('generic.cancel')}
           </CancelButton>
         </View>
       );
@@ -107,3 +108,5 @@ export default class SweepPrivateKey extends PureComponent {
     );
   }
 }
+
+export default withLocaleContext(SweepPrivateKey);

@@ -1,7 +1,8 @@
 import { StyleSheet } from 'react-native';
 import { colors, fontSize, fontWeight } from '../../config/styling';
+import { memoize } from '../../utils/generic';
 
-export default theme => StyleSheet.create({
+export default memoize(theme => StyleSheet.create({
   modalContent: {
     flexDirection: 'column',
     padding: 16,
@@ -64,4 +65,4 @@ export default theme => StyleSheet.create({
   negativeBalance: {
     color: colors.red,
   },
-});
+}));

@@ -5,8 +5,10 @@ import {
 } from 'react-native';
 import { Icon, ButtonGroup } from 'react-native-elements';
 import { colors } from '../config/styling';
+import { memoize } from '../utils/generic';
+import { t, withLocaleContext } from '../contexts/LocaleContext';
 
-const themedStyleGenerator = theme => StyleSheet.create({
+const themedStyleGenerator = memoize(theme => StyleSheet.create({
   container: {
     marginLeft: -16,
     marginRight: -16,
@@ -75,9 +77,9 @@ const themedStyleGenerator = theme => StyleSheet.create({
   buttonGroupSelectedText: {
     color: colors.getTheme(theme).buttonText,
   },
-});
+}));
 
-export default class TransactionFilter extends PureComponent {
+class TransactionFilter extends PureComponent {
   static propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onFilterChange: PropTypes.func.isRequired,
@@ -107,9 +109,9 @@ export default class TransactionFilter extends PureComponent {
     };
 
     this.filterTypes = [
-      { title: 'All', key: 'all' },
-      { title: 'Sent', key: 'sent' },
-      { title: 'Received', key: 'received' },
+      { title: t('generic.all'), key: 'all' },
+      { title: t('generic.sent'), key: 'sent' },
+      { title: t('generic.received'), key: 'received' },
     ];
     this.filterTypeTitles = this.filterTypes.map(e => e.title);
 
@@ -228,7 +230,7 @@ export default class TransactionFilter extends PureComponent {
                 style={styles.filterTextInput}
                 value={filterText}
                 onChangeText={this.onChangeText}
-                placeholder="Search"
+                placeholder={t('generic.search')}
                 placeholderTextColor={colors.gray}
                 onFocus={onFocus}
                 underlineColorAndroid="transparent"
@@ -260,3 +262,5 @@ export default class TransactionFilter extends PureComponent {
     );
   }
 }
+
+export default withLocaleContext(TransactionFilter);

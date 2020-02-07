@@ -5,6 +5,7 @@ import { Text, Button } from '../components';
 import { colors, fontWeight } from '../config/styling';
 
 import WalletContext from '../contexts/WalletContext';
+import { t, withLocaleContext } from '../contexts/LocaleContext';
 
 const styles = StyleSheet.create({
   container: {
@@ -27,7 +28,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class SetupWallet extends PureComponent {
+class SetupWallet extends PureComponent {
   static contextType = WalletContext;
 
   static propTypes = {
@@ -50,11 +51,9 @@ export default class SetupWallet extends PureComponent {
 
     const renderHotView = () => (
       <View style={styles.container}>
-        <Text style={styles.text}>
-          To setup your hot wallet you need to have the COINiD Vault app installed on this device.
-        </Text>
+        <Text style={styles.text}>{t('setupwallet.hottext')}</Text>
         <Button big onPress={this._continue} testID="button-setup-continue">
-          Continue with COINiD Vault
+          {t('setupwallet.continuebutton')}
         </Button>
         <Button
           big
@@ -64,21 +63,18 @@ export default class SetupWallet extends PureComponent {
           textStyle={styles.manualPublicText}
           testID="button-setup-public-key"
         >
-          Or enter public key manually
+          {t('setupwallet.ormanual')}
         </Button>
       </View>
     );
 
     const renderColdView = () => {
-      const buttonText = 'Continue with COINiD Vault';
+      const buttonText = t('setupwallet.continuebutton');
       const disableButton = false;
 
       return (
         <View style={styles.container}>
-          <Text style={styles.text}>
-            To setup your cold wallet you need to have the COINiD Vault app installed on a separate
-            offline device.
-          </Text>
+          <Text style={styles.text}>{t('setupwallet.coldtext')}</Text>
           <Button
             big
             onPress={this._continue}
@@ -95,7 +91,7 @@ export default class SetupWallet extends PureComponent {
             textStyle={styles.manualPublicText}
             testID="button-setup-public-key"
           >
-            Or enter public key manually
+            {t('setupwallet.ormanual')}
           </Button>
         </View>
       );
@@ -104,3 +100,5 @@ export default class SetupWallet extends PureComponent {
     return type === 'hot' ? renderHotView() : renderColdView();
   }
 }
+
+export default withLocaleContext(SetupWallet);

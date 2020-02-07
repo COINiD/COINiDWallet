@@ -5,7 +5,7 @@ const PreferredCurrency = (state) => {
   const { settings, childGoBack, settingHelper } = state;
 
   const items = config.availableCurrencies.map(currency => ({
-    title: currency,
+    title: `currencies.${currency.toLowerCase()}`,
     onPress: () => {
       clearTimeout(timer);
       timer = setTimeout(() => childGoBack(), 400);
@@ -17,7 +17,7 @@ const PreferredCurrency = (state) => {
   return [
     {
       items,
-      listHint: 'Select your preferred currency for use in graph and currency conversions.',
+      listHint: 'settings.preferredcurrency.listhint',
     },
   ];
 };

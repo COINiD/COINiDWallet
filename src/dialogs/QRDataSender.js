@@ -6,6 +6,8 @@ import QRDataTransferSender from 'react-native-qr-data-transfer-sender';
 import { Text, Button } from '../components';
 import { fontWeight } from '../config/styling';
 
+import { t, withLocaleContext } from '../contexts/LocaleContext';
+
 const styles = StyleSheet.create({
   container: {
     padding: 16,
@@ -30,7 +32,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class QRDataSender extends PureComponent {
+class QRDataSender extends PureComponent {
   static propTypes = {
     data: PropTypes.string.isRequired,
     onDone: PropTypes.func.isRequired,
@@ -144,17 +146,17 @@ export default class QRDataSender extends PureComponent {
     return (
       <View style={styles.container}>
         <View onLayout={this._onLayoutTop}>
-          <Text style={{ fontSize: 16, ...fontWeight.normal }}>
-            Scan the QR Code from the offline device.
-          </Text>
+          <Text style={{ fontSize: 16, ...fontWeight.normal }}>{t('qrdatasender.text')}</Text>
         </View>
         <View style={{ marginTop: 16, alignItems: 'center' }}>{renderQr()}</View>
         <View onLayout={this._onLayoutBottom}>
           <Button style={{ marginTop: 24 }} onPress={this._done}>
-            Done
+            {t('generic.done')}
           </Button>
         </View>
       </View>
     );
   }
 }
+
+export default withLocaleContext(QRDataSender);

@@ -8,7 +8,6 @@ import { colors } from '../config/styling';
 import { settingRoutes, getSettingsNavigator } from '../routes/settings';
 import SettingsTree from '../settingstree';
 import StatusBoxContext from '../contexts/StatusBoxContext';
-
 import GlobalContext from '../contexts/GlobalContext';
 
 const styles = StyleSheet.create({
@@ -62,7 +61,7 @@ class Settings extends PureComponent {
     this.state = {
       screenAnimator,
       screenLayout,
-      currentRoute: 'Settings',
+      title: 'settings',
       isHome: true,
       hasAnyWallets,
       hasHotWallet,
@@ -101,7 +100,7 @@ class Settings extends PureComponent {
     const { params } = navigation.state;
 
     this.setState({
-      currentRoute: title,
+      title,
       isHome,
       childGoBack,
       params,
@@ -110,9 +109,9 @@ class Settings extends PureComponent {
   };
 
   _renderGlobalContextConsumer = (globalContext, statusBoxContext) => {
-    const { navigation } = this.props;
+    const { navigation, t } = this.props;
     const {
-      isHome, currentRoute, screenAnimator, screenLayout,
+      isHome, title, screenAnimator, screenLayout,
     } = this.state;
     const {
       hasCOINiD, isBLESupported, settings, settingHelper,
@@ -152,12 +151,7 @@ class Settings extends PureComponent {
     return (
       <View style={styles.container}>
         <Animated.View style={headerAnimStyle}>
-          <SettingsHeader
-            title={currentRoute}
-            isHome={isHome}
-            onClose={this._close}
-            onBack={this._back}
-          />
+          <SettingsHeader title={title} isHome={isHome} onClose={this._close} onBack={this._back} />
         </Animated.View>
         <View style={styles.content}>
           <SettingsNavigator

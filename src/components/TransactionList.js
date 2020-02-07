@@ -9,16 +9,18 @@ import {
   Animated,
   Platform,
 } from 'react-native';
-import moment from 'moment';
+
 import { Icon } from 'react-native-elements';
 import LottieView from 'lottie-react-native';
 import Big from 'big.js';
+
 import { Graph, Text, TransactionFilter } from '.';
 import { numFormat } from '../utils/numFormat';
-
+import { withLocaleContext, t } from '../contexts/LocaleContext';
 import { getTxBalanceChange } from '../libs/coinid-public/transactionHelper';
-
 import { colors, fontWeight, fontSize } from '../config/styling';
+
+import { memoize } from '../utils/generic';
 
 const lottieFiles = {
   emptytrans_hot: require('../animations/emptytrans_hot.json'),
@@ -28,7 +30,7 @@ const lottieFiles = {
   hourglass: require('../animations/hourglass.json'),
 };
 
-const themedStyleGenerator = theme => StyleSheet.create({
+const themedStyleGenerator = memoize(theme => StyleSheet.create({
   batchedRowsContainer: {},
   batchedLine: {
     width: 2,
@@ -124,7 +126,19 @@ const themedStyleGenerator = theme => StyleSheet.create({
     backgroundColor: colors.getTheme(theme).button,
     borderRadius: 4,
   },
-});
+  paidFees: {
+    fontSize: 14,
+    color: '#8A8A8F',
+    ...fontWeight.normal,
+  },
+  dailySummaryDate: { fontSize: 14, ...fontWeight.normal },
+  dailySummary: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: 36,
+  },
+}));
 
 const activeItems = {};
 
@@ -137,7 +151,9 @@ class TransactionListItem extends Component {
 
     this.noteHelper = coinid.noteHelper;
 
-    const { txData, style, confirmations } = this.props;
+    const {
+      txData, style, confirmations, languageTag,
+    } = this.props;
     const [tx, address, balanceChanged, key] = txData;
 
     const itemKey = tx.txid + address + this.noteHelper.getBaseKey();
@@ -153,6 +169,7 @@ class TransactionListItem extends Component {
       pendingProgress: new Animated.Value(0),
       confirmationOpacity: new Animated.Value(1),
       styles,
+      languageTag,
     };
 
     activeItems[itemKey] = this;
@@ -166,12 +183,20 @@ class TransactionListItem extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { txData, confirmations } = nextProps;
+    const { txData, confirmations, languageTag } = nextProps;
     const [tx, address, balanceChanged, key] = txData;
     const { unPublished } = tx;
-    const { confirmations: stateConfirmations, unPublished: stateUnPublished } = this.state;
+    const {
+      confirmations: stateConfirmations,
+      unPublished: stateUnPublished,
+      languageTag: stateLanguageTag,
+    } = this.state;
 
-    if (confirmations !== stateConfirmations || unPublished !== stateUnPublished) {
+    if (
+      confirmations !== stateConfirmations
+      || unPublished !== stateUnPublished
+      || languageTag !== stateLanguageTag
+    ) {
       this._updateConfirmationAnimation(confirmations);
 
       this.setState({
@@ -181,18 +206,26 @@ class TransactionListItem extends Component {
         balanceChanged,
         key,
         unPublished,
+        languageTag,
       });
     }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const { note, confirmations, unPublished } = nextState;
+    const {
+      note, confirmations, unPublished, languageTag,
+    } = nextState;
 
     const {
       unPublished: stateUnPublished,
       note: stateNote,
       confirmations: stateConfirmations,
+      languageTag: stateLanguageTag,
     } = this.state;
+
+    if (languageTag !== stateLanguageTag) {
+      return true;
+    }
 
     if (unPublished !== stateUnPublished) {
       return true;
@@ -256,11 +289,13 @@ class TransactionListItem extends Component {
       tx: { time },
     } = this.state;
 
+    const { moment } = this.props;
+
     if (time) {
-      return moment.unix(time).format('HH:mm');
+      return moment.unix(time).format('LT');
     }
 
-    return moment().format('HH:mm');
+    return moment().format('LT');
   };
 
   _loadNote = () => {
@@ -398,10 +433,9 @@ TransactionListItem.contextTypes = {
   type: PropTypes.string,
   theme: PropTypes.string,
   coinid: PropTypes.shape({}),
-  settingHelper: PropTypes.shape({}),
 };
 
-export default class TransactionList extends PureComponent {
+class TransactionList extends PureComponent {
   constructor(props, context) {
     super(props);
 
@@ -430,7 +464,7 @@ export default class TransactionList extends PureComponent {
     this.transactions = transactions;
     this.filteredData = this.txData;
     this.dailySummary = {};
-    this.sections = [{ data: [], title: 'Transactions' }];
+    this.sections = [{ data: [], title: t('transactionlist.transactions') }];
     this.hasFiltered = false;
 
     this.noteHelper = coinid.noteHelper;
@@ -446,7 +480,10 @@ export default class TransactionList extends PureComponent {
       return;
     }
 
-    if (this.transactions !== nextProps.transactions) {
+    if (
+      this.transactions !== nextProps.transactions
+      || this.props.languageTag !== nextProps.languageTag
+    ) {
       this._parseTransactionsProp(nextProps.transactions);
     }
   }
@@ -479,7 +516,7 @@ export default class TransactionList extends PureComponent {
 
         // if no tx added, then it was most likely a transaction between internal addresses
         if (txData.length === length) {
-          pushTxData(tx, '(internal transaction)', 0);
+          pushTxData(tx, `(${t('transactionlist.internal')})`, 0);
         }
       } else {
         // Received
@@ -530,13 +567,14 @@ export default class TransactionList extends PureComponent {
 
   _createDailySummary = () => {
     this.dailySummary = {};
+    const { moment } = this.props;
 
     const getDateString = (time) => {
       if (time) {
-        return moment.unix(time).format('MMM Do YYYY');
+        return moment.unix(time).format('LL');
       }
 
-      return moment().format('MMM Do YYYY');
+      return moment().format('LL');
     };
 
     if (this.filteredData.length) {
@@ -791,8 +829,8 @@ export default class TransactionList extends PureComponent {
         >
           <View style={{ alignItems: 'center', justifyContent: 'center' }}>
             <ActivityIndicator animating size="large" style={{ marginTop: 30 }} />
-            <Text style={{ fontSize: 18, marginTop: 8 }}>Loading transactions</Text>
-            <Text style={{ marginTop: 8 }}>Your wallet will be ready soon</Text>
+            <Text style={{ fontSize: 18, marginTop: 8 }}>{t('transactionlist.loading')}</Text>
+            <Text style={{ marginTop: 8 }}>{t('transactionlist.readysoon')}</Text>
           </View>
         </Animated.View>
       );
@@ -814,7 +852,7 @@ export default class TransactionList extends PureComponent {
               alignItems: 'center',
             }}
           >
-            <Text style={{ fontSize: 18 }}>Filter did not match any transactions</Text>
+            <Text style={{ fontSize: 18 }}>{t('transactionlist.nomatch')}</Text>
             <Text
               style={{
                 fontSize: 16,
@@ -823,7 +861,7 @@ export default class TransactionList extends PureComponent {
                 ...fontWeight.normal,
               }}
             >
-              Try another input
+              {t('transactionlist.tryanotherinput')}
             </Text>
           </View>
         </Animated.View>
@@ -849,7 +887,7 @@ export default class TransactionList extends PureComponent {
         >
           <LottieView source={lottieFiles[`emptytrans_${type}`]} autoSize />
         </View>
-        <Text style={{ fontSize: 18 }}>No transactions</Text>
+        <Text style={{ fontSize: 18 }}>{t('transactionlist.notransactions')}</Text>
         <Text
           style={{
             fontSize: 16,
@@ -858,14 +896,14 @@ export default class TransactionList extends PureComponent {
             ...fontWeight.normal,
           }}
         >
-          Your transactions will be listed here
+          {t('transactionlist.willbelistedhere')}
         </Text>
       </Animated.View>
     );
   };
 
   _renderItem = ({ item, index }) => {
-    const { isLoadingTxs } = this.props;
+    const { isLoadingTxs, languageTag, moment } = this.props;
 
     const {
       coinid: { ticker },
@@ -881,31 +919,21 @@ export default class TransactionList extends PureComponent {
         txData={item}
         confirmations={item[0].confirmations}
         onPressItem={this._onPressItem}
+        languageTag={languageTag}
+        moment={moment}
       />
     );
 
     const doRenderItem = () => {
+      const { styles } = this.state;
+
       if (this.dailySummary[index] !== undefined) {
         const { accFee, date } = this.dailySummary[index];
         const dayItem = (
-          <View
-            key="fee"
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              height: 36,
-            }}
-          >
-            <Text style={{ fontSize: 14, ...fontWeight.normal }}>{date}</Text>
-            <Text
-              style={{
-                fontSize: 14,
-                color: '#8A8A8F',
-                ...fontWeight.normal,
-              }}
-            >
-              {`Paid fees ${numFormat(accFee, ticker)} ${ticker}`}
+          <View key="fee" style={styles.dailySummary}>
+            <Text style={styles.dailySummaryDate}>{date}</Text>
+            <Text style={styles.paidFees}>
+              {t('transactionlist.paidfees', { fees: `${numFormat(accFee, ticker)} ${ticker}` })}
             </Text>
           </View>
         );
@@ -932,7 +960,7 @@ export default class TransactionList extends PureComponent {
       return null;
     };
 
-    if (section.title === 'Transactions') {
+    if (section.title === t('transactionlist.transactions')) {
       return (
         // setState below... might want to change that...
         <View
@@ -948,7 +976,7 @@ export default class TransactionList extends PureComponent {
           style={[styles.listHeader, { paddingBottom: filterHeight }]}
         >
           <View style={styles.listHeaderTop}>
-            <Text style={styles.subHeader}>Transactions</Text>
+            <Text style={styles.subHeader}>{t('transactionlist.transactions')}</Text>
             <Icon
               iconStyle={styles.subLink}
               size={24}
@@ -979,7 +1007,7 @@ export default class TransactionList extends PureComponent {
   };
 
   render() {
-    const { toggleRange } = this.props;
+    const { toggleRange, languageTag } = this.props;
     const { styles } = this.state;
 
     return (
@@ -1030,7 +1058,6 @@ TransactionList.contextTypes = {
   coinid: PropTypes.object,
   type: PropTypes.string,
   theme: PropTypes.string,
-  settingHelper: PropTypes.object,
 };
 
 TransactionList.propTypes = {
@@ -1042,3 +1069,5 @@ TransactionList.defaultProps = {
   transactions: [],
   blockHeight: 0,
 };
+
+export default withLocaleContext(TransactionList);

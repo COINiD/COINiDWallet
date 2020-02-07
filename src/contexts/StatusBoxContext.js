@@ -6,7 +6,7 @@ import {
 import { getBottomSpace } from 'react-native-iphone-x-helper';
 import { Icon } from 'react-native-elements';
 
-import Text from '../components/Text';
+import TranslatedText from '../components/TranslatedText';
 import DismissableByDragView from '../components/DismissableByDragView';
 
 import { colors, fontWeight, fontSize } from '../config/styling';
@@ -75,7 +75,7 @@ class StatusBox extends PureComponent {
     const { children } = this.props;
 
     if (typeof children === 'string') {
-      return <Text style={styles.text}>{children}</Text>;
+      return <TranslatedText style={styles.text}>{children}</TranslatedText>;
     }
 
     return children;
@@ -97,7 +97,7 @@ class StatusBox extends PureComponent {
         return null;
       }
 
-      return <Text style={[styles.text, styles.link]}>{linkText}</Text>;
+      return <TranslatedText style={[styles.text, styles.link]}>{linkText}</TranslatedText>;
     };
 
     const renderLinkIcon = () => {
@@ -184,7 +184,7 @@ class StatusBoxProvider extends PureComponent {
   };
 
   _renderStatusBox = () => {
-    const { statusContent, statusProps } = this.state;
+    const { statusContent, statusProps = {} } = this.state;
 
     const doRender = () => {
       if (!statusContent) {

@@ -4,6 +4,7 @@ import {
   StyleSheet, View, TouchableOpacity, Animated, Dimensions,
 } from 'react-native';
 import { Text } from '.';
+import { t } from '../contexts/LocaleContext';
 
 import { fontWeight } from '../config/styling';
 
@@ -114,8 +115,8 @@ export default class ConnectionStatus extends PureComponent {
       >
         <TouchableOpacity style={styles.touch} onPress={this._onPress}>
           <View style={styles.content}>
-            <Text style={styles.header}>No Connection</Text>
-            <Text style={styles.text}>Check your internet connection.</Text>
+            <Text style={styles.header}>{t('connectionstatus.noconnection')}</Text>
+            <Text style={styles.text}>{t('connectionstatus.check')}</Text>
           </View>
         </TouchableOpacity>
       </Animated.View>

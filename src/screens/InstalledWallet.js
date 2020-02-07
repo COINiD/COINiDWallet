@@ -10,13 +10,15 @@ import {
   BatchSummary, ConnectionStatus, Balance, TransactionList, Text,
 } from '../components';
 import { withStatusBox } from '../contexts/StatusBoxContext';
+import { t, withLocaleContext } from '../contexts/LocaleContext';
 
 import projectSettings from '../config/settings';
 import { colors } from '../config/styling';
 
 import WalletContext from '../contexts/WalletContext';
+import { memoize } from '../utils/generic';
 
-const themedStyleGenerator = theme => StyleSheet.create({
+const themedStyleGenerator = memoize(theme => StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -55,7 +57,7 @@ const themedStyleGenerator = theme => StyleSheet.create({
     marginLeft: 36,
     marginRight: 36,
   },
-});
+}));
 
 class InstalledWallet extends PureComponent {
   static contextType = WalletContext;
@@ -176,10 +178,7 @@ class InstalledWallet extends PureComponent {
     const { statusBoxContext } = this.props;
 
     setTimeout(() => {
-      statusBoxContext.showStatus(
-        "Keep it safe. Don't forget to backup the recovery phrase from your COINiD Vault.",
-        { hideAfter: 10000 },
-      );
+      statusBoxContext.showStatus('installedwallet.keepitsafe', { hideAfter: 10000 });
     }, 3000);
   };
 
@@ -326,13 +325,13 @@ class InstalledWallet extends PureComponent {
     );
 
     if (paymentWithSameAddress.length && paymentWithSameAddress[0].address !== editAddress) {
-      Alert.alert('A payment with this address have already been batched...');
+      Alert.alert(t('installedwallet.alreadybatched'));
     } else if (editAddress) {
       const [paymentToUpdate] = paymentsInBatch.filter(e => e.address === editAddress);
       const indexToUpdate = paymentsInBatch.indexOf(paymentToUpdate);
 
       if (indexToUpdate === -1) {
-        Alert.alert('Could not find payment to update...');
+        Alert.alert(t('installedwallet.couldnotfind'));
       } else {
         paymentsInBatch[indexToUpdate] = {
           ...paymentToBatch,
@@ -412,8 +411,8 @@ class InstalledWallet extends PureComponent {
       return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <ActivityIndicator animating size="large" style={{ marginBottom: 20 }} />
-          <Text h2>Loading Wallet</Text>
-          <Text style={{ marginTop: 20 }}>Your wallet will be ready soon</Text>
+          <Text h2>{t('installedwallet.loading')}</Text>
+          <Text style={{ marginTop: 20 }}>{t('installedwallet.notready')}</Text>
         </View>
       );
     }
@@ -464,4 +463,4 @@ class InstalledWallet extends PureComponent {
   }
 }
 
-export default withStatusBox(InstalledWallet);
+export default withLocaleContext(withStatusBox(InstalledWallet));

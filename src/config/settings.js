@@ -2,10 +2,11 @@ export default {
   coin : 'testnet',
   appReturnScheme : 'coinid-tbtc',
   coldWalletMode: true,
+  language: 'system',
+  availableLanguages : ['system','en','sv'],
   currency: 'USD',
   availableCurrencies : ['USD','EUR','JPY','GBP','CAD','CHF','KRW','NZD','SEK','NOK','DKK'],
   ranges: ['day', 'week', 'month', 'year'],
-  // milliseconds
   refreshRates: {
     exchangeRate: 600000, // 10 minutes
     account: 600000, // 10 minutes
@@ -13,28 +14,28 @@ export default {
   coldTransportTypes: [
     {
       key: '',
-      title: 'Show dialog',
-      description: 'Show dialog and lets you select which transport type to use.',
+      title: 'settings.coldtransport.showdialog.title',
+      description: 'settings.coldtransport.showdialog.description',
     },
     {
       key: 'qr',
-      title: 'QR Codes',
-      description: 'Uses QR Codes to communicate between wallet and offline device.',
+      title: 'settings.coldtransport.qrcodes.title',
+      description: 'settings.coldtransport.qrcodes.description',
     },
     {
       key: 'ble',
-      title: 'Bluetooth Low Energy',
-      description: 'Uses BLE to communicate between wallet and offline device.',
+      title: 'settings.coldtransport.ble.title',
+      description: 'settings.coldtransport.ble.description',
     },
   ],
   lockDurations: [
-    { milliseconds: 0, title: 'Immediately' },
-    { milliseconds: 60000, title: 'After 1 minute' },
-    { milliseconds: 300000, title: 'After 5 minutes' },
-    { milliseconds: 900000, title: 'After 15 minutes' },
-    { milliseconds: 1800000, title: 'After 30 minutes' },
-    { milliseconds: 3600000, title: 'After 1 hour' },
-    { milliseconds: 14400000, title: 'After 4 hours' },
+    { milliseconds: 0, title: 'settings.lockduration.immediately' },
+    { milliseconds: 60000, title: 'settings.lockduration.1minute' },
+    { milliseconds: 300000, title: 'settings.lockduration.5minutes' },
+    { milliseconds: 900000, title: 'settings.lockduration.15minutes' },
+    { milliseconds: 1800000, title: 'settings.lockduration.30minutes' },
+    { milliseconds: 3600000, title: 'settings.lockduration.1hour' },
+    { milliseconds: 14400000, title: 'settings.lockduration.4hours' },
   ],
   aboutUrl: 'https://coinid.org',
   feedbackUrl: 'https://coinid.org/feedback',

@@ -12,15 +12,16 @@ import StatusBoxContext from '../contexts/StatusBoxContext';
 import { ExchangeRateContextProvider } from '../contexts/ExchangeRateContext';
 
 import { colors } from '../config/styling';
+import { memoize } from '../utils/generic';
 
-const themedStyleGenerator = theme => StyleSheet.create({
+const themedStyleGenerator = memoize(theme => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.getTheme(theme).background,
     borderRadius: 16,
     paddingBottom: getBottomSpace(),
   },
-});
+}));
 
 class Wallet extends PureComponent {
   constructor(props) {

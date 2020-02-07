@@ -4,8 +4,9 @@ import { StyleSheet, AppState, Animated } from 'react-native';
 import { Button } from '.';
 
 import { colors } from '../config/styling';
+import { memoize } from '../utils/generic';
 
-const themedStyleGenerator = theme => StyleSheet.create({
+const themedStyleGenerator = memoize(theme => StyleSheet.create({
   altButton: {
     backgroundColor: colors.getTheme(theme).altCancelButton,
   },
@@ -18,7 +19,7 @@ const themedStyleGenerator = theme => StyleSheet.create({
   buttonText: {
     color: colors.getTheme(theme).cancelButtonText,
   },
-});
+}));
 
 class CancelButton extends PureComponent {
   constructor(props) {

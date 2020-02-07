@@ -13,9 +13,11 @@ import projectSettings from '../config/settings';
 import { Text } from '../components';
 import { Wallet } from '.';
 import DialogBoxContext from '../contexts/DialogBoxContext';
-import COINiDPublic from '../libs/coinid-public';
-import storageHelper from '../utils/storageHelper';
+import { withLocaleContext, t } from '../contexts/LocaleContext';
 
+import COINiDPublic from '../libs/coinid-public';
+
+import storageHelper from '../utils/storageHelper';
 import settingHelper from '../utils/settingHelper';
 
 const sliderWidth = Dimensions.get('window').width;
@@ -164,7 +166,7 @@ class Home extends PureComponent {
       activeSlide: 0,
       slides,
       hideSensitive: false,
-      walletTitle: `${slides[0].title} Wallet`,
+      walletTitle: t(`home.header.wallet.${slides[0].title.toLowerCase()}`),
     };
   }
 
@@ -246,7 +248,7 @@ class Home extends PureComponent {
 
   _updateActiveTitle = (index) => {
     const { slides } = this.state;
-    this.setState({ walletTitle: `${slides[index].title} Wallet` });
+    this.setState({ walletTitle: t(`home.header.wallet.${slides[index].title.toLowerCase()}`) });
   };
 
   _renderItem = ({ item, index }) => {
@@ -351,7 +353,7 @@ class Home extends PureComponent {
   _renderHeaderLeft = () => {
     const renderTestnet = () => {
       if (projectSettings.isTestnet) {
-        return <Text style={styles.testnetText}>Testnet version</Text>;
+        return <Text style={styles.testnetText}>{t('home.header.testnet')}</Text>;
       }
 
       return null;
@@ -408,4 +410,4 @@ Home.propTypes = {
   navigation: PropTypes.shape({}).isRequired,
 };
 
-export default Home;
+export default withLocaleContext(Home);

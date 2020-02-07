@@ -18,21 +18,26 @@ const getOfflineTransportTitle = (state) => {
 
 const getPreferredCurrencyTitle = (state) => {
   const { settings } = state;
-  return settings.currency;
+  return `currencies.${settings.currency.toLowerCase()}`;
+};
+
+const getLanguageTitle = (state) => {
+  const { settings } = state;
+  return `languages.${settings.language}`;
 };
 
 const getViewLockExplanation = (state) => {
   const { hasCOINiD, hasHotWallet, settings } = state;
 
   if (!hasHotWallet) {
-    return 'View lock requires an installed hot wallet.';
+    return 'viewlock.listhint.missinghotwallet';
   }
 
   if (!hasCOINiD && !settings.usePasscode) {
-    return 'View lock requires COINiD Vault.';
+    return 'viewlock.listhint.missingcoinid';
   }
 
-  return 'View lock is unlocked with COINiD Vault.';
+  return 'viewlock.listhint.text';
 };
 
 const getPasscodeTimingTitle = (state) => {
@@ -54,7 +59,6 @@ const Home = (state) => {
     gotoRoute,
     hasCOINiD,
     hasHotWallet,
-    hasAnyWallets,
     settingHelper,
     settings,
     activeWallets,
@@ -63,10 +67,10 @@ const Home = (state) => {
 
   return [
     {
-      headline: 'General',
+      headline: 'settings.general.title',
       items: [
         {
-          title: 'View lock',
+          title: 'settings.viewlock.title',
           hideChevron: true,
           switchButton: true,
           disabled: !hasHotWallet || (!hasCOINiD && !settings.usePasscode),
@@ -76,7 +80,7 @@ const Home = (state) => {
           },
         },
         {
-          title: 'Require unlocking',
+          title: 'settings.requireunlocking.title',
           onPress: () => gotoRoute('Passcode'),
           disabled: hasHotWallet ? !settings.usePasscode : true,
           rightTitle: `${getPasscodeTimingTitle(state)}`,
@@ -87,21 +91,26 @@ const Home = (state) => {
     {
       items: [
         {
-          title: 'Offline transport',
+          title: 'settings.offlinetransport.title',
           onPress: () => gotoRoute('OfflineTransport'),
           rightTitle: `${getOfflineTransportTitle(state)}`,
         },
         {
-          title: 'Preferred currency',
+          title: 'settings.preferredcurrency.title',
           onPress: () => gotoRoute('PreferredCurrency'),
           rightTitle: `${getPreferredCurrencyTitle(state)}`,
+        },
+        {
+          title: 'settings.language.title',
+          onPress: () => gotoRoute('Language'),
+          rightTitle: `${getLanguageTitle(state)}`,
         },
       ],
     },
     {
       items: [
         {
-          title: 'Sign message',
+          title: 'settings.signmessage.title',
           onPress: () => {
             if (activeWallets.length === 1) {
               const [{ snapTo, openSignMessage }] = activeWallets;
@@ -116,7 +125,7 @@ const Home = (state) => {
           disabled: !activeWallets.length,
         },
         {
-          title: 'Verify message',
+          title: 'settings.verifymessage.title',
           onPress: () => {
             if (activeWallets.length > 0) {
               const [{ snapTo, openVerifyMessage }] = activeWallets;
@@ -133,7 +142,7 @@ const Home = (state) => {
     {
       items: [
         {
-          title: 'Account information',
+          title: 'settings.accountinformation.title',
           onPress: () => {
             if (state.activeWallets.length === 1) {
               state.gotoRoute('AccountInformation', { wallet: state.activeWallets[0] });
@@ -146,26 +155,26 @@ const Home = (state) => {
       ],
     },
     {
-      headline: 'Community',
+      headline: 'settings.community.title',
       items: [
         {
-          title: 'Telegram chat',
+          title: 'settings.telegramchat.title',
           onPress: () => Linking.openURL(config.telegramUrl),
         },
         {
-          title: 'Twitter',
+          title: 'settings.twitter.title',
           onPress: () => Linking.openURL(config.twitterUrl),
         },
         {
-          title: 'Instagram',
+          title: 'settings.instagram.title',
           onPress: () => Linking.openURL(config.instagramUrl),
         },
         {
-          title: 'Give us feedback',
+          title: 'settings.giveusfeedback.title',
           onPress: () => Linking.openURL(config.feedbackUrl),
         },
         {
-          title: 'How to guides',
+          title: 'settings.howtoguides.title',
           onPress: () => Linking.openURL(config.guidesUrl),
         },
       ],
@@ -173,7 +182,7 @@ const Home = (state) => {
     {
       items: [
         {
-          title: 'About',
+          title: 'settings.about.title',
           onPress: () => gotoRoute('About'),
         },
       ],

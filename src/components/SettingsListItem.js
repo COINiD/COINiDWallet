@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
+import { withLocaleContext } from '../contexts/LocaleContext';
 
 import {
   colors, fontSize, fontWeight, fontStack,
@@ -75,6 +76,9 @@ class SettingsListItem extends PureComponent {
       customRightTitleStyle,
       customRightTitleContainerStyle,
       customContainerStyle,
+      title,
+      rightTitle,
+      t,
     } = this.props;
 
     return (
@@ -97,9 +101,11 @@ class SettingsListItem extends PureComponent {
         disabledStyle={styles.listItemDisabled}
         chevronColor={colors.black}
         {...this.props}
+        title={title ? t(title) : null}
+        rightTitle={rightTitle ? t(rightTitle) : null}
       />
     );
   }
 }
 
-export default SettingsListItem;
+export default withLocaleContext(SettingsListItem);

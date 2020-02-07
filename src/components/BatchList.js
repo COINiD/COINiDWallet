@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 import {
   StyleSheet, FlatList, TouchableOpacity, View,
 } from 'react-native';
-import { Text, FontScale } from '.';
+import FontScale from './FontScale';
+import Text from './Text';
 import { numFormat } from '../utils/numFormat';
 import { colors, fontWeight, fontSize } from '../config/styling';
 
 import WalletContext from '../contexts/WalletContext';
+import { t } from '../contexts/LocaleContext';
 
 const styles = StyleSheet.create({
   container: {
@@ -83,7 +85,9 @@ class BatchListItem extends PureComponent {
               <Text style={[styles.line, styles.addressText, { fontSize }]}>{item.address}</Text>
             )}
           </FontScale>
-          <Text style={[styles.line, styles.noteText]}>{item.note ? item.note : 'no note'}</Text>
+          <Text style={[styles.line, styles.noteText]}>
+            {item.note ? item.note : t('batchlist.nonote')}
+          </Text>
         </View>
       </TouchableOpacity>
     );

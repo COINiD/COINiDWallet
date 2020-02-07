@@ -1,17 +1,5 @@
 import numbro from 'numbro';
 
-const initLocale = () => {
-  if (numeral.locales.coinid === undefined) {
-    numeral.register('locale', 'coinid', {
-      delimiters: {
-        thousands: ',',
-        decimal: '.',
-      },
-    });
-    numeral.locale('coinid');
-  }
-};
-
 const validCryptoCurrencies = {
   BTC: true,
   TBTC: true,
@@ -22,7 +10,7 @@ const validCryptoCurrencies = {
   TGRS: true,
 };
 
-export const isCryptoCurrency = currency => (!!(currency && validCryptoCurrencies[currency.toUpperCase()]));
+export const isCryptoCurrency = currency => !!(currency && validCryptoCurrencies[currency.toUpperCase()]);
 
 export const numFormat = (value, currency, decimals, variableDecimals) => {
   value = Number(value);

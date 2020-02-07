@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { StyleSheet, Animated } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { colors } from '../config/styling';
+import { withLocaleContext } from '../contexts/LocaleContext';
 
 const styles = StyleSheet.create({
   header: {
@@ -144,7 +145,9 @@ class SettingsHeader extends PureComponent {
   };
 
   render() {
-    const { isHome, onBack, onClose } = this.props;
+    const {
+      isHome, onBack, onClose, t,
+    } = this.props;
     const { title, prevTitle } = this.state;
     const {
       titleAnimStyle,
@@ -170,8 +173,8 @@ class SettingsHeader extends PureComponent {
           />
         </Animated.View>
 
-        <Animated.Text style={[styles.title, titleAnimStyle]}>{title}</Animated.Text>
-        <Animated.Text style={[styles.title, prevTitleAnimStyle]}>{prevTitle}</Animated.Text>
+        <Animated.Text style={[styles.title, titleAnimStyle]}>{t(title)}</Animated.Text>
+        <Animated.Text style={[styles.title, prevTitleAnimStyle]}>{t(prevTitle)}</Animated.Text>
 
         <Animated.View
           pointerEvents={isHome ? 'auto' : 'none'}
@@ -192,4 +195,4 @@ class SettingsHeader extends PureComponent {
   }
 }
 
-export default SettingsHeader;
+export default withLocaleContext(SettingsHeader);

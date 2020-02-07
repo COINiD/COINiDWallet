@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, View } from 'react-native';
 import { List } from 'react-native-elements';
-import { Text } from '.';
+import TranslatedText from './TranslatedText';
 import SettingsListItem from './SettingsListItem';
 
 import { colors, fontSize, fontWeight } from '../config/styling';
@@ -51,9 +51,9 @@ class SettingsSection extends PureComponent {
 
     return (
       <View style={styles.section}>
-        {headline ? <Text style={styles.headline}>{headline}</Text> : null}
+        {headline ? <TranslatedText style={styles.headline}>{headline}</TranslatedText> : null}
         <List containerStyle={styles.list}>{this._renderListItems(items)}</List>
-        {listHint ? <Text style={styles.listHint}>{listHint}</Text> : null}
+        {listHint ? <TranslatedText style={styles.listHint}>{listHint}</TranslatedText> : null}
       </View>
     );
   }

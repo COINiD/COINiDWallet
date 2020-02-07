@@ -1,19 +1,20 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {
-  StyleSheet, ActivityIndicator, TouchableOpacity, View,
-} from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { LineChart } from 'react-native-svg-charts';
 import * as shape from 'd3-shape';
 
 import { Text, FontScale } from '.';
+import TranslatedText from './TranslatedText';
 import { numFormat } from '../utils/numFormat';
 import { colors, fontWeight, fontSize } from '../config/styling';
 
 import { withExchangeRateContext } from '../contexts/ExchangeRateContext';
 import { withGlobalRange } from '../contexts/GlobalContext';
 
-const themedStyleGenerator = theme => StyleSheet.create({
+import { memoize } from '../utils/generic';
+
+const themedStyleGenerator = memoize(theme => StyleSheet.create({
   container: {
     paddingTop: 8,
     paddingBottom: 16,
@@ -54,7 +55,7 @@ const themedStyleGenerator = theme => StyleSheet.create({
   negative: {
     color: colors.orange,
   },
-});
+}));
 
 class Graph extends PureComponent {
   constructor(props, context) {
@@ -165,7 +166,7 @@ class Graph extends PureComponent {
           </FontScale>
           <View style={[styles.textContainer]}>
             <TouchableOpacity onPress={toggleRange}>
-              <Text style={styles.currencyText}>Past {range}</Text>
+              <TranslatedText style={styles.currencyText}>{`graph.span.${range}`}</TranslatedText>
             </TouchableOpacity>
             <Text style={[styles.currencyText, styles.coinDiffContainer, styles.coinDiff]}>
               {numFormat(exchangeRate, currency, undefined, 1)} {currency}
@@ -206,7 +207,7 @@ class Graph extends PureComponent {
 Graph.contextTypes = {
   type: PropTypes.string,
   theme: PropTypes.string,
-  coinid: PropTypes.object,
+  coinid: PropTypes.shape(),
 };
 
 Graph.propTypes = {

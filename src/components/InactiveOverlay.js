@@ -15,17 +15,16 @@ import {
 
 import LottieView from 'lottie-react-native';
 import { BlurView } from 'react-native-blur';
-
+import SplashScreen from 'react-native-splash-screen';
+import { getStatusBarHeight } from 'react-native-iphone-x-helper';
 import { addressFunctionP2PKH } from 'coinid-address-functions';
 
-import SplashScreen from 'react-native-splash-screen';
+import TranslatedText from './TranslatedText';
 
-import { ifIphoneX } from 'react-native-iphone-x-helper';
+import { withGlobalSettings } from '../contexts/GlobalContext';
 
 import { colors, fontSize, fontWeight } from '../config/styling';
 import Settings from '../config/settings';
-import settingHelper from '../utils/settingHelper';
-import { Text } from '.';
 
 const bitcoinMessage = require('bitcoinjs-message');
 const randomBytes = require('randombytes');
@@ -40,7 +39,7 @@ const lottieFiles = {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    top: Platform.OS === 'ios' ? ifIphoneX(-44, -20) : 0, // statusbar compensation...
+    top: 0,
     left: 0,
     right: 0,
     bottom: 0,
@@ -95,7 +94,7 @@ const styles = StyleSheet.create({
   },
   lockTextWrapper: {
     position: 'absolute',
-    top: 16,
+    top: 16 + getStatusBarHeight(),
     alignItems: 'center',
     width: '100%',
   },
@@ -137,18 +136,13 @@ class InactiveOverlay extends PureComponent {
 
     this.appState = 'initial';
 
-    this.settingHelper = settingHelper(Settings.coin);
-
     this.isViewLocked = true;
-    this.usePasscode = true;
     this.activeTime = Date.now();
     this.inActiveTime = Date.now();
-    this.lockAfterDuration = 5000;
     this.hasUpdated = false;
   }
 
   componentDidMount() {
-    this.settingHelper.on('updated', this._updateSettings);
     AppState.addEventListener('change', this._handleAppStateChange);
     this.forceUpdate();
   }
@@ -163,14 +157,8 @@ class InactiveOverlay extends PureComponent {
   }
 
   componentWillUnmount() {
-    this.settingHelper.removeListener('updated', this._updateSettings);
     AppState.removeEventListener('change', this._handleAppStateChange);
   }
-
-  _updateSettings = (settings) => {
-    this.usePasscode = settings.usePasscode;
-    this.lockAfterDuration = settings.lockAfterDuration;
-  };
 
   _addUrlListener = () => {
     global.disableInactiveOverlay();
@@ -286,6 +274,7 @@ class InactiveOverlay extends PureComponent {
 
   _checkIfShouldLock = () => {
     const inactiveDuration = this.activeTime - this.inActiveTime;
+    const { settings } = this.props;
 
     return new Promise((resolve, reject) => {
       if (this._getCOINiD() === undefined) {
@@ -297,9 +286,10 @@ class InactiveOverlay extends PureComponent {
         .then((account) => {
           this.unlockAccount = account;
           this.unlockChain = this.unlockAccount.getChain(1);
+
           if (
-            this.usePasscode
-            && (this.isViewLocked || inactiveDuration > this.lockAfterDuration)
+            settings.usePasscode
+            && (this.isViewLocked || inactiveDuration > settings.lockAfterDuration)
           ) {
             return resolve(true);
           }
@@ -549,7 +539,9 @@ class InactiveOverlay extends PureComponent {
 
     const renderTestnet = () => {
       if (Settings.isTestnet) {
-        return <Text style={[styles.testnetText]}>Testnet</Text>;
+        return (
+          <TranslatedText style={[styles.testnetText]}>inactiveoverlay.testnet</TranslatedText>
+        );
       }
 
       return null;
@@ -591,7 +583,7 @@ class InactiveOverlay extends PureComponent {
             },
           ]}
         >
-          <Text style={styles.lockText}>Sign with COINiD to unlock</Text>
+          <TranslatedText style={styles.lockText}>inactiveoverlay.signtounlock</TranslatedText>
         </Animated.View>
 
         <Animated.View
@@ -618,7 +610,13 @@ class InactiveOverlay extends PureComponent {
               ]}
             >
               <View style={{ width: 80, height: 80 }}>
-                <LottieView source={lottieFiles.lock} ref={c => (this.lockAnim = c)} loop={false} />
+                <LottieView
+                  source={lottieFiles.lock}
+                  ref={(c) => {
+                    this.lockAnim = c;
+                  }}
+                  loop={false}
+                />
               </View>
             </Animated.View>
           </TouchableOpacity>
@@ -632,8 +630,11 @@ class InactiveOverlay extends PureComponent {
   }
 }
 
-InactiveOverlay.propTypes = {};
+InactiveOverlay.propTypes = {
+  settings: PropTypes.shape({
+    usePasscode: PropTypes.bool,
+    lockAfterDuration: PropTypes.number,
+  }).isRequired,
+};
 
-InactiveOverlay.defaultProps = {};
-
-export default InactiveOverlay;
+export default withGlobalSettings(InactiveOverlay);
