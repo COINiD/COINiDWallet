@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
     fontSize: fontSize.h3,
     textAlign: 'center',
     ...fontWeight.bold,
+    marginHorizontal: 46,
   },
   closeIconContainer: {
     position: 'absolute',
