@@ -255,7 +255,7 @@
   "transactionlist.loading": "Laden von Transaktionen",
   "transactionlist.nomatch": "Filter stimmte nicht mit Transaktionen überein",
   "transactionlist.notransactions": "Keine Transaktionen",
-  "transactionlist.paidfees": "Bezahlte Gebühren {fees}",
+  "transactionlist.paidfees": "Gebühren {fees}",
   "transactionlist.readysoon": "Ihre Brieftasche wird bald fertig sein",
   "transactionlist.transactions": "Transaktionen",
   "transactionlist.tryanotherinput": "Versuchen Sie es mit einer anderen Eingabe",
