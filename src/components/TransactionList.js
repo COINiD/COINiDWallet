@@ -7,7 +7,6 @@ import {
   SectionList,
   View,
   Animated,
-  Platform,
 } from 'react-native';
 
 import { Icon } from 'react-native-elements';
@@ -464,7 +463,7 @@ class TransactionList extends PureComponent {
     this.transactions = transactions;
     this.filteredData = this.txData;
     this.dailySummary = {};
-    this.sections = [{ data: [], title: t('transactionlist.transactions') }];
+    this.sections = [{ data: [], title: 'transactionlist.transactions' }];
     this.hasFiltered = false;
 
     this.noteHelper = coinid.noteHelper;
@@ -677,11 +676,9 @@ class TransactionList extends PureComponent {
   };
 
   _scrollToFirst = () => {
-    const { headerHeight } = this.state;
     this.sectionRef.scrollToLocation({
-      itemIndex: Platform.OS === 'ios' ? 0 : 1,
+      itemIndex: 0,
       sectionIndex: 0,
-      viewOffset: headerHeight,
     });
   };
 
@@ -689,7 +686,7 @@ class TransactionList extends PureComponent {
     const { headerHeight, graphHeight } = this.state;
 
     this.sectionRef.scrollToLocation({
-      itemIndex: Platform.OS === 'ios' ? 0 : 1,
+      itemIndex: 0,
       sectionIndex: 0,
       viewOffset: graphHeight + headerHeight,
     });
@@ -960,18 +957,18 @@ class TransactionList extends PureComponent {
       return null;
     };
 
-    if (section.title === t('transactionlist.transactions')) {
+    if (section.title === 'transactionlist.transactions') {
       return (
         // setState below... might want to change that...
         <View
           onLayout={({
             nativeEvent: {
-              layout: { height: layoutHeight },
+              layout: { height: headerHeight },
             },
           }) => {
-            /* this.setState({
-              headerHeight: 0,
-            }); */
+            this.setState({
+              headerHeight,
+            });
           }}
           style={[styles.listHeader, { paddingBottom: filterHeight }]}
         >
