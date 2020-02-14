@@ -203,7 +203,7 @@
   "setup.cold.howto": "Hur man konfigurerar en offline enhet",
   "setup.cold.setup": "Installera din cold wallet",
   "setup.cold.start": "Installera en cold wallet",
-  "setup.cold.text": "I en cold wallet so exponeras aldrig dina privata nycklar mot internet. Offline lagring är det säkraste sättet att lagra dina pengar. ",
+  "setup.cold.text": "I en cold wallet så exponeras aldrig dina privata nycklar mot internet. Offline lagring är det säkraste sättet att lagra dina pengar. ",
   "setup.hot.privatekeys": "Privata nycklar lagras säkert i COINiD Vault appen som har installerats på den här enheten.",
   "setup.hot.setup": "Installera din hot wallet",
   "setup.hot.start": "Installera hot wallet",
