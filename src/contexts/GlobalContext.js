@@ -20,7 +20,7 @@ function GlobalContextProvider({ children }) {
   const { showActionSheetWithOptions } = useActionSheet();
 
   const [state, setState] = useState(null);
-  const [settings, setSettings] = useState(settingHelper.settings);
+  const [settings, setSettings] = useState(null);
 
   useEffect(() => {
     const onSettingsUpdated = (newSettings) => {
@@ -28,6 +28,7 @@ function GlobalContextProvider({ children }) {
     };
 
     settingHelper.addListener('updated', onSettingsUpdated);
+    settingHelper.load();
     return () => {
       settingHelper.removeListener('updated', onSettingsUpdated);
     };

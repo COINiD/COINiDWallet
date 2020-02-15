@@ -23,8 +23,8 @@ class SettingHelper extends EventEmitter {
       lockAfterDuration: 60000,
       preferredColdTransport: '',
     };
+
     this.settings = this.defaultSettings;
-    this.load();
   }
 
   load = () => {
