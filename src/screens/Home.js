@@ -18,7 +18,6 @@ import { withLocaleContext, t } from '../contexts/LocaleContext';
 import COINiDPublic from '../libs/coinid-public';
 
 import storageHelper from '../utils/storageHelper';
-import settingHelper from '../utils/settingHelper';
 
 const sliderWidth = Dimensions.get('window').width;
 
@@ -104,7 +103,6 @@ class Home extends PureComponent {
     super(props);
 
     this.walletComponents = [];
-    this.settingHelper = settingHelper(projectSettings.coin);
 
     const { navigation } = this.props;
     navigation.setParams({ setScreenAnimator: this._setScreenAnimator });
@@ -132,7 +130,6 @@ class Home extends PureComponent {
         title: 'Hot',
         theme: 'light',
         dotColor: colors.getHot(),
-        settingHelper: this.settingHelper,
         snapTo: () => {
           this._snapToItem(0);
         },
@@ -149,7 +146,6 @@ class Home extends PureComponent {
         title: 'Cold',
         theme: 'dark',
         dotColor: colors.getCold(),
-        settingHelper: this.settingHelper,
         snapTo: () => {
           this._snapToItem(1);
         },

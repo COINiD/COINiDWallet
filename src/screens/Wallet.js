@@ -41,12 +41,11 @@ class Wallet extends PureComponent {
 
   getChildContext() {
     const {
-      coinid, settingHelper, type, theme, navigation,
+      coinid, type, theme, navigation,
     } = this.props;
 
     return {
       coinid,
-      settingHelper,
       type,
       theme,
       navigation,
@@ -83,7 +82,6 @@ class Wallet extends PureComponent {
           ref={(c) => {
             this.walletRef = c;
           }}
-          settingHelper={this.settingHelper}
           navigation={navigation}
           hideSensitive={hideSensitive}
           hasBeenSetup={hasBeenSetup}
@@ -211,7 +209,6 @@ class Wallet extends PureComponent {
 
 Wallet.childContextTypes = {
   coinid: PropTypes.shape({}),
-  settingHelper: PropTypes.shape({}),
   type: PropTypes.string,
   theme: PropTypes.string,
   modals: PropTypes.shape({}),
@@ -221,7 +218,6 @@ Wallet.childContextTypes = {
 Wallet.propTypes = {
   navigation: PropTypes.shape({}).isRequired,
   coinid: PropTypes.shape({}).isRequired,
-  settingHelper: PropTypes.shape({}).isRequired,
   type: PropTypes.string,
   theme: PropTypes.string,
   hideSensitive: PropTypes.bool,
