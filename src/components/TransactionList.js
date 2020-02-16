@@ -444,8 +444,6 @@ class TransactionList extends PureComponent {
 
     this.state = {
       listHeight: 0,
-      graphHeight: 0,
-      headerHeight: 0,
       isFiltersOpen: false,
       txItemsOffset: new Animated.Value(0),
       filterHeight: 0,
@@ -470,6 +468,7 @@ class TransactionList extends PureComponent {
     this.noteHelper.on('savednote', this._onSavedNote);
 
     this.scrollCurrentY = 0;
+    this.graphHeight = 0;
 
     this._parseTransactionsProp(transactions);
   }
@@ -660,36 +659,25 @@ class TransactionList extends PureComponent {
   };
 
   _isScrollWithinArea = (direction) => {
-    const { graphHeight } = this.state;
-
     if (!direction) {
-      return this.scrollCurrentY > 0 && this.scrollCurrentY < graphHeight - 2;
+      return this.scrollCurrentY > 0 && this.scrollCurrentY < this.graphHeight - 2;
     }
     if (direction === -1) {
       return this.scrollCurrentY > 0;
     }
     if (direction === 1) {
-      return this.scrollCurrentY < graphHeight - 2;
+      return this.scrollCurrentY < this.graphHeight - 2;
     }
 
     return false;
   };
 
   _scrollToFirst = () => {
-    this.sectionRef.scrollToLocation({
-      itemIndex: 0,
-      sectionIndex: 0,
-    });
+    this.scrollRef.scrollTo({ x: 0, y: this.graphHeight, animated: true });
   };
 
   _scrollToTop = () => {
-    const { headerHeight, graphHeight } = this.state;
-
-    this.sectionRef.scrollToLocation({
-      itemIndex: 0,
-      sectionIndex: 0,
-      viewOffset: graphHeight + headerHeight,
-    });
+    this.scrollRef.scrollTo({ x: 0, y: 0, animated: true });
   };
 
   _scrollToFirstTimeout = (direction) => {
@@ -959,19 +947,7 @@ class TransactionList extends PureComponent {
 
     if (section.title === 'transactionlist.transactions') {
       return (
-        // setState below... might want to change that...
-        <View
-          onLayout={({
-            nativeEvent: {
-              layout: { height: headerHeight },
-            },
-          }) => {
-            this.setState({
-              headerHeight,
-            });
-          }}
-          style={[styles.listHeader, { paddingBottom: filterHeight }]}
-        >
+        <View style={[styles.listHeader, { paddingBottom: filterHeight }]}>
           <View style={styles.listHeaderTop}>
             <Text style={styles.subHeader}>{t('transactionlist.transactions')}</Text>
             <Icon
@@ -1003,6 +979,26 @@ class TransactionList extends PureComponent {
     return null;
   };
 
+  _listHeaderChange = ({
+    nativeEvent: {
+      layout: { height },
+    },
+  }) => {
+    this.graphHeight = height;
+  };
+
+  _onListRef = (c) => {
+    this.scrollRef = c._wrapperListRef._listRef._scrollRef;
+  };
+
+  _onListLayout = ({
+    nativeEvent: {
+      layout: { height },
+    },
+  }) => {
+    this.setState({ listHeight: height });
+  };
+
   render() {
     const { toggleRange, languageTag } = this.props;
     const { styles } = this.state;
@@ -1013,30 +1009,14 @@ class TransactionList extends PureComponent {
         style={[styles.container]}
         CellRendererComponent={this._renderItemWrapper}
         initialNumToRender={10}
-        ref={(c) => {
-          this.sectionRef = c;
-        }}
+        ref={this._onListRef}
         onMomentumScrollBegin={this._onMomentumScrollBegin}
         onMomentumScrollEnd={this._onMomentumScrollEnd}
         onScrollBeginDrag={this._onScrollBeginDrag}
         onScrollEndDrag={this._onScrollEndDrag}
-        onLayout={({
-          nativeEvent: {
-            layout: { height: listHeight },
-          },
-        }) => {
-          this.setState({ listHeight });
-        }}
+        onLayout={this._onListLayout}
         ListHeaderComponent={(
-          <View
-            onLayout={({
-              nativeEvent: {
-                layout: { height: graphHeight },
-              },
-            }) => {
-              this.setState({ graphHeight });
-            }}
-          >
+          <View onLayout={this._listHeaderChange}>
             <Graph toggleRange={toggleRange} />
           </View>
 )}
