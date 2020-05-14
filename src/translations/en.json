@@ -96,6 +96,7 @@
   "installedwallet.notready": "Your wallet will be ready soon",
   "languages.en": "English",
   "languages.de": "German",
+  "languages.eo": "Esperanto",
   "languages.sv": "Swedish",
   "languages.system": "Use system language",
   "qrdatareceiver.scannedblocks": "Scanned blocks ({collectedSize} of {length})",

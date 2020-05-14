@@ -10,8 +10,9 @@ const LocaleContext = React.createContext({});
 
 const translations = {
   en: require('../translations/en.json'),
-  sv: require('../translations/sv.json'),
   de: require('../translations/de.json'),
+  eo: require('../translations/eo.json'),
+  sv: require('../translations/sv.json'),
 };
 
 const translate = (string, languageTag, options) => {
