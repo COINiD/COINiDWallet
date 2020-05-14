@@ -277,5 +277,6 @@
   "verifymessage.verifymessage": "Aŭtentigi mesaĝon",
   "viewlock.listhint.missingcoinid": "La ekran-seruron necesas COINiD Kaso.",
   "viewlock.listhint.missinghotwallet": "La ekran-seruron necesas instalita varma monujo.",
-  "viewlock.listhint.text": "La ekran-seruron oni malŝlosas per COINiD Kaso."
+  "viewlock.listhint.text": "La ekran-seruron oni malŝlosas per COINiD Kaso.",
+  "languages.eo": "Esperanto"
 }
