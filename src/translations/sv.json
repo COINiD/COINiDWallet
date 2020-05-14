@@ -277,5 +277,6 @@
   "verifymessage.verifymessage": "Verifiera meddelande",
   "viewlock.listhint.missingcoinid": "Visningslås kräver att COINiD Vault är installerat.",
   "viewlock.listhint.missinghotwallet": "Visningslås kräver en installerad hot wallet.",
-  "viewlock.listhint.text": "Visningslås låses upp med hjälp av ditt COINiD Vault."
+  "viewlock.listhint.text": "Visningslås låses upp med hjälp av ditt COINiD Vault.",
+  "languages.eo": "Esperanto"
 }
