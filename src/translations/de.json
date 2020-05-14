@@ -277,5 +277,6 @@
   "verifymessage.verifymessage": "Nachricht überprüfen",
   "viewlock.listhint.missingcoinid": "Für die Ansichtssperre ist COINiD Vault erforderlich.",
   "viewlock.listhint.missinghotwallet": "Für die Ansichtssperre muss ein Hot Wallet installiert sein.",
-  "viewlock.listhint.text": "Die Ansichtssperre ist mit COINiD Vault entsperrt."
+  "viewlock.listhint.text": "Die Ansichtssperre ist mit COINiD Vault entsperrt.",
+  "languages.eo": "Esperanto"
 }
