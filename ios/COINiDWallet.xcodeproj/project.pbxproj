@@ -1751,7 +1751,7 @@
 			buildSettings = {
 				APP_RETURN_SCHEME = "coinid-tbtc";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CURRENT_PROJECT_VERSION = 377;
+				CURRENT_PROJECT_VERSION = 380;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = RTXAQQG73Y;
 				HEADER_SEARCH_PATHS = (
@@ -1787,7 +1787,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.coinid.wallet.tbtc";
+				PRODUCT_BUNDLE_IDENTIFIER = org.coinid.wallet.tbtc;
 				PRODUCT_NAME = "tBTC COINiD";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1798,7 +1798,7 @@
 			buildSettings = {
 				APP_RETURN_SCHEME = "coinid-tbtc";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CURRENT_PROJECT_VERSION = 377;
+				CURRENT_PROJECT_VERSION = 380;
 				DEVELOPMENT_TEAM = RTXAQQG73Y;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1833,7 +1833,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.coinid.wallet.tbtc";
+				PRODUCT_BUNDLE_IDENTIFIER = org.coinid.wallet.tbtc;
 				PRODUCT_NAME = "tBTC COINiD";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
