@@ -117,7 +117,7 @@ android {
         applicationId "org.coinid.wallet.tbtc"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 366
+        versionCode 367
         versionName "1.7.9"
         renderscriptTargetApi 23
         renderscriptSupportModeEnabled true
