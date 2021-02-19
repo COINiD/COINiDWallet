@@ -278,5 +278,11 @@
   "addresstypes.p2pkh.description": "Legacy-adresoj. Ni rekomendas uzi segwit-adresojn prefere.",
   "addresstypes.p2pkh.title": "Legacy",
   "addresstypes.p2sh-p2wpkh.description": "Rekomendita adresspeco. Transakcioj plenigas malpli da spaco, do kotizoj pli malaltas kompare kun legacy-speco.",
-  "languages.eo": "Esperanto"
+  "languages.eo": "Esperanto",
+  "inputpublickey.warning": "For advanced users only! This will create a watch-only wallet. This means that you cannot spend any coins with a wallet created this way. So do not, under any circumstances, use this method to setup a wallet in case you intend to spend coins.",
+  "receive.validate1": "Before using your receiving address we highly recommend that you independently validate your address with the COINiD Vault.",
+  "receive.validate2": "By doing this you make sure that you control the private key that the address is derived from.",
+  "receive.validate3": "It will only take a few seconds. Just press validate address below.",
+  "receive.skipvalidation": "Skip validation",
+  "receive.validateaddress": "Validate address"
 }
