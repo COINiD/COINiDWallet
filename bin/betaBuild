@@ -77,7 +77,9 @@ const runTests = () => {
 };
 
 const doBuilds = platform => {
-  execSync(`cd ${rootDir}/${platform}; fastlane bump_build_number`, { stdio: 'inherit' });
+  execSync(`cd ${rootDir}/${platform}; bundle install; fastlane bump_build_number`, {
+    stdio: 'inherit',
+  });
   for (let i = 0; i < coins.length; i += 1) {
     const { ticker, coin, packageName } = coins[i];
     execSync(
