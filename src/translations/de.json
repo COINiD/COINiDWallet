@@ -3,7 +3,7 @@
   "actionmenus.receive.sweepprivatekey": "Privaten Schlüssel auslesen ...",
   "actionmenus.receive.validateaddress": "Adresse bestätigen ...",
   "actionmenus.verifymessage.parseclipboard": "Zwischenablagedaten analysieren",
-  "addresstypes.p2pkh.description": "Legacy-Adressen. Wir empfehlen stattdessen die Verwendung von Segwit-Adressen.",
+  "addresstypes.p2pkh.title": "Legacy",
   "addresstypes.p2sh-p2wpkh.description": "Empfohlener Adresstyp. Geringere Sendungsgröße und Gebühren im Vergleich zu früheren Versionen.",
   "addresstypes.p2sh-p2wpkh.title": "Segwit",
   "addresstypes.p2wpkh.description": "Wichtig! Nicht alle Dienste unterstützen das Senden an Bech32-Adressen.",
@@ -90,6 +90,7 @@
   "inputpublickey.publickeydata": "Öffentlicher Schlüssel daten",
   "installedwallet.alreadybatched": "Eine Zahlung mit dieser Adresse wurde bereits abgebucht ...",
   "installedwallet.couldnotfind": "Die zu aktuelle Zahlung konnte nicht gefunden werden ...",
+  "installedwallet.keepitsafe": "Vergessen Sie nicht, die Wiederherstellungsphrase von Ihrem COINiD Vault zu sichern.",
   "installedwallet.loading": "Brieftasche wird geladen",
   "installedwallet.notready": "Ihre Brieftasche wird angelegt",
   "languages.en": "Englisch (English)",
@@ -275,8 +276,13 @@
   "viewlock.listhint.missingcoinid": "Für die Ansichtssperre ist COINiD Vault erforderlich.",
   "viewlock.listhint.missinghotwallet": "Für die Ansichtssperre muss ein Hot Wallet installiert sein.",
   "viewlock.listhint.text": "Die Ansichtssperre ist mit COINiD Vault entsperrt.",
-  "installedwallet.keepitsafe": "Vergessen Sie nicht, die Wiederherstellungsphrase von Ihrem COINiD Vault zu sichern.",
   "languages.de": "Deutsche (German)",
-  "addresstypes.p2pkh.title": "Legacy",
-  "languages.eo": "Esperanto"
+  "addresstypes.p2pkh.description": "Legacy-Adressen. Wir empfehlen stattdessen die Verwendung von Segwit-Adressen.",
+  "languages.eo": "Esperanto",
+  "inputpublickey.warning": "For advanced users only! This will create a watch-only wallet. This means that you cannot spend any coins with a wallet created this way. So do not, under any circumstances, use this method to setup a wallet in case you intend to spend coins.",
+  "receive.validate1": "Before using your receiving address we highly recommend that you independently validate your address with the COINiD Vault.",
+  "receive.validate2": "By doing this you make sure that you control the private key that the address is derived from.",
+  "receive.validate3": "It will only take a few seconds. Just press validate address below.",
+  "receive.skipvalidation": "Skip validation",
+  "receive.validateaddress": "Validate address"
 }
