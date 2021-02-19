@@ -291,25 +291,17 @@ class Receive extends PureComponent {
             }}
           >
             <View style={{ padding: 24, paddingBottom: 48 }}>
-              <Text style={{ marginBottom: 16 }}>
-                Before using your receiving address we highly recommend that you independently
-                validate your address with the COINiD Vault.
-              </Text>
-              <Text style={{ marginBottom: 16 }}>
-                By doing this you make sure that you control the private key that the address is
-                derived from.
-              </Text>
-              <Text style={{ marginBottom: 16 }}>
-                It will only take a few seconds. Just press validate address below.
-              </Text>
-              <Button onPress={this._validateAddress}>Validate address</Button>
+              <Text style={{ marginBottom: 16 }}>{t('receive.validate1')}</Text>
+              <Text style={{ marginBottom: 16 }}>{t('receive.validate2')}</Text>
+              <Text style={{ marginBottom: 16 }}>{t('receive.validate3')}</Text>
+              <Button onPress={this._validateAddress}>{t('receive.validateaddress')}</Button>
               <Button
                 link
                 onPress={this._skipValidation}
                 style={styles.manualPublic}
                 textStyle={styles.manualPublicText}
               >
-                Skip validation
+                {t('receive.skipvalidation')}
               </Button>
             </View>
           </View>

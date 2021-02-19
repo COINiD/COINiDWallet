@@ -106,11 +106,7 @@ class InputPublicKey extends PureComponent {
           this.refContHeight = e.nativeEvent.layout.height;
         }}
       >
-        <Text style={styles.description}>
-          For advanced users only! This will create a watch-only wallet. This means that you cannot
-          spend any coins with a wallet created this way. So do not, under any circumstances, use
-          this method to setup a wallet in case you intend to spend coins.
-        </Text>
+        <Text style={styles.description}>{t('inputpublickey.warning')}</Text>
         <Text style={styles.formLabel}>{t('inputpublickey.publickeydata')}</Text>
         <View
           style={styles.formItemRow}
