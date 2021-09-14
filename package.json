@@ -62,7 +62,7 @@
     "react-native-webview": "5.12.1",
     "react-navigation": "^2.12.1",
     "readable-stream": "^1.0.33",
-    "set-value": "^2.0.1",
+    "set-value": "^4.0.1",
     "socket.io-client": "^2.2.0",
     "stream-browserify": "^1.0.0",
     "vm-browserify": "0.0.4"
