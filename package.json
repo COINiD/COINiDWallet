@@ -1,6 +1,6 @@
 {
   "name": "COINiDWallet",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
@@ -42,7 +42,7 @@
     "react-native-elements": "^0.18.4",
     "react-native-exit-app": "^1.0.0",
     "react-native-fetch-polyfill": "^1.1.3",
-    "react-native-iphone-x-helper": "^1.2.0",
+    "react-native-iphone-x-helper": "^1.3.1",
     "react-native-keep-awake": "3",
     "react-native-localize": "^1.3.2",
     "react-native-measure-text": "^1.0.0-beta.1",
@@ -72,7 +72,7 @@
     "@babel/runtime": "^7.4.0",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.5.0",
-    "detox": "^14.4.1",
+    "detox": "^19.3.0",
     "enzyme": "^3.8.0",
     "enzyme-adapter-react-16": "^1.7.1",
     "eslint": "^5.15.3",
@@ -161,5 +161,9 @@
     "_stream_passthrough": "readable-stream/passthrough",
     "stream": "stream-browserify",
     "vm": "vm-browserify"
+  },
+  "volta": {
+    "node": "10.15.3",
+    "yarn": "1.16.0"
   }
 }
