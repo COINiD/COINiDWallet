@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native/React/CxxBridge/RCTCxxBridge.mm b/node_modules/react-native/React/CxxBridge/RCTCxxBridge.mm
+index 194b06c..68a137d 100644
+--- a/node_modules/react-native/React/CxxBridge/RCTCxxBridge.mm
++++ b/node_modules/react-native/React/CxxBridge/RCTCxxBridge.mm
+@@ -743,7 +743,7 @@ - (void)registerExtraLazyModules
+ #endif
+ }
+ 
+-- (NSArray<RCTModuleData *> *)_initializeModules:(NSArray<id<RCTBridgeModule>> *)modules
++- (NSArray<RCTModuleData *> *)_initializeModules:(NSArray<Class> *)modules
+                                withDispatchGroup:(dispatch_group_t)dispatchGroup
+                                 lazilyDiscovered:(BOOL)lazilyDiscovered
+ {

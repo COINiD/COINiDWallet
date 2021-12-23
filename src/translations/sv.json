@@ -94,8 +94,8 @@
   "installedwallet.keepitsafe": "Glöm inte att säkerhetskopiera återställningsfrasen från ditt COINiD Vault.",
   "installedwallet.loading": "Laddar plånbok",
   "installedwallet.notready": "Din plånbok kommer snart att vara redo",
-  "languages.en": "Engelska (English)",
   "languages.de": "Tyska (German)",
+  "languages.en": "Engelska (English)",
   "languages.sv": "Svenska (Swedish)",
   "languages.system": "Använd systemspråk",
   "qrdatareceiver.scannedblocks": "Skannade block ({collectedSize} of {length})",
@@ -277,5 +277,6 @@
   "verifymessage.verifymessage": "Verifiera meddelande",
   "viewlock.listhint.missingcoinid": "Visningslås kräver att COINiD Vault är installerat.",
   "viewlock.listhint.missinghotwallet": "Visningslås kräver en installerad hot wallet.",
-  "viewlock.listhint.text": "Visningslås låses upp med hjälp av ditt COINiD Vault."
+  "viewlock.listhint.text": "Visningslås låses upp med hjälp av ditt COINiD Vault.",
+  "languages.eo": "Esperanto"
 }

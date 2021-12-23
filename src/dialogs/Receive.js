@@ -4,7 +4,9 @@ import {
   StyleSheet, View, TouchableOpacity, Platform,
 } from 'react-native';
 import Share from 'react-native-share';
-import { Text, AmountInput, ReceiveQRCode } from '../components';
+import {
+  Button, Text, AmountInput, ReceiveQRCode,
+} from '../components';
 import { colors, fontSize, fontWeight } from '../config/styling';
 import { t, withLocaleContext } from '../contexts/LocaleContext';
 
@@ -61,6 +63,12 @@ const styles = styleMerge(
       ...fontWeight.medium,
       letterSpacing: 0.1,
     },
+    manualPublic: {
+      marginBottom: -16,
+    },
+    manualPublicText: {
+      color: colors.gray,
+    },
   }),
 );
 
@@ -96,6 +104,7 @@ class Receive extends PureComponent {
       amount: 0,
       coinTitle,
       showActionSheetWithOptions,
+      showAddress: false,
     };
   }
 
@@ -154,6 +163,7 @@ class Receive extends PureComponent {
   _validateAddress = () => {
     const { dialogNavigate } = this.context;
     const { address } = this.state;
+    this.setState({ showAddress: true });
 
     dialogNavigate(
       'ValidateAddress',
@@ -163,6 +173,10 @@ class Receive extends PureComponent {
       this.context,
       false,
     );
+  };
+
+  _skipValidation = () => {
+    this.setState({ showAddress: true });
   };
 
   _sweepPrivateKey = () => {
@@ -249,7 +263,7 @@ class Receive extends PureComponent {
 
   render() {
     const {
-      ticker, qrAddress, address, amount,
+      ticker, qrAddress, address, amount, showAddress,
     } = this.state;
 
     const { dialogRef, exchangeRateContext } = this.props;
@@ -263,6 +277,35 @@ class Receive extends PureComponent {
 
     return (
       <View style={styles.container}>
+        {!showAddress ? (
+          <View
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 100,
+              backgroundColor: 'white',
+              justifyContent: 'center',
+            }}
+          >
+            <View style={{ padding: 24, paddingBottom: 48 }}>
+              <Text style={{ marginBottom: 16 }}>{t('receive.validate1')}</Text>
+              <Text style={{ marginBottom: 16 }}>{t('receive.validate2')}</Text>
+              <Text style={{ marginBottom: 16 }}>{t('receive.validate3')}</Text>
+              <Button onPress={this._validateAddress}>{t('receive.validateaddress')}</Button>
+              <Button
+                link
+                onPress={this._skipValidation}
+                style={styles.manualPublic}
+                textStyle={styles.manualPublicText}
+              >
+                {t('receive.skipvalidation')}
+              </Button>
+            </View>
+          </View>
+        ) : null}
         <View style={styles.modalContent}>
           <ReceiveQRCode
             getViewShot={this._getViewShot}

@@ -4,7 +4,6 @@
   "actionmenus.receive.validateaddress": "Adresse bestätigen ...",
   "actionmenus.verifymessage.parseclipboard": "Zwischenablagedaten analysieren",
   "addresstypes.p2pkh.description": "Legacy-Adressen. Wir empfehlen stattdessen die Verwendung von Segwit-Adressen.",
-  "addresstypes.p2pkh.title": "Legacy",
   "addresstypes.p2sh-p2wpkh.description": "Empfohlener Adresstyp. Geringere Sendungsgröße und Gebühren im Vergleich zu früheren Versionen.",
   "addresstypes.p2sh-p2wpkh.title": "Segwit",
   "addresstypes.p2wpkh.description": "Wichtig! Nicht alle Dienste unterstützen das Senden an Bech32-Adressen.",
@@ -91,11 +90,9 @@
   "inputpublickey.publickeydata": "Öffentlicher Schlüssel daten",
   "installedwallet.alreadybatched": "Eine Zahlung mit dieser Adresse wurde bereits abgebucht ...",
   "installedwallet.couldnotfind": "Die zu aktuelle Zahlung konnte nicht gefunden werden ...",
-  "installedwallet.keepitsafe": "Vergessen Sie nicht, die Wiederherstellungsphrase von Ihrem COINiD Vault zu sichern.",
   "installedwallet.loading": "Brieftasche wird geladen",
   "installedwallet.notready": "Ihre Brieftasche wird angelegt",
   "languages.en": "Englisch (English)",
-  "languages.de": "Deutsche (German)",
   "languages.sv": "Schwedisch (Swedish)",
   "languages.system": "Verwenden Sie die Systemsprache",
   "qrdatareceiver.scannedblocks": "Gescannte Blöcke ({collectedSize} von {length})",
@@ -277,5 +274,9 @@
   "verifymessage.verifymessage": "Nachricht überprüfen",
   "viewlock.listhint.missingcoinid": "Für die Ansichtssperre ist COINiD Vault erforderlich.",
   "viewlock.listhint.missinghotwallet": "Für die Ansichtssperre muss ein Hot Wallet installiert sein.",
-  "viewlock.listhint.text": "Die Ansichtssperre ist mit COINiD Vault entsperrt."
+  "viewlock.listhint.text": "Die Ansichtssperre ist mit COINiD Vault entsperrt.",
+  "installedwallet.keepitsafe": "Vergessen Sie nicht, die Wiederherstellungsphrase von Ihrem COINiD Vault zu sichern.",
+  "languages.de": "Deutsche (German)",
+  "addresstypes.p2pkh.title": "Legacy",
+  "languages.eo": "Esperanto"
 }

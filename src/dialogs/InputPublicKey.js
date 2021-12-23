@@ -20,6 +20,9 @@ const styles = styleMerge(
       padding: 16,
       paddingTop: 0,
     },
+    description: {
+      marginBottom: 24,
+    },
     text: {
       marginBottom: 24,
       fontSize: 16,
@@ -103,6 +106,7 @@ class InputPublicKey extends PureComponent {
           this.refContHeight = e.nativeEvent.layout.height;
         }}
       >
+        <Text style={styles.description}>{t('inputpublickey.warning')}</Text>
         <Text style={styles.formLabel}>{t('inputpublickey.publickeydata')}</Text>
         <View
           style={styles.formItemRow}

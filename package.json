@@ -1,11 +1,11 @@
 {
   "name": "COINiDWallet",
-  "version": "1.7.8",
+  "version": "1.8.1",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
-    "postinstall": "node node_modules/rn-nodeify/cmd.js --install stream,buffer,events,assert,crypto,vm --hack",
+    "postinstall": "node node_modules/rn-nodeify/cmd.js --install stream,buffer,events,assert,crypto,vm --hack; patch-package",
     "postversion": "react-native-version; bin/createBuildJSON",
     "detox": "bin/runDetoxTests",
     "detoxPackager": "RN_SRC_EXT=e2e.js yarn start"
@@ -42,7 +42,7 @@
     "react-native-elements": "^0.18.4",
     "react-native-exit-app": "^1.0.0",
     "react-native-fetch-polyfill": "^1.1.3",
-    "react-native-iphone-x-helper": "^1.2.0",
+    "react-native-iphone-x-helper": "^1.3.1",
     "react-native-keep-awake": "3",
     "react-native-localize": "^1.3.2",
     "react-native-measure-text": "^1.0.0-beta.1",
@@ -72,7 +72,7 @@
     "@babel/runtime": "^7.4.0",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.5.0",
-    "detox": "^14.4.1",
+    "detox": "^19.3.0",
     "enzyme": "^3.8.0",
     "enzyme-adapter-react-16": "^1.7.1",
     "eslint": "^5.15.3",
@@ -86,6 +86,7 @@
     "mock-async-storage": "^2.0.4",
     "mock-socket": "^8.0.5",
     "node-mock-server": "https://github.com/COINiD/node-mock-server.git",
+    "patch-package": "^6.4.7",
     "react-dom": "^16.7.0",
     "react-native-version": "^2.7.0",
     "react-test-renderer": "16.8.3",
@@ -161,5 +162,9 @@
     "_stream_passthrough": "readable-stream/passthrough",
     "stream": "stream-browserify",
     "vm": "vm-browserify"
+  },
+  "volta": {
+    "node": "10.15.3",
+    "yarn": "1.16.0"
   }
 }
