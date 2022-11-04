@@ -3,9 +3,9 @@
  * All fees are displayed as fee-per-byte (in satoshis)
  */
 
-import { EventEmitter } from 'events';
-import { mockableUrl } from 'node-mock-server/react-native/utils';
-import storageHelper from './storageHelper';
+import { EventEmitter } from "events";
+import { mockableUrl } from "node-mock-server/react-native/utils";
+import storageHelper from "./storageHelper";
 
 class FeeHelper extends EventEmitter {
   constructor(coin) {
@@ -26,7 +26,7 @@ class FeeHelper extends EventEmitter {
       fees: initalFees,
     });
 
-    this.storage.get('feesInfo').then((feesInfo) => {
+    this.storage.get("feesInfo").then((feesInfo) => {
       if (feesInfo === null) {
         return false;
       }
@@ -38,25 +38,27 @@ class FeeHelper extends EventEmitter {
 
   setFeesInfo = (feesInfo, save, emit) => {
     if (
-      feesInfo.lastUpdated === undefined
-      || feesInfo.fees === undefined
-      || !Array.isArray(feesInfo.fees)
-      || feesInfo.fees[0] === undefined
-      || !Number.isInteger(feesInfo.fees[0][0])
-      || !Number.isInteger(feesInfo.fees[0][1])
-      || (this.feesInfo !== undefined && feesInfo.fees[0][1] < this.minimumFee)
+      feesInfo.lastUpdated === undefined ||
+      feesInfo.fees === undefined ||
+      !Array.isArray(feesInfo.fees) ||
+      feesInfo.fees[0] === undefined ||
+      !Number.isInteger(feesInfo.fees[0][0]) ||
+      !Number.isInteger(feesInfo.fees[0][1]) ||
+      (this.feesInfo !== undefined && feesInfo.fees[0][1] < this.minimumFee)
     ) {
       return false;
     }
 
     this.feesInfo = feesInfo;
 
+    console.log("setFeesInfo", this.feesInfo);
+
     if (save) {
-      this.storage.set('feesInfo', this.feesInfo);
+      this.storage.set("feesInfo", this.feesInfo);
     }
 
     if (emit) {
-      this.emit('syncedfees', this.feesInfo);
+      this.emit("syncedfees", this.feesInfo);
     }
 
     return true;
@@ -69,6 +71,7 @@ class FeeHelper extends EventEmitter {
 
     this.fetchFees()
       .then((feesInfo) => {
+        console.log({ feesInfo });
         this.setFeesInfo(feesInfo, true, true);
         setTimeout(this.sync, this.syncEveryMs);
       })
@@ -78,13 +81,14 @@ class FeeHelper extends EventEmitter {
       });
   };
 
-  fetchFees = () => fetch(this.apiUrl)
-    .then(r => r.json())
-    .then((json) => {
+  fetchFees = () =>
+    fetch(this.apiUrl).then(async (r) => {
+      const json = await r.json();
+      const lastUpdated = r.headers.get("last-modified");
       const fees = json.data;
 
       return {
-        lastUpdated: Date.now(),
+        lastUpdated: new Date(lastUpdated).getTime(),
         fees,
       };
     });
