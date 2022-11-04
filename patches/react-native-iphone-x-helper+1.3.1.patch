@@ -1,0 +1,16 @@
+diff --git a/node_modules/react-native-iphone-x-helper/index.js b/node_modules/react-native-iphone-x-helper/index.js
+index afd571f..e048ca7 100644
+--- a/node_modules/react-native-iphone-x-helper/index.js
++++ b/node_modules/react-native-iphone-x-helper/index.js
+@@ -10,7 +10,10 @@ export function isIphoneX() {
+           || (dimen.height === 812 || dimen.width === 812)
+           || (dimen.height === 844 || dimen.width === 844)
+           || (dimen.height === 896 || dimen.width === 896)
+-          || (dimen.height === 926 || dimen.width === 926))
++          || (dimen.height === 926 || dimen.width === 428)
++          || (dimen.height === 852 || dimen.width === 852)
++          || (dimen.height === 932 || dimen.width === 932)
++          || (dimen.height === 693 || dimen.width === 320))
+     );
+ }
+ 

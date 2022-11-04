@@ -86,7 +86,7 @@
     "mock-async-storage": "^2.0.4",
     "mock-socket": "^8.0.5",
     "node-mock-server": "https://github.com/COINiD/node-mock-server.git",
-    "patch-package": "^6.4.7",
+    "patch-package": "^6.5.0",
     "react-dom": "^16.7.0",
     "react-native-version": "^2.7.0",
     "react-test-renderer": "16.8.3",
