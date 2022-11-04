@@ -51,8 +51,6 @@ class FeeHelper extends EventEmitter {
 
     this.feesInfo = feesInfo;
 
-    console.log("setFeesInfo", this.feesInfo);
-
     if (save) {
       this.storage.set("feesInfo", this.feesInfo);
     }
