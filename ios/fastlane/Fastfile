@@ -19,7 +19,7 @@ platform :ios do
       scheme: 'COINiDWallet',
       xcargs: '-allowProvisioningUpdates'
     )
-    upload_to_testflight(skip_waiting_for_build_processing: true)
+    upload_to_testflight(username: ENV['APPLE_ID'], skip_waiting_for_build_processing: true)
 
     message_slack(options)
   end
