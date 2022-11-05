@@ -1,6 +1,6 @@
 {
   "name": "COINiDWallet",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
@@ -8,7 +8,8 @@
     "postinstall": "node node_modules/rn-nodeify/cmd.js --install stream,buffer,events,assert,crypto,vm --hack; patch-package",
     "postversion": "react-native-version; bin/createBuildJSON",
     "detox": "bin/runDetoxTests",
-    "detoxPackager": "RN_SRC_EXT=e2e.js yarn start"
+    "detoxPackager": "RN_SRC_EXT=e2e.js yarn start",
+    "build-ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'"
   },
   "rnpm": {
     "assets": [
