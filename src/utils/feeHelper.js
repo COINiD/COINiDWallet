@@ -69,7 +69,6 @@ class FeeHelper extends EventEmitter {
 
     this.fetchFees()
       .then((feesInfo) => {
-        console.log({ feesInfo });
         this.setFeesInfo(feesInfo, true, true);
         setTimeout(this.sync, this.syncEveryMs);
       })
@@ -80,7 +79,13 @@ class FeeHelper extends EventEmitter {
   };
 
   fetchFees = () =>
-    fetch(this.apiUrl).then(async (r) => {
+    fetch(this.apiUrl, {
+      headers: {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        Pragma: "no-cache",
+        Expires: 0,
+      },
+    }).then(async (r) => {
       const json = await r.json();
       const lastUpdated = r.headers.get("last-modified");
       const fees = json.data;
