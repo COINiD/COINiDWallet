@@ -66,3 +66,5 @@ ios/*app.dSYM.zip
 # Bundle artifact
 *.jsbundle
 src/config/build.json
+
+/ios/assets/

@@ -117,7 +117,7 @@ android {
         applicationId "org.coinid.wallet.tbtc"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 373
+        versionCode 378
         versionName "1.8.2"
         renderscriptTargetApi 23
         renderscriptSupportModeEnabled true
@@ -170,7 +170,6 @@ dependencies {
     implementation project(':react-native-blur')
     implementation project(':react-native-webview')
     implementation project(':lottie-react-native')
-    implementation project(':@react-native-community_async-storage')
     implementation project(':react-native-camera')
     implementation project(':react-native-svg')
     implementation project(':react-native-vector-icons')

@@ -112,6 +112,10 @@ execSync(`${rootDir}/bin/createBuildJSON;`, {
   stdio: "inherit",
 });
 
+execSync(
+  `node ${rootDir}/node_modules/react-native/cli.js bundle --entry-file index.js --platform ios --dev false --reset-cache --bundle-output '${rootDir}/ios/main.jsbundle' --assets-dest '${rootDir}/ios'`
+);
+
 if (runTests()) {
   if (coins.length) {
     platforms.forEach((platform) => doBuilds(platform));

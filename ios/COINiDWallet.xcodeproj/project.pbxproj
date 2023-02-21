@@ -39,6 +39,7 @@
 		776247EE19934F479B404018 /* Inter-UI-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 156E490BA4034BBD9AE8AEED /* Inter-UI-Regular.ttf */; };
 		7C38F3312242E87B002D6152 /* Lottie.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7C38EDC922428BD2002D6152 /* Lottie.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7C38F3C32243122E002D6152 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C38F3C22243122E002D6152 /* LaunchScreen.storyboard */; };
+		7C75C16829A54A49003B0D8B /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 7C75C16729A54A49003B0D8B /* assets */; };
 		7EA6790926D4444A82C3EEDD /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D91C04CB0AC84BE8870F1F1A /* Octicons.ttf */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		89CF59DA247240F6A63FC895 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E7F90249A4E24DBFAAF0B56A /* EvilIcons.ttf */; };
@@ -535,7 +536,7 @@
 		11F15F87B7464AC9B9160DEF /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
 		139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebSocket.xcodeproj; path = "../node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* tBTC COINiD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "tBTC COINiD.app"; path = "BTC COINiD.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* tBTC COINiD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "tBTC COINiD.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = COINiDWallet/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = COINiDWallet/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = COINiDWallet/Images.xcassets; sourceTree = "<group>"; };
@@ -572,6 +573,7 @@
 		7C38EEB5224290D1002D6152 /* MaterialIcons-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "MaterialIcons-Regular.ttf"; path = "../src/assets/fonts/MaterialIcons-Regular.ttf"; sourceTree = "<group>"; };
 		7C38EEB6224290D2002D6152 /* icomoon.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = icomoon.ttf; path = ../src/assets/fonts/icomoon.ttf; sourceTree = "<group>"; };
 		7C38F3C22243122E002D6152 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		7C75C16729A54A49003B0D8B /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = assets; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		8D51BE894FE748099DA02A5F /* Inter-UI-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-UI-BoldItalic.ttf"; path = "../src/assets/fonts/Inter-UI-BoldItalic.ttf"; sourceTree = "<group>"; };
 		9467714B12B34943B4435364 /* RCTP2PTransferBLECentralModule.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTP2PTransferBLECentralModule.xcodeproj; path = "../node_modules/react-native-p2p-transfer-ble-central/ios/RCTP2PTransferBLECentralModule.xcodeproj"; sourceTree = "<group>"; };
@@ -715,6 +717,7 @@
 		13B07FAE1A68108700A75B9A /* COINiDWallet */ = {
 			isa = PBXGroup;
 			children = (
+				7C75C16729A54A49003B0D8B /* assets */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -1703,6 +1706,7 @@
 				7EA6790926D4444A82C3EEDD /* Octicons.ttf in Resources */,
 				00647EA7A9344D29BE7D3420 /* SimpleLineIcons.ttf in Resources */,
 				2FE9C50484C045DE89206BD2 /* Zocial.ttf in Resources */,
+				7C75C16829A54A49003B0D8B /* assets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1751,7 +1755,7 @@
 			buildSettings = {
 				APP_RETURN_SCHEME = "coinid-tbtc";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CURRENT_PROJECT_VERSION = 419;
+				CURRENT_PROJECT_VERSION = 425;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = RTXAQQG73Y;
 				HEADER_SEARCH_PATHS = (
@@ -1783,7 +1787,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.coinid.wallet.tbtc";
+				PRODUCT_BUNDLE_IDENTIFIER = org.coinid.wallet.tbtc;
 				PRODUCT_NAME = "tBTC COINiD";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1796,7 +1800,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 419;
+				CURRENT_PROJECT_VERSION = 425;
 				DEVELOPMENT_TEAM = RTXAQQG73Y;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1827,7 +1831,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.coinid.wallet.tbtc";
+				PRODUCT_BUNDLE_IDENTIFIER = org.coinid.wallet.tbtc;
 				PRODUCT_NAME = "tBTC COINiD";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
